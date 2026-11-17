@@ -15,7 +15,6 @@ export function createImageStore(): ImageApi {
   const listeners = new Set<() => void>();
   const queue: string[] = [];
   let active = 0;
-  let enabled = true;
 
   const keyOf = (image: ImageRef, style: string) => [image.aspect, style, image.prompt].join('\u0001');
   const emit = () => listeners.forEach((l) => l());
@@ -25,7 +24,7 @@ export function createImageStore(): ImageApi {
   };
 
   function pump() {
-    while (enabled && active < 3 && queue.length) {
+    while (active < 3 && queue.length) {
       const key = queue.shift()!;
       active++;
       put(key, { status: 'loading' });
@@ -33,12 +32,10 @@ export function createImageStore(): ImageApi {
         .then((r) => r.json())
         .then((j: { url?: string; error?: string }) => {
           if (j.url) put(key, { status: 'ready', url: j.url });
-          else if (j.error === 'no-key') {
-            // No key on the server: stop asking, leave the placeholders in place.
-            enabled = false;
-            for (const k of queue.splice(0)) entries.set(k, OFF);
-            put(key, OFF);
-          } else put(key, { status: 'error' });
+          // No key on the server: this slot keeps its placeholder. Later requests still go
+          // out, because pictures for the bundled examples resolve without a key.
+          else if (j.error === 'no-key') put(key, OFF);
+          else put(key, { status: 'error' });
         })
         .catch(() => put(key, { status: 'error' }))
         .finally(() => {
@@ -53,7 +50,6 @@ export function createImageStore(): ImageApi {
       const key = keyOf(image, style);
       if (entries.has(key)) return;
       jobs.set(key, { prompt: image.prompt, style, aspect: image.aspect });
-      if (!enabled) return put(key, OFF);
       entries.set(key, { status: 'queued' });
       queue.push(key);
       emit();

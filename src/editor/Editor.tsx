@@ -9,8 +9,9 @@
 
 import { ArrowDown, ArrowUp, Braces, Copy, Monitor, Plus, Redo2, Smartphone, Tablet, Trash2, Undo2, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { EXAMPLE_BRIEFS, NORTHFOLD_OPS } from '@/site/fixtures/northfold';
-import { applyOp, docFromOps, type OpResult } from '@/site/ops';
+import { EXAMPLES, starterDoc, type Example } from '@/site/fixtures/examples';
+import { EXAMPLE_BRIEFS } from '@/site/fixtures/northfold';
+import { applyOp, type OpResult } from '@/site/ops';
 import { planSections } from '@/site/plan';
 import type { EditApi, Selection } from '@/site/render/context';
 import { Site } from '@/site/render/Site';
@@ -36,12 +37,12 @@ let uid = 0;
 const WELCOME: Msg = {
   id: ++uid,
   role: 'assistant',
-  text: 'This is the starter site. Click any text to rewrite it, pick a section to change its layout, or tell me what to change.',
+  text: 'This starter site was generated from a three-sentence brief. Click any text to rewrite it, pick a section to change its layout, or tell me what to change.',
   notes: [],
 };
 
 export default function Editor() {
-  const [doc, setDoc] = useState<SiteDoc>(() => docFromOps(NORTHFOLD_OPS));
+  const [doc, setDoc] = useState<SiteDoc>(starterDoc);
   const docRef = useRef(doc);
   // Undo history. Kept in a ref because it changes together with the document, which is
   // what triggers the re-render.
@@ -232,6 +233,11 @@ export default function Editor() {
     setShowNew(false);
     void streamOps('generate', '/api/generate', { brief, model }, `New site: ${brief}`);
   };
+  const openExample = (ex: Example) => {
+    setShowNew(false);
+    setSelection(null);
+    run({ op: 'load', doc: ex.load() });
+  };
   const sendEdit = (text: string) =>
     void streamOps('edit', '/api/edit', { doc: docRef.current, message: text, selectedId: selection?.sectionId ?? null, model }, text);
 
@@ -366,15 +372,15 @@ export default function Editor() {
         <Inspector doc={doc} theme={theme} plan={plan} selection={selection} select={select} run={run} runBurst={runBurst} tab={tab} setTab={setTab} />
       </div>
 
-      {showState && <StateDrawer doc={doc} log={log} onClose={() => setShowState(false)} onLoad={(raw) => run({ op: 'load', doc: raw })} onStarter={() => run({ op: 'load', doc: docFromOps(NORTHFOLD_OPS) })} />}
-      {showNew && <NewSite hasKey={!!status?.hasKey} onClose={() => setShowNew(false)} onGenerate={generate} />}
+      {showState && <StateDrawer doc={doc} log={log} onClose={() => setShowState(false)} onLoad={(raw) => run({ op: 'load', doc: raw })} />}
+      {showNew && <NewSite hasKey={!!status?.hasKey} onClose={() => setShowNew(false)} onGenerate={generate} onExample={openExample} />}
     </div>
   );
 }
 
 // ---------------------------------------------------------------- state drawer
 
-function StateDrawer({ doc, log, onClose, onLoad, onStarter }: { doc: SiteDoc; log: LogEntry[]; onClose(): void; onLoad(raw: unknown): void; onStarter(): void }) {
+function StateDrawer({ doc, log, onClose, onLoad }: { doc: SiteDoc; log: LogEntry[]; onClose(): void; onLoad(raw: unknown): void }) {
   const [view, setView] = useState<'doc' | 'log' | 'load'>('doc');
   const [draft, setDraft] = useState('');
   const [problem, setProblem] = useState('');
@@ -454,16 +460,6 @@ function StateDrawer({ doc, log, onClose, onLoad, onStarter }: { doc: SiteDoc; l
           >
             Load document
           </button>
-          <button
-            type="button"
-            className="link"
-            onClick={() => {
-              onStarter();
-              setView('doc');
-            }}
-          >
-            Or load the starter coffee site
-          </button>
         </div>
       )}
     </div>
@@ -472,7 +468,7 @@ function StateDrawer({ doc, log, onClose, onLoad, onStarter }: { doc: SiteDoc; l
 
 // ---------------------------------------------------------------- new site
 
-function NewSite({ hasKey, onClose, onGenerate }: { hasKey: boolean; onClose(): void; onGenerate(brief: string): void }) {
+function NewSite({ hasKey, onClose, onGenerate, onExample }: { hasKey: boolean; onClose(): void; onGenerate(brief: string): void; onExample(ex: Example): void }) {
   const [brief, setBrief] = useState('');
   return (
     <div className="modal" onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -506,6 +502,15 @@ function NewSite({ hasKey, onClose, onGenerate }: { hasKey: boolean; onClose(): 
             Generate
           </button>
         </footer>
+        <div className="examples">
+          <h3>Or open a finished example</h3>
+          {EXAMPLES.map((ex) => (
+            <button key={ex.id} type="button" onClick={() => onExample(ex)}>
+              <b>{ex.label}</b>
+              <span>{ex.note}</span>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

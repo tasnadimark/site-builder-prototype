@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next dev -p 3210",
     "build": "next build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "bundle-images": "node scripts/bundle-starter-images.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.74.0",
