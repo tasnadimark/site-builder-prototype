@@ -1,0 +1,804 @@
+{
+  "version": 2,
+  "meta": {
+    "name": "Kovács Villany",
+    "description": "Kovács Gábor villanyszerelő mester Budapesten és Pest megyében: villanyszerelés, hibaelhárítás, biztosítéktábla-csere, érintésvédelmi felülvizsgálat, e-autó töltő.",
+    "language": "hu",
+    "kind": "trades"
+  },
+  "business": {
+    "phone": "+36 20 987 6543",
+    "email": "gabor@kovacsvillany.example",
+    "socials": [],
+    "rating": {
+      "value": "4,8",
+      "count": "96",
+      "source": "Google"
+    },
+    "locations": [
+      {
+        "id": "main",
+        "name": "Kovács Villany",
+        "address": "Budapest és Pest megye",
+        "phone": "+36 20 987 6543",
+        "hours": [
+          {
+            "days": "Hétfő–péntek",
+            "time": "7:00–18:00"
+          },
+          {
+            "days": "Hétvége",
+            "time": "csak hibaelhárítás"
+          }
+        ]
+      }
+    ],
+    "areas": [
+      "Budaörs",
+      "Érd",
+      "Törökbálint",
+      "XI. kerület",
+      "XII. kerület",
+      "XXII. kerület"
+    ]
+  },
+  "theme": {
+    "preset": "bold",
+    "palette": {
+      "bg": "#f6f4ee",
+      "surface": "#ece8dc",
+      "ink": "#14171c",
+      "accent": "#f2b705",
+      "accent2": "#1f4e79"
+    },
+    "fonts": {
+      "display": "archivo-black",
+      "body": "inter-tight"
+    },
+    "radius": "sm",
+    "density": "regular",
+    "scale": "regular",
+    "traits": {
+      "card": "outline",
+      "button": "hard",
+      "emphasis": "highlight",
+      "divider": "slant",
+      "motif": "grid",
+      "image": "frame",
+      "eyebrow": "mono",
+      "caps": false
+    },
+    "imageStyle": "Documentary photograph, natural daylight, neutral tones with warm yellow accents, tidy and realistic, no people posing"
+  },
+  "nav": {
+    "style": "bar",
+    "brand": "Kovács Villany",
+    "links": [],
+    "cta": {
+      "label": "Hívjon: +36 20 987 6543",
+      "href": "tel:+36209876543",
+      "kind": "primary"
+    }
+  },
+  "footer": {
+    "style": "columns",
+    "tone": "inverse",
+    "tagline": "Kovács Villany – regisztrált villanyszerelő mester, 14 éve Budapesten és Pest megyében.",
+    "columns": [],
+    "note": "Írásos árajánlat, számla, garancia."
+  },
+  "pages": [
+    {
+      "id": "home",
+      "title": "Home",
+      "role": "home",
+      "menu": true,
+      "sections": [
+        {
+          "id": "hero",
+          "type": "hero",
+          "tone": "base",
+          "edge": "divider",
+          "backdrop": "motif",
+          "pad": "lg",
+          "layout": {
+            "kind": "split",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Villanyszerelő mester · Budapest és Pest megye",
+            "heading": "Villanyszerelés, ami *biztonságos* és megbízható",
+            "body": "14 éve dolgozom lakásokban és családi házakban. Írásos árajánlat 24 órán belül, számlával, garanciával. Hétvégén is jövök hibaelhárításra.",
+            "actions": [
+              {
+                "label": "Hívjon most",
+                "href": "tel:+36209876543",
+                "kind": "primary"
+              },
+              {
+                "label": "Árajánlatot kérek",
+                "href": "/kapcsolat",
+                "kind": "secondary"
+              }
+            ],
+            "align": "start"
+          },
+          "media": {
+            "prompt": "Neatly wired residential electrical fuse board with labelled breakers, open cabinet on a clean wall",
+            "alt": "Rendezett lakás biztosítéktábla címkézett kismegszakítókkal",
+            "aspect": "landscape"
+          },
+          "blocks": [
+            {
+              "kind": "rating",
+              "size": "sm"
+            }
+          ]
+        },
+        {
+          "id": "trust",
+          "type": "features",
+          "tone": "inverse",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "grid",
+            "columns": 4,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "Regisztrált mester",
+              "detail": "14 év tapasztalat"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "Írásos árajánlat",
+              "detail": "24 órán belül"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "Számla és garancia",
+              "detail": "minden munkára"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "Hétvégi hibaelhárítás",
+              "detail": "sürgős esetben"
+            }
+          ]
+        },
+        {
+          "id": "jobs",
+          "type": "features",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Munkák",
+            "heading": "Amiben *segítek*",
+            "actions": [
+              {
+                "label": "Minden szolgáltatás",
+                "href": "/szolgaltatasok",
+                "kind": "secondary"
+              }
+            ],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "home",
+              "title": "Lakás és ház villanyszerelése",
+              "body": "Új vezetékezés, felújítás, kapcsolók, lámpák, konnektorok."
+            },
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "zap",
+              "title": "Hibaelhárítás",
+              "body": "Áramkimaradás, leoldó biztosíték, hibás vezeték. Hétvégén is."
+            },
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "layers",
+              "title": "Biztosítéktábla-csere",
+              "body": "Korszerű, szabványos elosztó, áttekinthető felirattal."
+            },
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "shield",
+              "title": "Érintésvédelmi felülvizsgálat",
+              "body": "Mérés és dokumentáció, hivatalos jegyzőkönyvvel."
+            },
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "rocket",
+              "title": "E-autó töltő telepítése",
+              "body": "Falidoboz felszerelése a házi hálózat felmérése után."
+            }
+          ]
+        },
+        {
+          "id": "work",
+          "type": "gallery",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "bento",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Munkáimból",
+            "heading": "Rendezett munka, látható minőség",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "image",
+              "size": "feature",
+              "image": {
+                "prompt": "Newly installed home EV wall charger on a garage wall with tidy cable conduit",
+                "alt": "Garázsfalra szerelt elektromosautó-töltő",
+                "aspect": "square"
+              }
+            },
+            {
+              "kind": "image",
+              "size": "sm",
+              "image": {
+                "prompt": "Close-up of neat cabling in a distribution board",
+                "alt": "Szépen rendezett kábelezés az elosztóban",
+                "aspect": "square"
+              }
+            },
+            {
+              "kind": "image",
+              "size": "sm",
+              "image": {
+                "prompt": "Electrician's hands testing an outlet with a measuring device",
+                "alt": "Konnektor mérése műszerrel",
+                "aspect": "square"
+              }
+            }
+          ]
+        },
+        {
+          "id": "reviews",
+          "type": "testimonials",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Vélemények",
+            "heading": "4,8 a Google-n, 96 értékelés alapján",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "quote",
+              "size": "sm",
+              "text": "Reggel hívtam, délután már cserélte a biztosítéktáblát. Tiszta munka, pontos számla.",
+              "author": "Szabó Márta",
+              "role": "Budaörs",
+              "stars": 5,
+              "source": "Google"
+            },
+            {
+              "kind": "quote",
+              "size": "sm",
+              "text": "Az árajánlat másnapra megjött, és a végén pont annyi lett, amennyi le volt írva.",
+              "author": "Nagy Péter",
+              "role": "XI. kerület",
+              "stars": 5,
+              "source": "Google"
+            },
+            {
+              "kind": "quote",
+              "size": "sm",
+              "text": "Szombat este állt le az áram, Gábor egy órán belül nálunk volt.",
+              "author": "Tóth Andrea",
+              "role": "Érd",
+              "stars": 5,
+              "source": "Google"
+            }
+          ]
+        },
+        {
+          "id": "areas",
+          "type": "features",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "split",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Ahová járok",
+            "heading": "Budapest és Pest megye",
+            "body": "Ha nem szerepel a listán a településed, kérdezz bátran.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "Budaörs"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "Érd"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "Törökbálint"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "XI. kerület"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "XII. kerület"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "XXII. kerület"
+            }
+          ]
+        },
+        {
+          "id": "homecta",
+          "type": "cta",
+          "tone": "accent",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "narrow"
+          },
+          "intro": {
+            "heading": "Gond van az árammal? *Hívjon*",
+            "body": "Hétfő–péntek 7–18 óráig, hibaelhárítás hétvégén is.",
+            "actions": [
+              {
+                "label": "+36 20 987 6543",
+                "href": "tel:+36209876543",
+                "kind": "primary"
+              },
+              {
+                "label": "Árajánlatot kérek",
+                "href": "/kapcsolat",
+                "kind": "secondary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    },
+    {
+      "id": "szolgaltatasok",
+      "title": "Szolgáltatások",
+      "role": "offer",
+      "menu": true,
+      "sections": [
+        {
+          "id": "svchead",
+          "type": "features",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "narrow"
+          },
+          "intro": {
+            "eyebrow": "Szolgáltatások",
+            "heading": "Mit vállalok, és körülbelül mennyiért",
+            "body": "Tájékoztató árak. A pontos összeget írásos árajánlatban kapja meg.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": []
+        },
+        {
+          "id": "svcprices",
+          "type": "prices",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 2,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Hibaelhárítás",
+              "title": "Kiszállás és hibakeresés",
+              "detail": "Hétvégén felár",
+              "value": "ajánlat szerint"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Hibaelhárítás",
+              "title": "Hibás vezeték, kapcsoló, konnektor javítása",
+              "value": "ajánlat szerint"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Szerelés",
+              "title": "Biztosítéktábla-csere",
+              "detail": "lakás",
+              "value": "ajánlat szerint"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Szerelés",
+              "title": "Lakás újravezetékezése",
+              "value": "ajánlat szerint"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Mérés",
+              "title": "Érintésvédelmi felülvizsgálat",
+              "detail": "jegyzőkönyvvel",
+              "value": "ajánlat szerint"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Töltő",
+              "title": "E-autó töltő telepítése",
+              "detail": "felmérés után",
+              "value": "ajánlat szerint"
+            }
+          ]
+        },
+        {
+          "id": "svcsteps",
+          "type": "steps",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 4,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Menete",
+            "heading": "Így zajlik egy munka",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Hívás vagy üzenet",
+              "body": "Leírja a feladatot, egyeztetjük a helyszínt."
+            },
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Írásos árajánlat",
+              "body": "24 órán belül, rejtett költség nélkül."
+            },
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Kivitelezés",
+              "body": "Egyeztetett időpontban, rendben hagyott munkaterülettel."
+            },
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Számla és garancia",
+              "body": "Átadáskor megkapja a számlát és a garanciát."
+            }
+          ]
+        },
+        {
+          "id": "svcfaq",
+          "type": "faq",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "narrow"
+          },
+          "intro": {
+            "heading": "Gyakori kérdések",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "qa",
+              "size": "sm",
+              "q": "Mennyi idő alatt kapok árajánlatot?",
+              "a": "Írásban, legkésőbb 24 órán belül."
+            },
+            {
+              "kind": "qa",
+              "size": "sm",
+              "q": "Vállal hétvégi hibaelhárítást?",
+              "a": "Igen, sürgős hibánál hétvégén is."
+            },
+            {
+              "kind": "qa",
+              "size": "sm",
+              "q": "Van garancia a munkára?",
+              "a": "Igen, minden munkára, számlával."
+            }
+          ]
+        },
+        {
+          "id": "svccta",
+          "type": "cta",
+          "tone": "accent",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "narrow"
+          },
+          "intro": {
+            "heading": "Kérjen árajánlatot",
+            "actions": [
+              {
+                "label": "Hívás: +36 20 987 6543",
+                "href": "tel:+36209876543",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    },
+    {
+      "id": "kapcsolat",
+      "title": "Kapcsolat és ajánlatkérés",
+      "role": "contact",
+      "menu": true,
+      "sections": [
+        {
+          "id": "conthead",
+          "type": "features",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "narrow"
+          },
+          "intro": {
+            "eyebrow": "Kapcsolat",
+            "heading": "Kérjen árajánlatot",
+            "body": "Írja le a munkát, 24 órán belül válaszolok.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": []
+        },
+        {
+          "id": "contform",
+          "type": "contact",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 2,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "form",
+              "size": "sm",
+              "title": "Árajánlatkérés",
+              "fields": [
+                "name",
+                "phone",
+                "email",
+                "service",
+                "message"
+              ],
+              "submit": "Árajánlatot kérek",
+              "note": "Írásos ajánlatot 24 órán belül küldök."
+            },
+            {
+              "kind": "contact",
+              "size": "sm",
+              "location": "main",
+              "map": true
+            }
+          ]
+        },
+        {
+          "id": "contareas",
+          "type": "features",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Munkaterület",
+            "heading": "Ahová kiszállok",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "Budaörs"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "Érd"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "Törökbálint"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "XI. kerület"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "XII. kerület"
+            },
+            {
+              "kind": "check",
+              "size": "sm",
+              "label": "XXII. kerület"
+            }
+          ]
+        },
+        {
+          "id": "contcta",
+          "type": "cta",
+          "tone": "inverse",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "narrow"
+          },
+          "intro": {
+            "heading": "Sürgős? Hívjon most",
+            "actions": [
+              {
+                "label": "+36 20 987 6543",
+                "href": "tel:+36209876543",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    }
+  ]
+}

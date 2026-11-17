@@ -5,7 +5,7 @@ import { NORTHFOLD_OPS } from '@/site/fixtures/northfold';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
-  const { brief, model } = (await req.json().catch(() => ({}))) as { brief?: string; model?: string };
+  const { brief, model, kind } = (await req.json().catch(() => ({}))) as { brief?: string; model?: string; kind?: string };
   if (!brief?.trim()) return Response.json({ error: 'Missing brief' }, { status: 400 });
 
   // No key: replay the starter site through the same stream, so the pipeline can be seen working.
@@ -16,6 +16,7 @@ export async function POST(req: Request) {
     ]);
   }
 
-  const { system, user } = generatePrompt(brief);
-  return chatStream({ model: pickModel('generate', model), system, user, maxTokens: 12000 });
+  const { system, user } = generatePrompt(brief, kind);
+  // A site of several pages is a long answer; leave room for it.
+  return chatStream({ model: pickModel('generate', model), system, user, maxTokens: 28000 });
 }

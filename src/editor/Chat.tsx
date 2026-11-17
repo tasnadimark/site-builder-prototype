@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, LoaderCircle, Send, Square, X } from 'lucide-react';
+import { Check, LoaderCircle, PanelLeftClose, Send, Square, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 export type Msg = {
@@ -27,9 +27,10 @@ type Props = {
   selected: string | null;
   onSend(text: string): void;
   onStop(): void;
+  onCollapse(): void;
 };
 
-export function Chat({ messages, busy, hasKey, selected, onSend, onStop }: Props) {
+export function Chat({ messages, busy, hasKey, selected, onSend, onStop, onCollapse }: Props) {
   const [draft, setDraft] = useState('');
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -51,6 +52,9 @@ export function Chat({ messages, busy, hasKey, selected, onSend, onStop }: Props
         <span className="pill" data-state={hasKey ? 'on' : 'off'}>
           {hasKey === null ? 'checking' : hasKey ? 'connected' : 'demo mode'}
         </span>
+        <button type="button" className="icon" onClick={onCollapse} aria-label="Hide the AI editor" title="Hide this panel">
+          <PanelLeftClose size={15} />
+        </button>
       </header>
 
       <div className="scroll messages">

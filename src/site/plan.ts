@@ -3,13 +3,51 @@
 // document is never changed, so a choice that is ignored now (overlap with nothing to
 // overlap, say) starts working the moment its precondition is met.
 
-import type { Section, SiteDoc } from './schema';
+import type { Block, Section } from './schema';
 import type { Resolved } from './theme';
-import type { Backdrop, LayoutKind, Size } from './vocab';
+import type { Backdrop, HeroStyle, LayoutKind, Size, Tone } from './vocab';
+
+type RowBlock = Extract<Block, { kind: 'row' }>;
+
+/**
+ * What a layout arranges. Usually one block is one item, but neighbouring rows that
+ * share a group (a price category, a day in a timetable) are laid out as a single item.
+ */
+export type Item =
+  | { kind: 'block'; block: Exclude<Block, RowBlock>; index: number; size: Size }
+  | { kind: 'rows'; group?: string; rows: { block: RowBlock; index: number }[]; index: number; size: Size };
+
+export function layoutItems(blocks: Block[]): Item[] {
+  const items: Item[] = [];
+  blocks.forEach((block, index) => {
+    if (block.kind !== 'row') return void items.push({ kind: 'block', block, index, size: block.size });
+    const last = items[items.length - 1];
+    if (last?.kind === 'rows' && (last.group ?? '') === (block.group ?? '')) last.rows.push({ block, index });
+    else items.push({ kind: 'rows', group: block.group, rows: [{ block, index }], index, size: block.size });
+  });
+  return items;
+}
+
+export const itemKind = (item: Item) => (item.kind === 'rows' ? 'rows' : item.block.kind);
 
 export type EffectiveEdge = 'none' | 'divider' | 'rule' | 'overlap' | 'fade';
 
+/**
+ * The hero style that will actually be drawn. A style that needs something the section
+ * does not have (a picture, a short heading) falls back to the nearest one that works.
+ */
+export function heroStyle(s: Section): { style: HeroStyle; note?: string } {
+  if (s.type !== 'hero' || s.hero === 'standard') return { style: 'standard' };
+  const heading = (s.intro.heading ?? '').replace(/\*/g, '');
+  if (!heading) return { style: 'standard', note: 'This hero style needs a heading.' };
+  if (s.hero !== 'ticker' && !s.media) return { style: 'standard', note: 'This hero style needs a section picture.' };
+  if (s.hero === 'wordmark' && heading.length > 22) return { style: 'overlap', note: 'Wordmark suits one or two words. Showing the overlap style for this longer heading.' };
+  return { style: s.hero };
+}
+
 export type Effective = {
+  /** How the first screen is composed. Always "standard" for sections that are not heroes. */
+  hero: HeroStyle;
   layout: LayoutKind;
   cols: number;
   edge: EffectiveEdge;
@@ -27,40 +65,50 @@ export type Effective = {
   notes: string[];
 };
 
-export function planSections(doc: SiteDoc, theme: Resolved): Effective[] {
-  const { sections } = doc;
-  const isCover = (s: Section) => s.backdrop === 'media' && !!s.media;
+export function planSections(sections: Section[], theme: Resolved, footerTone: Tone): Effective[] {
+  // The picture fills the whole section behind the text: asked for directly, or implied by the ticker style.
+  const isCover = (s: Section) => {
+    const hero = heroStyle(s).style;
+    if (hero === 'ticker') return !!s.media;
+    return hero === 'standard' && s.backdrop === 'media' && !!s.media;
+  };
   const bgOf = (i: number) => {
     const s = sections[i];
-    if (!s) return theme.tones[doc.footer.tone].bg;
+    if (!s) return theme.tones[footerTone].bg;
     return isCover(s) ? theme.cover.bg : theme.tones[s.tone].bg;
   };
 
   return sections.map((s, i) => {
     const notes: string[] = [];
-    const n = s.blocks.length;
+    const items = layoutItems(s.blocks);
+    const n = items.length;
     const cover = isCover(s);
     const mediaInFlow = !!s.media && !cover;
     const bg = bgOf(i);
     const nextBg = bgOf(i + 1);
     const nextCover = !!sections[i + 1] && isCover(sections[i + 1]);
 
-    let backdrop: Backdrop = s.backdrop;
+    const { style: hero, note: heroNote } = heroStyle(s);
+    if (heroNote) notes.push(heroNote);
+
+    let backdrop: Backdrop = cover ? 'media' : s.backdrop;
     if (backdrop === 'media' && !cover) {
       backdrop = 'none';
-      notes.push('Photo backdrop needs a section image.');
+      if (hero === 'standard') notes.push('Photo backdrop needs a section image.');
     }
     if (backdrop === 'motif' && theme.traits.motif === 'none') backdrop = 'glow';
 
     let layout: LayoutKind = s.layout.kind;
-    if (layout === 'split' && !mediaInFlow && n === 0) layout = 'stack';
+    // A composed hero places its own picture; its blocks sit under the copy like a split's.
+    if (hero !== 'standard') layout = 'split';
+    if (hero === 'standard' && layout === 'split' && !mediaInFlow && n === 0) layout = 'stack';
     if ((layout === 'bento' || layout === 'marquee') && n < 3) {
       notes.push(`${layout === 'bento' ? 'Bento' : 'Marquee'} needs at least 3 blocks, showing a grid.`);
       layout = 'grid';
     }
     if (layout === 'grid' && n === 0) layout = 'stack';
 
-    const allOf = (kinds: string[]) => n > 0 && s.blocks.every((b) => kinds.includes(b.kind));
+    const allOf = (kinds: string[]) => n > 0 && items.every((it) => kinds.includes(itemKind(it)));
     let cols = s.layout.columns;
     if (layout === 'grid') {
       cols = Math.min(cols, Math.max(n, 1));
@@ -69,7 +117,7 @@ export function planSections(doc: SiteDoc, theme: Resolved): Effective[] {
     } else if (layout === 'bento') {
       cols = Math.max(3, cols);
     } else if (layout === 'split') {
-      if (mediaInFlow) cols = allOf(['stat', 'logo']) ? Math.min(n, 3) : 1;
+      if (mediaInFlow || hero !== 'standard') cols = allOf(['stat', 'logo']) ? Math.min(n, 3) : 1;
       // Beside the intro, blocks read as a list unless two columns were asked for explicitly.
       else cols = cols === 2 && n >= 4 ? 2 : 1;
     } else {
@@ -78,6 +126,8 @@ export function planSections(doc: SiteDoc, theme: Resolved): Effective[] {
 
     let edge: EffectiveEdge = s.edge;
     let overlapTarget: Effective['overlapTarget'] = null;
+    // These styles already end in something that runs edge to edge (a link bar, a moving line, a picture).
+    if (hero === 'wordmark' || hero === 'ticker' || hero === 'edge') edge = 'none';
     if (edge !== 'none' && nextCover) {
       edge = 'none';
       notes.push('Edges are skipped before a photo-backed section.');
@@ -100,6 +150,7 @@ export function planSections(doc: SiteDoc, theme: Resolved): Effective[] {
     if (edge === 'fade' && bg === nextBg) edge = 'none';
 
     return {
+      hero,
       layout,
       cols,
       edge,

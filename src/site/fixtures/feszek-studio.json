@@ -1,0 +1,877 @@
+{
+  "version": 2,
+  "meta": {
+    "name": "Fészek Stúdió",
+    "description": "Lakberendező és belsőépítészeti stúdió Budapesten: teljes tervezés a koncepciótól a kivitelezés felügyeletéig.",
+    "language": "hu",
+    "kind": "creative"
+  },
+  "business": {
+    "phone": "+36 30 765 4321",
+    "email": "hello@feszekstudio.example",
+    "socials": [],
+    "rating": {
+      "value": "5,0",
+      "count": "41",
+      "source": "Google"
+    },
+    "locations": [
+      {
+        "id": "main",
+        "name": "Fészek Stúdió",
+        "address": "1024 Budapest, Margit körút 15.",
+        "phone": "+36 30 765 4321",
+        "hours": [
+          {
+            "days": "Hétfő–péntek",
+            "time": "9:00–17:00"
+          }
+        ]
+      }
+    ],
+    "areas": []
+  },
+  "theme": {
+    "preset": "editorial",
+    "palette": {
+      "bg": "#faf6f0",
+      "surface": "#f1ebe1",
+      "ink": "#2b2622",
+      "accent": "#b5573a",
+      "accent2": "#7a8c6e"
+    },
+    "fonts": {
+      "display": "fraunces",
+      "body": "dm-sans"
+    },
+    "radius": "md",
+    "density": "airy",
+    "scale": "dramatic",
+    "traits": {
+      "card": "tinted",
+      "button": "solid",
+      "emphasis": "italic",
+      "divider": "curve",
+      "motif": "grain",
+      "image": "arch",
+      "eyebrow": "rule",
+      "caps": false
+    },
+    "imageStyle": "warm natural light interior photography, soft neutral palette with terracotta and sage accents, calm and uncluttered, editorial look"
+  },
+  "nav": {
+    "style": "bar",
+    "brand": "Fészek Stúdió",
+    "links": [],
+    "cta": {
+      "label": "Ajánlatkérés",
+      "href": "/kapcsolat",
+      "kind": "primary"
+    }
+  },
+  "footer": {
+    "style": "columns",
+    "tone": "inverse",
+    "tagline": "Letisztult, meleg otthonok Budapesten.",
+    "columns": [],
+    "note": "Hétfő–péntek 9–17"
+  },
+  "pages": [
+    {
+      "id": "home",
+      "title": "Home",
+      "role": "home",
+      "menu": true,
+      "sections": [
+        {
+          "id": "hero",
+          "type": "hero",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "lg",
+          "hero": "overlap",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Lakberendező stúdió, Budapest",
+            "heading": "Otthon, ami *igazán* a tiétek",
+            "body": "Nóra és Dani a koncepciótól a kivitelezés felügyeletéig tervezi meg a lakásotokat vagy házatokat.",
+            "actions": [
+              {
+                "label": "Kérjetek ajánlatot",
+                "href": "/kapcsolat",
+                "kind": "primary"
+              },
+              {
+                "label": "Csomagjaink",
+                "href": "/csomagok",
+                "kind": "secondary"
+              }
+            ],
+            "align": "start"
+          },
+          "media": {
+            "prompt": "bright warm living room with linen sofa, oak shelving and terracotta vase, tall composition",
+            "alt": "Letisztult, meleg nappali a stúdió tervei alapján",
+            "aspect": "portrait"
+          },
+          "blocks": []
+        },
+        {
+          "id": "numbers",
+          "type": "stats",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "hero": "standard",
+          "layout": {
+            "kind": "split",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Hatvan otthon, egy szemlélet",
+            "body": "Minden projektet ugyanazzal az igénnyel indítunk: legyen szép, és legyen jó benne élni.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "stat",
+              "size": "sm",
+              "value": "60",
+              "label": "befejezett otthon"
+            },
+            {
+              "kind": "stat",
+              "size": "sm",
+              "value": "2",
+              "label": "tervező, egy kézben a projekt"
+            },
+            {
+              "kind": "rating",
+              "size": "sm"
+            }
+          ]
+        },
+        {
+          "id": "process",
+          "type": "steps",
+          "tone": "base",
+          "edge": "divider",
+          "backdrop": "none",
+          "pad": "lg",
+          "hero": "standard",
+          "layout": {
+            "kind": "grid",
+            "columns": 4,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Folyamat",
+            "heading": "Az ötlettől a *beköltözésig*",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Konzultáció",
+              "body": "Megismerjük az igényeiteket, a teret és a költségkeretet."
+            },
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Koncepció",
+              "body": "Hangulat, színek, anyagok és térelrendezés."
+            },
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Látványterv",
+              "body": "Fotórealisztikus képeken látjátok a végeredményt."
+            },
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Kivitelezés felügyelete",
+              "body": "Ott vagyunk, amíg minden a helyére nem kerül."
+            }
+          ]
+        },
+        {
+          "id": "work",
+          "type": "gallery",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "bento",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Munkáink",
+            "heading": "Válogatás elkészült otthonainkból",
+            "actions": [
+              {
+                "label": "Összes munka",
+                "href": "/munkaink",
+                "kind": "secondary"
+              }
+            ],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "image",
+              "size": "feature",
+              "image": {
+                "prompt": "family house open kitchen and dining area, oak table, matte cabinets, warm daylight",
+                "alt": "Családi ház konyha és étkező",
+                "aspect": "square"
+              }
+            },
+            {
+              "kind": "image",
+              "size": "sm",
+              "image": {
+                "prompt": "bedroom with linen bedding and wooden bedside table, soft light",
+                "alt": "Hálószoba természetes anyagokkal",
+                "aspect": "square"
+              }
+            },
+            {
+              "kind": "image",
+              "size": "sm",
+              "image": {
+                "prompt": "compact bathroom with terracotta tiles and oak vanity",
+                "alt": "Fürdőszoba terrakotta csempével",
+                "aspect": "square"
+              }
+            },
+            {
+              "kind": "card",
+              "size": "wide",
+              "title": "Teljes tér, egy koncepció",
+              "body": "A bútortól a világításig minden összhangban van."
+            }
+          ]
+        },
+        {
+          "id": "reviews",
+          "type": "testimonials",
+          "tone": "inverse",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "grid",
+            "columns": 2,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Vélemények",
+            "heading": "Amit az ügyfeleink mondanak",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "quote",
+              "size": "sm",
+              "text": "Végig tudtuk, mi történik és mennyibe kerül. A lakás pont olyan lett, mint a látványterven.",
+              "author": "Kovács Anna",
+              "role": "Lakástulajdonos, Budapest",
+              "stars": 5,
+              "source": "Google"
+            },
+            {
+              "kind": "quote",
+              "size": "sm",
+              "text": "Nóra és Dani a kivitelezőkkel is elintézett mindent. Nyugodt szívvel költöztünk be.",
+              "author": "Szabó Gergő",
+              "role": "Családi ház, Budaörs",
+              "stars": 5,
+              "source": "Google"
+            }
+          ]
+        },
+        {
+          "id": "homecta",
+          "type": "cta",
+          "tone": "accent",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Meséljetek az álomotthonról",
+            "body": "Hétfőtől péntekig 9 és 17 óra között hívhattok, vagy írjatok nekünk.",
+            "actions": [
+              {
+                "label": "Hívás: +36 30 765 4321",
+                "href": "tel:+36307654321",
+                "kind": "primary"
+              },
+              {
+                "label": "Ajánlatkérés",
+                "href": "/kapcsolat",
+                "kind": "secondary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    },
+    {
+      "id": "munkaink",
+      "title": "Munkáink",
+      "role": "proof",
+      "menu": true,
+      "sections": [
+        {
+          "id": "worktitle",
+          "type": "story",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Munkáink",
+            "body": "Lakások és családi házak, ahol a terv valóra vált.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": []
+        },
+        {
+          "id": "portfolio",
+          "type": "gallery",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "bento",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "image",
+              "size": "feature",
+              "image": {
+                "prompt": "renovated city apartment living room with built-in shelving and warm wood floor",
+                "alt": "Felújított belvárosi lakás nappalija",
+                "aspect": "square"
+              },
+              "caption": "Belvárosi lakás, 82 m²"
+            },
+            {
+              "kind": "image",
+              "size": "sm",
+              "image": {
+                "prompt": "hallway with custom oak wardrobe and arched mirror",
+                "alt": "Előszoba egyedi gardróbbal",
+                "aspect": "square"
+              }
+            },
+            {
+              "kind": "image",
+              "size": "sm",
+              "image": {
+                "prompt": "children's room with sage green wall and wooden bed",
+                "alt": "Gyerekszoba zsályazöld fallal",
+                "aspect": "square"
+              }
+            },
+            {
+              "kind": "card",
+              "size": "wide",
+              "title": "60 otthon",
+              "body": "Mindegyik más, mindegyik az ott lakókról szól."
+            }
+          ]
+        },
+        {
+          "id": "workcta",
+          "type": "cta",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "hero": "standard",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Ti jöttök következőnek?",
+            "actions": [
+              {
+                "label": "Ajánlatkérés",
+                "href": "/kapcsolat",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    },
+    {
+      "id": "csomagok",
+      "title": "Csomagok",
+      "role": "offer",
+      "menu": true,
+      "sections": [
+        {
+          "id": "pkgtitle",
+          "type": "story",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Csomagok",
+            "body": "Válasszatok annyi segítséget, amennyire szükségetek van.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": []
+        },
+        {
+          "id": "plans",
+          "type": "pricing",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "grid",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "plan",
+              "size": "sm",
+              "name": "Konzultáció",
+              "price": "Egyeztetés szerint",
+              "blurb": "Szakmai irány a saját terveitekhez.",
+              "features": [
+                "Helyszíni vagy online beszélgetés",
+                "Térelrendezési tanácsok",
+                "Színek és anyagok ajánlása"
+              ],
+              "cta": "Konzultációt kérek",
+              "featured": false
+            },
+            {
+              "kind": "plan",
+              "size": "sm",
+              "name": "Látványterv",
+              "price": "Egyeztetés szerint",
+              "blurb": "Lássátok, mielőtt megépül.",
+              "features": [
+                "Koncepció és hangulattábla",
+                "Fotórealisztikus látványképek",
+                "Bútor- és anyagjavaslatok"
+              ],
+              "cta": "Látványtervet kérek",
+              "featured": true
+            },
+            {
+              "kind": "plan",
+              "size": "sm",
+              "name": "Teljes tervezés",
+              "price": "Egyeztetés szerint",
+              "blurb": "A koncepciótól a kulcsig.",
+              "features": [
+                "Kiviteli tervek",
+                "Beszerzési lista",
+                "Kivitelezés felügyelete"
+              ],
+              "cta": "Ajánlatot kérek",
+              "featured": false
+            }
+          ]
+        },
+        {
+          "id": "pkgfaq",
+          "type": "faq",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "narrow"
+          },
+          "intro": {
+            "heading": "Gyakori kérdések",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "qa",
+              "size": "sm",
+              "q": "Hogyan számoljuk az árat?",
+              "a": "Az első konzultáció után a lakás mérete és a feladat alapján adunk fix ajánlatot."
+            },
+            {
+              "kind": "qa",
+              "size": "sm",
+              "q": "Vállaltok házat is?",
+              "a": "Igen, lakásokat és családi házakat egyaránt."
+            }
+          ]
+        },
+        {
+          "id": "pkgcta",
+          "type": "cta",
+          "tone": "accent",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "hero": "standard",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Nem tudjátok, melyik illik hozzátok?",
+            "actions": [
+              {
+                "label": "Beszéljük meg",
+                "href": "/kapcsolat",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    },
+    {
+      "id": "rolunk",
+      "title": "Rólunk",
+      "role": "people",
+      "menu": true,
+      "sections": [
+        {
+          "id": "abouttitle",
+          "type": "story",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Nóra és Dani",
+            "body": "Két tervező, aki végig a projektetek mellett marad.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": []
+        },
+        {
+          "id": "designers",
+          "type": "team",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "grid",
+            "columns": 2,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Nóra",
+              "role": "Belsőépítész, társalapító",
+              "bio": "Térben és fényben gondolkodik. A koncepciót és az anyagválasztást vezeti.",
+              "image": {
+                "prompt": "portrait of a woman interior designer in a bright studio, natural light",
+                "alt": "Nóra, belsőépítész",
+                "aspect": "portrait"
+              }
+            },
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Dani",
+              "role": "Belsőépítész, társalapító",
+              "bio": "A részletek és a kivitelezés embere. Ő felügyeli, hogy a terv szerint épüljön.",
+              "image": {
+                "prompt": "portrait of a man interior designer with a sketchbook in a bright studio",
+                "alt": "Dani, belsőépítész",
+                "aspect": "portrait"
+              }
+            }
+          ]
+        },
+        {
+          "id": "method",
+          "type": "steps",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "split",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Így dolgozunk",
+            "body": "Tiszta árak, rendszeres egyeztetés, nincs meglepetés.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Hallgatunk",
+              "body": "Először az életmódotokat értjük meg."
+            },
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Tervezünk",
+              "body": "Letisztult, meleg terek, tartós anyagokkal."
+            },
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Végigkísérünk",
+              "body": "A kivitelezőkkel mi egyeztetünk."
+            }
+          ]
+        },
+        {
+          "id": "aboutcta",
+          "type": "cta",
+          "tone": "accent",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "hero": "standard",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Ismerkedjünk meg",
+            "actions": [
+              {
+                "label": "Írjatok nekünk",
+                "href": "/kapcsolat",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    },
+    {
+      "id": "kapcsolat",
+      "title": "Kapcsolat",
+      "role": "contact",
+      "menu": true,
+      "sections": [
+        {
+          "id": "contacttitle",
+          "type": "story",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Kapcsolat",
+            "body": "Írjatok, és egy munkanapon belül válaszolunk.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": []
+        },
+        {
+          "id": "enquiry",
+          "type": "contact",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "hero": "standard",
+          "layout": {
+            "kind": "grid",
+            "columns": 2,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "form",
+              "size": "sm",
+              "title": "Ajánlatkérés",
+              "fields": [
+                "name",
+                "email",
+                "phone",
+                "date",
+                "message"
+              ],
+              "submit": "Elküldöm",
+              "note": "Írjatok a lakásról vagy házról, a költségkeretről és az időzítésről."
+            },
+            {
+              "kind": "contact",
+              "size": "sm",
+              "location": "main",
+              "map": true
+            }
+          ]
+        },
+        {
+          "id": "contactcta",
+          "type": "cta",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "hero": "standard",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Inkább beszélnétek?",
+            "actions": [
+              {
+                "label": "Hívás: +36 30 765 4321",
+                "href": "tel:+36307654321",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    }
+  ]
+}

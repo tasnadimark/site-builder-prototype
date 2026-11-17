@@ -2,7 +2,8 @@
 
 import { createContext, useContext, type ReactNode } from 'react';
 import type { Effective } from '../plan';
-import type { ImageRef, Section } from '../schema';
+import type { ImageRef, Section, SiteDoc } from '../schema';
+import type { Strings } from '../strings';
 import type { Resolved } from '../theme';
 
 export type Path = (string | number)[];
@@ -14,6 +15,8 @@ export type EditApi = {
   select(sectionId: string | null, block?: number): void;
   /** Returns false when the edit was rejected, so the text can snap back. */
   setText(path: Path, value: string): boolean;
+  /** Any other operation an on-canvas control needs. Returns whether it was applied. */
+  run(op: unknown): boolean;
   sectionChrome?(section: Section, index: number, total: number, eff: Effective): ReactNode;
 };
 
@@ -26,7 +29,21 @@ export type ImageApi = {
   subscribe(cb: () => void): () => void;
 };
 
-export type SiteContext = { theme: Resolved; edit: EditApi | null; images: ImageApi | null };
+export type SiteContext = {
+  doc: SiteDoc;
+  theme: Resolved;
+  /** Built-in labels in the site's language. */
+  t: Strings;
+  edit: EditApi | null;
+  images: ImageApi | null;
+  /** Go to another page of the site. */
+  navigate(pageId: string): void;
+  /**
+   * Each person's portrait, by name. Someone introduced with a picture on one page keeps
+   * it everywhere else they are mentioned, so a team never has some faces and some blanks.
+   */
+  portraits: Map<string, ImageRef>;
+};
 
 export const SiteCtx = createContext<SiteContext | null>(null);
 

@@ -10,6 +10,13 @@ export const BACKDROPS = ['none', 'motif', 'glow', 'media'] as const;
 export const PADS = ['sm', 'md', 'lg'] as const;
 
 export const LAYOUTS = ['stack', 'split', 'grid', 'bento', 'marquee'] as const;
+
+/**
+ * Ways to compose the first screen of a site. Every style arranges the same things
+ * (heading, body, buttons, picture, blocks), so switching style never loses content.
+ * "standard" means "use the section's layout as usual".
+ */
+export const HERO_STYLES = ['standard', 'overlap', 'wordmark', 'ticker', 'edge'] as const;
 export const RATIOS = ['even', 'media', 'text'] as const;
 export const WIDTHS = ['narrow', 'normal', 'wide'] as const;
 export const ALIGNS = ['start', 'center', 'split'] as const;
@@ -26,9 +33,28 @@ export const SECTION_TYPES = [
   'faq',
   'gallery',
   'cta',
+  'prices',
+  'timetable',
+  'team',
+  'contact',
 ] as const;
 
-export const BLOCK_KINDS = ['card', 'stat', 'quote', 'image', 'plan', 'qa', 'step', 'logo'] as const;
+export const BLOCK_KINDS = [
+  'card', 'stat', 'quote', 'image', 'plan', 'qa', 'step', 'logo',
+  // Added for local service businesses. Each is general on purpose: a "row" is a price,
+  // a menu line, a class in a timetable or a line of opening hours.
+  'row', 'person', 'contact', 'form', 'rating', 'check',
+] as const;
+
+/**
+ * What a page is for. Every site is built from these roles; the kind of business decides
+ * which of them get a page of their own and which stay a section on Home.
+ */
+export const PAGE_ROLES = ['home', 'offer', 'approach', 'proof', 'people', 'contact', 'location'] as const;
+
+export const LANGUAGES = ['en', 'hu'] as const;
+export const SOCIALS = ['facebook', 'instagram', 'tiktok', 'youtube', 'linkedin'] as const;
+export const FORM_FIELDS = ['name', 'email', 'phone', 'service', 'date', 'message'] as const;
 export const SIZES = ['sm', 'wide', 'tall', 'feature'] as const;
 export const ASPECTS = ['wide', 'landscape', 'square', 'portrait'] as const;
 
@@ -70,3 +96,7 @@ export type Aspect = (typeof ASPECTS)[number];
 export type IconName = (typeof ICONS)[number];
 export type FontId = (typeof FONT_IDS)[number];
 export type Divider = (typeof DIVIDERS)[number];
+export type PageRole = (typeof PAGE_ROLES)[number];
+export type HeroStyle = (typeof HERO_STYLES)[number];
+export type Language = (typeof LANGUAGES)[number];
+export type FormField = (typeof FORM_FIELDS)[number];
