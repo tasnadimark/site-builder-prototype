@@ -3,9 +3,32 @@
 // document is never changed, so a choice that is ignored now (overlap with nothing to
 // overlap, say) starts working the moment its precondition is met.
 
-import type { Section, SiteDoc } from './schema';
+import type { Block, Section } from './schema';
 import type { Resolved } from './theme';
-import type { Backdrop, LayoutKind, Size } from './vocab';
+import type { Backdrop, LayoutKind, Size, Tone } from './vocab';
+
+type RowBlock = Extract<Block, { kind: 'row' }>;
+
+/**
+ * What a layout arranges. Usually one block is one item, but neighbouring rows that
+ * share a group (a price category, a day in a timetable) are laid out as a single item.
+ */
+export type Item =
+  | { kind: 'block'; block: Exclude<Block, RowBlock>; index: number; size: Size }
+  | { kind: 'rows'; group?: string; rows: { block: RowBlock; index: number }[]; index: number; size: Size };
+
+export function layoutItems(blocks: Block[]): Item[] {
+  const items: Item[] = [];
+  blocks.forEach((block, index) => {
+    if (block.kind !== 'row') return void items.push({ kind: 'block', block, index, size: block.size });
+    const last = items[items.length - 1];
+    if (last?.kind === 'rows' && (last.group ?? '') === (block.group ?? '')) last.rows.push({ block, index });
+    else items.push({ kind: 'rows', group: block.group, rows: [{ block, index }], index, size: block.size });
+  });
+  return items;
+}
+
+export const itemKind = (item: Item) => (item.kind === 'rows' ? 'rows' : item.block.kind);
 
 export type EffectiveEdge = 'none' | 'divider' | 'rule' | 'overlap' | 'fade';
 
@@ -27,18 +50,18 @@ export type Effective = {
   notes: string[];
 };
 
-export function planSections(doc: SiteDoc, theme: Resolved): Effective[] {
-  const { sections } = doc;
+export function planSections(sections: Section[], theme: Resolved, footerTone: Tone): Effective[] {
   const isCover = (s: Section) => s.backdrop === 'media' && !!s.media;
   const bgOf = (i: number) => {
     const s = sections[i];
-    if (!s) return theme.tones[doc.footer.tone].bg;
+    if (!s) return theme.tones[footerTone].bg;
     return isCover(s) ? theme.cover.bg : theme.tones[s.tone].bg;
   };
 
   return sections.map((s, i) => {
     const notes: string[] = [];
-    const n = s.blocks.length;
+    const items = layoutItems(s.blocks);
+    const n = items.length;
     const cover = isCover(s);
     const mediaInFlow = !!s.media && !cover;
     const bg = bgOf(i);
@@ -60,7 +83,7 @@ export function planSections(doc: SiteDoc, theme: Resolved): Effective[] {
     }
     if (layout === 'grid' && n === 0) layout = 'stack';
 
-    const allOf = (kinds: string[]) => n > 0 && s.blocks.every((b) => kinds.includes(b.kind));
+    const allOf = (kinds: string[]) => n > 0 && items.every((it) => kinds.includes(itemKind(it)));
     let cols = s.layout.columns;
     if (layout === 'grid') {
       cols = Math.min(cols, Math.max(n, 1));

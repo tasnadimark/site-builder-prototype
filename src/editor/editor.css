@@ -212,6 +212,78 @@ body {
   color: #17663a;
 }
 
+/* ---------------------------------------------------------------- page bar */
+
+.center {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+}
+.pagebar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  overflow-x: auto;
+  background: var(--ui-panel);
+  border-bottom: 1px solid var(--ui-line);
+  scrollbar-width: none;
+}
+.pagebar button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: none;
+  color: var(--ui-soft);
+  font-weight: 550;
+  white-space: nowrap;
+}
+.pagebar button:hover {
+  color: var(--ui-ink);
+}
+.pagebar button[data-on] {
+  border-color: var(--ui-line);
+  background: #fff;
+  color: var(--ui-ink);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+.pagebar button small {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+.pagebar button i {
+  min-width: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #e9e6df;
+  font-size: 10.5px;
+  font-style: normal;
+  line-height: 16px;
+  text-align: center;
+  color: var(--ui-soft);
+}
+.pagebar button.legal {
+  font-weight: 500;
+  font-size: 12px;
+}
+.pagebar select {
+  flex: none;
+  width: auto;
+  height: 28px;
+  padding: 0 6px;
+  border-color: transparent;
+  background: none;
+  color: var(--ui-blue);
+  font-weight: 550;
+}
+
 /* ---------------------------------------------------------------- canvas */
 
 .canvas {
@@ -321,6 +393,10 @@ body {
 }
 .site[data-editable] [data-text]:focus {
   outline: 2px solid #2f5bea;
+}
+/* a map would swallow clicks and scrolling meant for the editor */
+.site[data-editable] .map iframe {
+  pointer-events: none;
 }
 .site[data-editable] [data-block][data-selected] {
   outline: 2px solid #2f5bea;
@@ -504,6 +580,7 @@ body {
   font-size: 12px;
 }
 .app select,
+.app input[type='text'],
 .app textarea {
   width: 100%;
   min-width: 0;
@@ -512,8 +589,44 @@ body {
   border-radius: 7px;
   background: #fff;
 }
-.app select {
+.app select,
+.app input[type='text'] {
   height: 30px;
+}
+.rowbtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+.link.danger {
+  color: #b3261e;
+}
+.link:disabled {
+  opacity: 0.35;
+  text-decoration: none;
+}
+.checks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px 10px;
+}
+.hours-edit {
+  display: grid;
+  gap: 5px;
+}
+.hours-edit > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 24px;
+  gap: 5px;
+  align-items: center;
+}
+.kind {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--ui-soft);
 }
 .inspector textarea {
   resize: vertical;

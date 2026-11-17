@@ -2,13 +2,14 @@
 
 import { Plus } from 'lucide-react';
 import { useState, type CSSProperties } from 'react';
-import { packBento, type Effective } from '../plan';
+import { itemKind, layoutItems, packBento, type Effective, type Item } from '../plan';
 import type { Block, Section } from '../schema';
 import { toneVars } from '../theme';
 import { ReadOnly, useSite, type Path } from './context';
-import { CheckIcon, Icon, Pic, Txt, cx } from './parts';
+import { CheckIcon, Icon, Pic, Stars, Txt, cx } from './parts';
 
-type BlockProps = { s: Section; b: Block; i: number; boxed: boolean; asList: boolean; stepNo: number; style?: CSSProperties };
+type Common = { 'data-block': number; 'data-kind': string; 'data-size': string; 'data-selected'?: true; style?: CSSProperties };
+type BlockProps = { s: Section; b: Exclude<Block, { kind: 'row' }>; i: number; boxed: boolean; asList: boolean; stepNo: number; style?: CSSProperties };
 
 const initials = (name: string) =>
   name
@@ -19,7 +20,7 @@ const initials = (name: string) =>
     .join('')
     .toUpperCase();
 
-function Qa({ b, base, open0, common }: { b: Extract<Block, { kind: 'qa' }>; base: Path; open0: boolean; common: object }) {
+function Qa({ b, base, open0, common }: { b: Extract<Block, { kind: 'qa' }>; base: Path; open0: boolean; common: Common }) {
   const { edit } = useSite();
   const [open, setOpen] = useState(open0);
   return (
@@ -46,11 +47,173 @@ function Qa({ b, base, open0, common }: { b: Extract<Block, { kind: 'qa' }>; bas
   );
 }
 
+/** Address, phone, hours and map for one location, all read from the business facts. */
+function Contact({ b, common }: { b: Extract<Block, { kind: 'contact' }>; common: Common }) {
+  const { doc, t, edit } = useSite();
+  const biz = doc.business;
+  const li = Math.max(0, biz.locations.findIndex((l) => l.id === b.location));
+  const loc = biz.locations[li];
+  const phone = loc?.phone ?? biz.phone;
+  const phonePath: Path = loc?.phone ? ['business', 'locations', li, 'phone'] : ['business', 'phone'];
+
+  if (!loc && !phone && !biz.email) {
+    return edit ? (
+      <div className="blk contact boxed" {...common}>
+        <p className="body">Add an address, phone number and opening hours in the Business tab and they will appear here.</p>
+      </div>
+    ) : null;
+  }
+
+  return (
+    <div className="blk contact boxed" {...common}>
+      {loc && biz.locations.length > 1 && <Txt as="h3" className="h3" value={loc.name} path={['business', 'locations', li, 'name']} />}
+      <dl className="facts">
+        {loc && (
+          <div>
+            <dt>{t.address}</dt>
+            <dd>
+              <Txt value={loc.address} path={['business', 'locations', li, 'address']} />
+              <a className="facts-link" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.address)}`} target="_blank" rel="noreferrer">
+                {t.directions}
+              </a>
+            </dd>
+          </div>
+        )}
+        {phone && (
+          <div>
+            <dt>{t.phone}</dt>
+            <dd>
+              <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>
+                <Txt value={phone} path={phonePath} />
+              </a>
+            </dd>
+          </div>
+        )}
+        {biz.email && (
+          <div>
+            <dt>{t.email}</dt>
+            <dd>
+              <a href={`mailto:${biz.email}`}>
+                <Txt value={biz.email} path={['business', 'email']} />
+              </a>
+            </dd>
+          </div>
+        )}
+        {loc && loc.hours.length > 0 && (
+          <div>
+            <dt>{t.hours}</dt>
+            <dd>
+              <ul className="hours">
+                {loc.hours.map((h, k) => (
+                  <li key={k}>
+                    <Txt value={h.days} path={['business', 'locations', li, 'hours', k, 'days']} />
+                    <Txt value={h.time} path={['business', 'locations', li, 'hours', k, 'time']} />
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        )}
+      </dl>
+      {b.map && loc && (
+        <div className="map">
+          <span className="map-fallback">{loc.address}</span>
+          <iframe title={loc.name} src={`https://www.google.com/maps?q=${encodeURIComponent(loc.address)}&output=embed`} loading="lazy" referrerPolicy="no-referrer" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** An enquiry form. It is not connected to anything yet; submitting only shows a note. */
+function Form({ b, base, common }: { b: Extract<Block, { kind: 'form' }>; base: Path; common: Common }) {
+  const { t } = useSite();
+  const [sent, setSent] = useState(false);
+  const fields = b.fields.length ? b.fields : (['name', 'email', 'message'] as const);
+  const type = { name: 'text', email: 'email', phone: 'tel', service: 'text', date: 'date', message: 'text' } as const;
+  return (
+    <form
+      className="blk form boxed"
+      {...common}
+      onSubmit={(e) => {
+        e.preventDefault();
+        setSent(true);
+      }}
+    >
+      {b.title && <Txt as="h3" className="h3" value={b.title} path={[...base, 'title']} />}
+      <div className="form-fields">
+        {fields.map((f) => (
+          <label key={f} data-field={f}>
+            <span>{t.field[f]}</span>
+            {f === 'message' ? <textarea rows={4} name={f} /> : <input type={type[f]} name={f} />}
+          </label>
+        ))}
+      </div>
+      <button type="submit" className="btn btn-primary">
+        {b.submit ?? t.send}
+      </button>
+      {sent && (
+        <p className="form-sent" role="status">
+          {t.sent}
+        </p>
+      )}
+      {b.note && <Txt as="p" className="form-note" value={b.note} path={[...base, 'note']} />}
+    </form>
+  );
+}
+
+function Rating({ common }: { common: Common }) {
+  const { doc, t, edit } = useSite();
+  const r = doc.business.rating;
+  if (!r) return edit ? <p className="blk body" {...common}>Add a review score in the Business tab to show it here.</p> : null;
+  return (
+    <div className="blk rating" {...common}>
+      <Stars value={parseFloat(r.value.replace(',', '.')) || 5} />
+      <b>{r.value}</b>
+      <span>
+        {r.count ? `${r.count} ${t.reviews} · ` : ''}
+        {r.source}
+      </span>
+    </div>
+  );
+}
+
+/** A run of rows under one heading: a price group, a menu course, a day of classes. */
+function RowGroup({ s, item, boxed, selected, style }: { s: Section; item: Extract<Item, { kind: 'rows' }>; boxed: boolean; selected?: number; style?: CSSProperties }) {
+  const { edit } = useSite();
+  return (
+    <div className={cx('blk rowgroup', boxed && 'boxed')} data-kind="rows" data-size={item.size} style={style}>
+      {item.group && (
+        <Txt as="h3" className="h3 rowgroup-title" value={item.group} commit={(v) => !!edit?.run({ op: 'regroup', id: s.id, from: item.group, to: v })} />
+      )}
+      <ul className="rows">
+        {item.rows.map(({ block: b, index: i }) => {
+          const base: Path = ['section', s.id, 'blocks', i];
+          return (
+            <li key={i} className="row" data-block={i} data-selected={selected === i || undefined}>
+              <span className="row-main">
+                <Txt className="row-title" value={b.title} path={[...base, 'title']} />
+                {b.detail && <Txt className="row-detail" value={b.detail} path={[...base, 'detail']} />}
+              </span>
+              {b.value && (
+                <>
+                  <span className="row-dots" aria-hidden />
+                  <Txt className="row-value" value={b.value} path={[...base, 'value']} />
+                </>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
 export function BlockView({ s, b, i, boxed, asList, stepNo, style }: BlockProps) {
-  const { edit, theme } = useSite();
+  const { edit, theme, t } = useSite();
   const base: Path = ['section', s.id, 'blocks', i];
   const selected = edit?.selection?.sectionId === s.id && edit.selection.block === i;
-  const common = { 'data-block': i, 'data-kind': b.kind, 'data-size': b.size, 'data-selected': selected || undefined, style };
+  const common: Common = { 'data-block': i, 'data-kind': b.kind, 'data-size': b.size, 'data-selected': selected || undefined, style };
 
   switch (b.kind) {
     case 'card':
@@ -82,6 +245,7 @@ export function BlockView({ s, b, i, boxed, asList, stepNo, style }: BlockProps)
       return (
         <figure className="blk quote boxed" {...common}>
           <blockquote>
+            {b.stars && <Stars value={b.stars} />}
             <Txt as="p" className="quote-text" value={b.text} path={[...base, 'text']} />
           </blockquote>
           <figcaption>
@@ -90,7 +254,13 @@ export function BlockView({ s, b, i, boxed, asList, stepNo, style }: BlockProps)
             </span>
             <span>
               <Txt className="quote-author" value={b.author} path={[...base, 'author']} />
-              {b.role && <Txt className="quote-role" value={b.role} path={[...base, 'role']} />}
+              {(b.role || b.source) && (
+                <span className="quote-role">
+                  {b.role && <Txt value={b.role} path={[...base, 'role']} />}
+                  {b.role && b.source ? ' · ' : ''}
+                  {b.source}
+                </span>
+              )}
             </span>
           </figcaption>
         </figure>
@@ -112,7 +282,7 @@ export function BlockView({ s, b, i, boxed, asList, stepNo, style }: BlockProps)
         <article className="blk plan boxed" {...common} data-featured={b.featured || undefined} style={planStyle}>
           <div className="plan-top">
             <Txt as="h3" className="plan-name" value={b.name} path={[...base, 'name']} />
-            {b.featured && <span className="plan-badge">Most popular</span>}
+            {b.featured && <span className="plan-badge">{t.mostPopular}</span>}
           </div>
           <p className="plan-price">
             <Txt className="price" value={b.price} path={[...base, 'price']} />
@@ -162,28 +332,72 @@ export function BlockView({ s, b, i, boxed, asList, stepNo, style }: BlockProps)
           <Txt className="logo-word" value={b.name} path={[...base, 'name']} />
         </div>
       );
+
+    case 'person':
+      return (
+        <article className="blk person" {...common}>
+          {b.image ? (
+            <Pic image={b.image} className="person-pic" />
+          ) : (
+            <div className="person-pic person-initials" aria-hidden>
+              {initials(b.name)}
+            </div>
+          )}
+          <div className="person-body">
+            <Txt as="h3" className="h3" value={b.name} path={[...base, 'name']} />
+            {b.role && <Txt className="person-role" value={b.role} path={[...base, 'role']} />}
+            {b.bio && <Txt as="p" className="body" value={b.bio} path={[...base, 'bio']} />}
+          </div>
+        </article>
+      );
+
+    case 'contact':
+      return <Contact b={b} common={common} />;
+
+    case 'form':
+      return <Form b={b} base={base} common={common} />;
+
+    case 'rating':
+      return <Rating common={common} />;
+
+    case 'check':
+      return (
+        <div className="blk check" {...common}>
+          <CheckIcon size={18} strokeWidth={2.4} aria-hidden />
+          <span>
+            <Txt className="check-label" value={b.label} path={[...base, 'label']} />
+            {b.detail && <Txt className="check-detail" value={b.detail} path={[...base, 'detail']} />}
+          </span>
+        </div>
+      );
   }
 }
 
 /** Lays a section's blocks out according to the planned layout. */
 export function BlocksView({ s, e, layout, cols, overlap }: { s: Section; e: Effective; layout: Effective['layout']; cols: number; overlap: boolean }) {
-  const { theme } = useSite();
-  const n = s.blocks.length;
+  const { theme, edit } = useSite();
+  const items = layoutItems(s.blocks);
+  const n = items.length;
   if (!n) return null;
 
-  const kinds = new Set(s.blocks.map((b) => b.kind));
+  const kinds = new Set(items.map(itemKind));
   const kindAttr = kinds.size === 1 ? [...kinds][0] : 'mixed';
   // Cards without a surface cannot form bento cells or straddle two tones.
   const card = e.solid && theme.traits.card === 'plain' ? 'tinted' : theme.traits.card;
   const asList = layout === 'stack' || (layout === 'split' && cols === 1);
+  // Several groups of rows side by side read as panels; a single list does not need a box.
+  const boxRows = e.solid || (!asList && n > 1);
+  const selected = edit?.selection?.sectionId === s.id ? edit.selection.block : undefined;
 
-  let stepNo = 0;
-  const render = (cells?: { lg: CSSProperties[]; md: CSSProperties[] }) =>
-    s.blocks.map((b, i) => {
-      if (b.kind === 'step') stepNo++;
-      const style = cells ? ({ ...cells.lg[i], ...cells.md[i] } as CSSProperties) : undefined;
-      return <BlockView key={i} s={s} b={b} i={i} boxed={e.solid} asList={asList} stepNo={stepNo} style={style} />;
+  const render = (cells?: { lg: CSSProperties[]; md: CSSProperties[] }) => {
+    let stepNo = 0;
+    return items.map((item, k) => {
+      const style = cells ? ({ ...cells.lg[k], ...cells.md[k] } as CSSProperties) : undefined;
+      if (item.kind === 'rows') return <RowGroup key={`rows-${item.index}`} s={s} item={item} boxed={boxRows} selected={selected} style={style} />;
+      if (item.block.kind === 'step') stepNo++;
+      return <BlockView key={item.index} s={s} b={item.block} i={item.index} boxed={e.solid} asList={asList} stepNo={stepNo} style={style} />;
     });
+  };
 
   if (layout === 'marquee') {
     const dur = `${Math.max(26, n * 8)}s`;
@@ -193,7 +407,7 @@ export function BlocksView({ s, e, layout, cols, overlap }: { s: Section; e: Eff
           <div className="marquee-group">{render()}</div>
           <ReadOnly>
             <div className="marquee-group" aria-hidden inert>
-              {((stepNo = 0), render())}
+              {render()}
             </div>
           </ReadOnly>
         </div>
@@ -203,7 +417,7 @@ export function BlocksView({ s, e, layout, cols, overlap }: { s: Section; e: Eff
 
   let cells: { lg: CSSProperties[]; md: CSSProperties[] } | undefined;
   if (layout === 'bento') {
-    const sizes = s.blocks.map((b) => b.size);
+    const sizes = items.map((it) => it.size);
     const place = (c: { col: number; row: number; w: number; h: number }, p: string) =>
       ({ [`--${p}c`]: `${c.col + 1} / span ${c.w}`, [`--${p}r`]: `${c.row + 1} / span ${c.h}` }) as CSSProperties;
     cells = { lg: packBento(sizes, cols).map((c) => place(c, 'l')), md: packBento(sizes, 2).map((c) => place(c, 'm')) };

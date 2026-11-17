@@ -1,0 +1,702 @@
+{
+  "version": 2,
+  "meta": {
+    "name": "Hajlak Szalon",
+    "description": "Női és férfi fodrászat a VII. kerületben: festés, balayage, férfi hajvágás és alkalmi frizurák.",
+    "language": "hu",
+    "kind": "beauty"
+  },
+  "business": {
+    "phone": "+36 30 123 4567",
+    "email": "hello@hajlak.example",
+    "socials": [],
+    "rating": {
+      "value": "4,9",
+      "count": "212",
+      "source": "Google"
+    },
+    "locations": [
+      {
+        "id": "kiraly",
+        "name": "Hajlak Szalon",
+        "address": "1075 Budapest, Király utca 23.",
+        "phone": "+36 30 123 4567",
+        "hours": [
+          {
+            "days": "Hétfő",
+            "time": "Zárva"
+          },
+          {
+            "days": "Kedd–péntek",
+            "time": "9:00–19:00"
+          },
+          {
+            "days": "Szombat",
+            "time": "9:00–14:00"
+          },
+          {
+            "days": "Vasárnap",
+            "time": "Zárva"
+          }
+        ]
+      }
+    ],
+    "areas": []
+  },
+  "theme": {
+    "preset": "soft",
+    "palette": {
+      "bg": "#fbf6f1",
+      "surface": "#f3e9e0",
+      "ink": "#2b211d",
+      "accent": "#b5573a",
+      "accent2": "#d9a68f"
+    },
+    "fonts": {
+      "display": "fraunces",
+      "body": "figtree"
+    },
+    "radius": "lg",
+    "density": "regular",
+    "scale": "regular",
+    "traits": {
+      "card": "tinted",
+      "button": "pill",
+      "emphasis": "italic",
+      "divider": "curve",
+      "motif": "blobs",
+      "image": "arch",
+      "eyebrow": "pill",
+      "caps": false
+    },
+    "imageStyle": "warm natural window light, soft terracotta and cream tones, editorial photography, shallow depth of field"
+  },
+  "nav": {
+    "style": "floating",
+    "brand": "Hajlak Szalon",
+    "links": [],
+    "cta": {
+      "label": "Időpontfoglalás",
+      "href": "/kapcsolat",
+      "kind": "primary"
+    }
+  },
+  "footer": {
+    "style": "columns",
+    "tone": "inverse",
+    "tagline": "Női és férfi fodrászat a Király utcában.",
+    "columns": [],
+    "note": "Hétfőn és vasárnap zárva."
+  },
+  "pages": [
+    {
+      "id": "home",
+      "title": "Home",
+      "role": "home",
+      "menu": true,
+      "sections": [
+        {
+          "id": "hero",
+          "type": "hero",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "motif",
+          "pad": "lg",
+          "layout": {
+            "kind": "split",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Király utca 23., VII. kerület",
+            "heading": "Haj, ami *rólad* szól, nem a trendekről",
+            "body": "Barátságos fodrászat a belvárosban: festés, balayage, férfi vágás és alkalmi frizurák, kéz alatt három szakértőtől.",
+            "actions": [
+              {
+                "label": "Időpontot foglalok",
+                "href": "/kapcsolat",
+                "kind": "primary"
+              },
+              {
+                "label": "Árak",
+                "href": "/szolgaltatasok",
+                "kind": "secondary"
+              }
+            ],
+            "align": "start"
+          },
+          "media": {
+            "prompt": "Bright welcoming hair salon interior with a styling chair, large mirror and plants",
+            "alt": "A Hajlak Szalon belső tere",
+            "aspect": "portrait"
+          },
+          "blocks": [
+            {
+              "kind": "rating",
+              "size": "sm"
+            }
+          ]
+        },
+        {
+          "id": "kiemelt",
+          "type": "prices",
+          "tone": "muted",
+          "edge": "divider",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 2,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Legkedveltebb",
+            "heading": "Amit most a leggyakrabban kérnek",
+            "actions": [
+              {
+                "label": "Teljes árlista",
+                "href": "/szolgaltatasok",
+                "kind": "secondary"
+              }
+            ],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "row",
+              "size": "sm",
+              "title": "Női hajvágás",
+              "detail": "mosással, szárítással, 60 perc",
+              "value": "6 900 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "title": "Férfi hajvágás",
+              "detail": "45 perc",
+              "value": "4 900 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "title": "Balayage",
+              "detail": "3–4 óra",
+              "value": "29 000 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "title": "Tőfestés",
+              "detail": "90 perc",
+              "value": "11 000 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "title": "Alkalmi frizura",
+              "detail": "60 perc",
+              "value": "9 500 Ft-tól"
+            }
+          ]
+        },
+        {
+          "id": "csapat",
+          "type": "team",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "A csapat",
+            "heading": "Három fodrász, három terület",
+            "actions": [],
+            "align": "center"
+          },
+          "blocks": [
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Dóra",
+              "role": "Festés és balayage",
+              "bio": "Természetes árnyalatok, puha átmenetek, hajkímélő technikák.",
+              "image": {
+                "prompt": "Portrait of a smiling female hairstylist in a bright salon",
+                "alt": "Dóra, festés szakértő",
+                "aspect": "portrait"
+              }
+            },
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Márk",
+              "role": "Férfi hajvágás",
+              "bio": "Géppel és ollóval pontos vágás, szakáll igazítással.",
+              "image": {
+                "prompt": "Portrait of a friendly male barber with a comb in a salon",
+                "alt": "Márk, férfi fodrász",
+                "aspect": "portrait"
+              }
+            },
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Lili",
+              "role": "Alkalmi frizurák",
+              "bio": "Esküvőre, bálra, fotózásra: tartós és természetes fésülés.",
+              "image": {
+                "prompt": "Portrait of a young female hairstylist holding styling tools",
+                "alt": "Lili, alkalmi frizurák",
+                "aspect": "portrait"
+              }
+            }
+          ]
+        },
+        {
+          "id": "munkak",
+          "type": "gallery",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "bento",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Friss munkáink",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "image",
+              "size": "feature",
+              "image": {
+                "prompt": "Woman seen from behind with long honey balayage waves",
+                "alt": "Balayage festés hosszú hajon",
+                "aspect": "square"
+              }
+            },
+            {
+              "kind": "image",
+              "size": "sm",
+              "image": {
+                "prompt": "Close-up of a sharp men's fade haircut from the side",
+                "alt": "Férfi fade vágás",
+                "aspect": "square"
+              }
+            },
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "droplet",
+              "title": "Hajkímélő festés",
+              "body": "Minden festésnél hajápolás is jár."
+            },
+            {
+              "kind": "card",
+              "size": "wide",
+              "icon": "sparkles",
+              "title": "Alkalmi frizurák",
+              "body": "Próbafésülés esküvő előtt is foglalható."
+            },
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "scissors",
+              "title": "Szakállformázás",
+              "body": "Vágás mellé igény szerint."
+            }
+          ]
+        },
+        {
+          "id": "velemenyek",
+          "type": "testimonials",
+          "tone": "inverse",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Vendégeink szerint",
+            "actions": [],
+            "align": "center"
+          },
+          "blocks": [
+            {
+              "kind": "quote",
+              "size": "sm",
+              "text": "Végre valaki, aki pontosan azt csinálta, amit kértem a festésnél. Imádom a színt.",
+              "author": "Réka K.",
+              "stars": 5,
+              "source": "Google"
+            },
+            {
+              "kind": "quote",
+              "size": "sm",
+              "text": "Márknál nincs felesleges beszéd, csak tökéletes vágás. Már fél éve ide járok.",
+              "author": "Gergő T.",
+              "stars": 5,
+              "source": "Google"
+            },
+            {
+              "kind": "quote",
+              "size": "sm",
+              "text": "Lili az esküvőmön fésült, egész nap tökéletes maradt a frizurám.",
+              "author": "Anna M.",
+              "stars": 5,
+              "source": "Google"
+            }
+          ]
+        },
+        {
+          "id": "elerhetoseg",
+          "type": "contact",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "split",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Nézz be hozzánk",
+            "body": "Kedd–péntek 9–19, szombat 9–14.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "contact",
+              "size": "sm",
+              "location": "kiraly",
+              "map": true
+            }
+          ]
+        },
+        {
+          "id": "hcta",
+          "type": "cta",
+          "tone": "accent",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Foglalj időpontot *online*",
+            "body": "Pár kattintás, és már csak a hajad hiányzik.",
+            "actions": [
+              {
+                "label": "Időpontfoglalás",
+                "href": "/kapcsolat",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    },
+    {
+      "id": "szolgaltatasok",
+      "title": "Szolgáltatások és árak",
+      "role": "offer",
+      "menu": true,
+      "sections": [
+        {
+          "id": "arak-cim",
+          "type": "features",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "narrow"
+          },
+          "intro": {
+            "heading": "Szolgáltatások és árak",
+            "body": "Az árak kiindulási árak, hosszabb vagy sűrűbb hajnál egyeztetünk.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": []
+        },
+        {
+          "id": "arlista",
+          "type": "prices",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 2,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Női",
+              "title": "Hajvágás",
+              "detail": "60 perc",
+              "value": "6 900 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Női",
+              "title": "Szárítás, styling",
+              "detail": "30 perc",
+              "value": "4 500 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Női",
+              "title": "Alkalmi frizura",
+              "detail": "60 perc",
+              "value": "9 500 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Férfi",
+              "title": "Hajvágás",
+              "detail": "45 perc",
+              "value": "4 900 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Férfi",
+              "title": "Szakáll igazítás",
+              "detail": "20 perc",
+              "value": "2 500 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Férfi",
+              "title": "Vágás és szakáll",
+              "detail": "60 perc",
+              "value": "6 900 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Festés",
+              "title": "Tőfestés",
+              "detail": "90 perc",
+              "value": "11 000 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Festés",
+              "title": "Balayage",
+              "detail": "3–4 óra",
+              "value": "29 000 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Festés",
+              "title": "Melír",
+              "detail": "2–3 óra",
+              "value": "19 000 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Kezelések",
+              "title": "Hajszerkezet-erősítő kezelés",
+              "detail": "30 perc",
+              "value": "5 500 Ft-tól"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Kezelések",
+              "title": "Mélyhidratáló maszk",
+              "detail": "20 perc",
+              "value": "3 500 Ft-tól"
+            }
+          ]
+        },
+        {
+          "id": "scta",
+          "type": "cta",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Megvan, amit kerestél?",
+            "actions": [
+              {
+                "label": "Időpontfoglalás",
+                "href": "/kapcsolat",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    },
+    {
+      "id": "kapcsolat",
+      "title": "Kapcsolat és időpontfoglalás",
+      "role": "contact",
+      "menu": true,
+      "sections": [
+        {
+          "id": "kapcsolat-cim",
+          "type": "features",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "narrow"
+          },
+          "intro": {
+            "heading": "Kapcsolat és időpontfoglalás",
+            "body": "Írj nekünk vagy hívj, és megbeszéljük az időpontot.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": []
+        },
+        {
+          "id": "kapcsolat-fo",
+          "type": "contact",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 2,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "actions": [],
+            "align": "start"
+          },
+          "media": {
+            "prompt": "Salon front door on a Budapest street with a hanging sign blank",
+            "alt": "A szalon bejárata a Király utcában",
+            "aspect": "landscape"
+          },
+          "blocks": [
+            {
+              "kind": "contact",
+              "size": "sm",
+              "location": "kiraly",
+              "map": true
+            },
+            {
+              "kind": "form",
+              "size": "sm",
+              "title": "Időpontkérés",
+              "fields": [
+                "name",
+                "phone",
+                "email",
+                "service",
+                "date",
+                "message"
+              ],
+              "submit": "Elküldöm",
+              "note": "Egy munkanapon belül válaszolunk."
+            }
+          ]
+        },
+        {
+          "id": "kcta",
+          "type": "cta",
+          "tone": "accent",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Inkább beszélnél velünk?",
+            "actions": [
+              {
+                "label": "Hívás: +36 30 123 4567",
+                "href": "tel:+36301234567",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    }
+  ]
+}

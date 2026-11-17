@@ -11,16 +11,19 @@ import { ArrowDown, ArrowUp, Braces, Copy, Monitor, Plus, Redo2, Smartphone, Tab
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { EXAMPLES, starterDoc, type Example } from '@/site/fixtures/examples';
 import { EXAMPLE_BRIEFS } from '@/site/fixtures/northfold';
-import { applyOp, type OpResult } from '@/site/ops';
+import { BUSINESS_KINDS } from '@/site/recipes';
+import { applyOp, createOpStream, type OpResult } from '@/site/ops';
 import { planSections } from '@/site/plan';
 import type { EditApi, Selection } from '@/site/render/context';
 import { Site } from '@/site/render/Site';
-import { parseDoc, type Section, type SiteDoc } from '@/site/schema';
+import { LEGAL_PAGES, parseDoc, type Section, type SiteDoc } from '@/site/schema';
+import { STRINGS } from '@/site/strings';
 import { createObjectStream } from '@/site/stream';
 import { resolveTheme } from '@/site/theme';
 import { Chat, type Msg } from './Chat';
 import { createImageStore } from './images';
 import { Inspector } from './Inspector';
+import { PAGE_TEMPLATES } from './templates';
 import './editor.css';
 
 type Device = 'desktop' | 'tablet' | 'mobile';
@@ -28,7 +31,8 @@ const DEVICE_WIDTH: Record<Device, number> = { desktop: 1280, tablet: 834, mobil
 
 type LogEntry = { id: number; source: 'you' | 'ai'; kind: string; ok: boolean; note: string; op: unknown };
 type Status = { hasKey: boolean; models: { id: string; label: string }[]; defaults: { generate: string; edit: string; image: string } };
-type RunOpts = { source?: 'you' | 'ai'; record?: boolean; quiet?: boolean };
+type RunOpts = { source?: 'you' | 'ai'; record?: boolean; quiet?: boolean; apply?: (doc: SiteDoc, op: unknown) => OpResult };
+type Tab = 'theme' | 'section' | 'business';
 
 const STORE_KEY = 'site-builder-prototype:doc';
 
@@ -49,7 +53,10 @@ export default function Editor() {
   const hist = useRef<{ past: SiteDoc[]; future: SiteDoc[] }>({ past: [], future: [] });
   const [selection, setSelection] = useState<Selection>(null);
   const [device, setDevice] = useState<Device>('desktop');
-  const [tab, setTab] = useState<'theme' | 'section'>('theme');
+  const [tab, setTab] = useState<Tab>('theme');
+  // Which page of the site is on the canvas: a page id, or one of the built-in legal pages.
+  const [pageId, setPageId] = useState('home');
+  const pageRef = useRef(pageId);
   const [log, setLog] = useState<LogEntry[]>([]);
   const [messages, setMessages] = useState<Msg[]>([WELCOME]);
   const [busy, setBusy] = useState<null | 'generate' | 'edit'>(null);
@@ -76,7 +83,7 @@ export default function Editor() {
     try {
       const saved = sessionStorage.getItem(STORE_KEY);
       const doc = saved ? parseDoc(JSON.parse(saved)) : null;
-      if (doc?.sections.length) {
+      if (doc?.pages.some((p) => p.sections.length)) {
         docRef.current = doc;
         setDoc(doc);
       }
@@ -94,7 +101,8 @@ export default function Editor() {
 
   const run = useCallback((op: unknown, opts: RunOpts = {}): OpResult & { changed: boolean } => {
     const before = docRef.current;
-    const r = applyOp(before, op);
+    // Sections added by hand go to the page on the canvas; a stream brings its own rule.
+    const r = opts.apply ? opts.apply(before, op) : applyOp(before, op, { page: pageRef.current });
     const changed = r.ok && JSON.stringify(r.doc) !== JSON.stringify(before);
     if (!opts.quiet) {
       const entry: LogEntry = { id: ++uid, source: opts.source ?? 'you', kind: r.kind, ok: r.ok, note: r.note, op };
@@ -152,6 +160,13 @@ export default function Editor() {
     return () => window.removeEventListener('keydown', onKey);
   }, [undo, redo]);
 
+  const goTo = useCallback((id: string) => {
+    pageRef.current = id;
+    setPageId(id);
+    setSelection(null);
+    canvasRef.current?.scrollTo({ top: 0 });
+  }, []);
+
   // ------------------------------------------------------------ AI: a stream of operations
 
   const streamOps = useCallback(
@@ -176,6 +191,9 @@ export default function Editor() {
       let said = '';
       let error = '';
 
+      // A new site declares its pages as it goes; an edit lands on the page being looked at.
+      const apply = createOpStream(kind === 'edit' ? pageRef.current : undefined);
+
       const parser = createObjectStream((obj) => {
         const o = obj as { op?: string; text?: string; message?: string };
         if (o?.op === 'say') return void (said = String(o.text ?? ''));
@@ -186,8 +204,9 @@ export default function Editor() {
           started = true;
           recorded = run({ op: 'reset' }, { source: 'ai', record: true, quiet: true }).changed;
           setSelection(null);
+          goTo('home');
         }
-        const r = run(obj, { source: 'ai', record: !recorded });
+        const r = run(obj, { source: 'ai', record: !recorded, apply });
         if (r.changed) {
           recorded = true;
           applied++;
@@ -212,6 +231,15 @@ export default function Editor() {
         else error = (err as Error).message;
       }
 
+      // The page rule in code: a business with several locations gets a page for each.
+      if (kind === 'generate' && applied && !error) {
+        const r = run({ op: 'ensureLocations', group: STRINGS[docRef.current.meta.language].locations }, { source: 'ai', record: false });
+        if (r.changed) {
+          applied++;
+          patch((m) => ({ ...m, notes: [...m.notes, { ok: true, text: r.note }] }));
+        }
+      }
+
       const secs = (ms: number) => `${(ms / 1000).toFixed(1)}s`;
       const total = performance.now() - t0;
       const meta = [
@@ -226,25 +254,44 @@ export default function Editor() {
       setBusy(null);
       abortRef.current = null;
     },
-    [run],
+    [run, goTo],
   );
 
-  const generate = (brief: string) => {
+  const generate = (brief: string, kind: string) => {
     setShowNew(false);
-    void streamOps('generate', '/api/generate', { brief, model }, `New site: ${brief}`);
+    void streamOps('generate', '/api/generate', { brief, kind, model }, `New site: ${brief}`);
   };
   const openExample = (ex: Example) => {
     setShowNew(false);
     setSelection(null);
+    goTo('home');
     run({ op: 'load', doc: ex.load() });
   };
   const sendEdit = (text: string) =>
-    void streamOps('edit', '/api/edit', { doc: docRef.current, message: text, selectedId: selection?.sectionId ?? null, model }, text);
+    void streamOps('edit', '/api/edit', { doc: docRef.current, message: text, selectedId: selection?.sectionId ?? null, pageId: pageRef.current, model }, text);
 
   // ------------------------------------------------------------ canvas
 
   const theme = useMemo(() => resolveTheme(doc.theme), [doc.theme]);
-  const plan = useMemo(() => planSections(doc, theme), [doc, theme]);
+  const legal = (LEGAL_PAGES as readonly string[]).includes(pageId);
+  // If the page on the canvas is deleted (or a different site is loaded), fall back to Home.
+  const page = legal ? null : (doc.pages.find((p) => p.id === pageId) ?? doc.pages[0]);
+  useEffect(() => {
+    if (page && page.id !== pageRef.current) {
+      pageRef.current = page.id;
+      setPageId(page.id);
+    }
+  }, [page]);
+  const plan = useMemo(() => planSections(page?.sections ?? [], theme, doc.footer.tone), [page, theme, doc.footer.tone]);
+
+  const addPage = (role: keyof typeof PAGE_TEMPLATES) => {
+    const before = new Set(doc.pages.map((p) => p.id));
+    const lang = doc.meta.language;
+    const tpl = PAGE_TEMPLATES[role];
+    const r = run({ op: 'page', page: { title: tpl.title[lang], role, sections: tpl.sections } });
+    const added = r.doc.pages.find((p) => !before.has(p.id));
+    if (added) goTo(added.id);
+  };
 
   const select = useCallback((sectionId: string | null, block?: number) => {
     setSelection(sectionId ? { sectionId, block } : null);
@@ -256,6 +303,7 @@ export default function Editor() {
       selection,
       select,
       setText: (path, value) => run({ op: 'set', path, value }).ok,
+      run: (op) => run(op).ok,
       sectionChrome: (s: Section, i: number, total: number) => (
         <>
           <div className="sec-ring" />
@@ -356,10 +404,12 @@ export default function Editor() {
       <div className="work">
         <Chat messages={messages} busy={!!busy} hasKey={status ? status.hasKey : null} selected={selection?.sectionId ?? null} onSend={sendEdit} onStop={() => abortRef.current?.abort()} />
 
-        <main className="canvas" ref={canvasRef} onClick={(e) => e.target === e.currentTarget && setSelection(null)}>
+        <div className="center">
+          <PageBar doc={doc} pageId={pageId} goTo={goTo} onAdd={(role) => addPage(role)} />
+          <main className="canvas" ref={canvasRef} onClick={(e) => e.target === e.currentTarget && setSelection(null)}>
           <div className="stage" style={{ width: virtual * scale, height: frameH * scale }}>
             <div className="frame" ref={frameRef} style={{ width: virtual, transform: `scale(${scale})`, '--stage-scale': scale } as CSSProperties}>
-              <Site doc={doc} edit={edit} images={images} />
+              <Site doc={doc} pageId={pageId} onNavigate={goTo} edit={edit} images={images} />
               {busy === 'generate' && (
                 <div className="building">
                   <span /> Building the next section
@@ -367,14 +417,46 @@ export default function Editor() {
               )}
             </div>
           </div>
-        </main>
+          </main>
+        </div>
 
-        <Inspector doc={doc} theme={theme} plan={plan} selection={selection} select={select} run={run} runBurst={runBurst} tab={tab} setTab={setTab} />
+        <Inspector doc={doc} page={page} goTo={goTo} theme={theme} plan={plan} selection={selection} select={select} run={run} runBurst={runBurst} tab={tab} setTab={setTab} />
       </div>
 
       {showState && <StateDrawer doc={doc} log={log} onClose={() => setShowState(false)} onLoad={(raw) => run({ op: 'load', doc: raw })} />}
       {showNew && <NewSite hasKey={!!status?.hasKey} onClose={() => setShowNew(false)} onGenerate={generate} onExample={openExample} />}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------- page bar
+
+function PageBar({ doc, pageId, goTo, onAdd }: { doc: SiteDoc; pageId: string; goTo(id: string): void; onAdd(role: keyof typeof PAGE_TEMPLATES): void }) {
+  const t = STRINGS[doc.meta.language];
+  return (
+    <nav className="pagebar" aria-label="Pages">
+      {doc.pages.map((p) => (
+        <button key={p.id} type="button" data-on={p.id === pageId || undefined} onClick={() => goTo(p.id)} title={`${p.role} page`}>
+          {p.group && <small>{p.group} /</small>}
+          {p.id === 'home' ? t.home : p.title}
+          <i>{p.sections.length}</i>
+        </button>
+      ))}
+      <select value="" onChange={(e) => e.target.value && onAdd(e.target.value as keyof typeof PAGE_TEMPLATES)} aria-label="Add a page">
+        <option value="">+ Page</option>
+        {Object.entries(PAGE_TEMPLATES).map(([role, tpl]) => (
+          <option key={role} value={role}>
+            {tpl.label}
+          </option>
+        ))}
+      </select>
+      <span className="spacer" />
+      {LEGAL_PAGES.map((id) => (
+        <button key={id} type="button" className="legal" data-on={id === pageId || undefined} onClick={() => goTo(id)} title="Built from the business facts">
+          {t[id]}
+        </button>
+      ))}
+    </nav>
   );
 }
 
@@ -408,7 +490,7 @@ function StateDrawer({ doc, log, onClose, onLoad }: { doc: SiteDoc; log: LogEntr
       {view === 'doc' && (
         <>
           <p className="hint">
-            The whole site is this one document: {doc.sections.length} sections, {(json.length / 1024).toFixed(1)} KB.
+            The whole site is this one document: {doc.pages.length} {doc.pages.length === 1 ? 'page' : 'pages'}, {doc.pages.reduce((n, p) => n + p.sections.length, 0)} sections, {(json.length / 1024).toFixed(1)} KB.
             <button type="button" className="link" onClick={() => void navigator.clipboard?.writeText(json)}>
               <Copy size={12} /> Copy
             </button>
@@ -468,8 +550,9 @@ function StateDrawer({ doc, log, onClose, onLoad }: { doc: SiteDoc; log: LogEntr
 
 // ---------------------------------------------------------------- new site
 
-function NewSite({ hasKey, onClose, onGenerate, onExample }: { hasKey: boolean; onClose(): void; onGenerate(brief: string): void; onExample(ex: Example): void }) {
+function NewSite({ hasKey, onClose, onGenerate, onExample }: { hasKey: boolean; onClose(): void; onGenerate(brief: string, kind: string): void; onExample(ex: Example): void }) {
   const [brief, setBrief] = useState('');
+  const [kind, setKind] = useState('auto');
   return (
     <div className="modal" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="dialog">
@@ -483,11 +566,29 @@ function NewSite({ hasKey, onClose, onGenerate, onExample }: { hasKey: boolean; 
         <textarea autoFocus rows={5} value={brief} onChange={(e) => setBrief(e.target.value)} placeholder="What it sells, who it is for, and how it should feel." />
         <div className="chips">
           {EXAMPLE_BRIEFS.map((b) => (
-            <button key={b.label} type="button" onClick={() => setBrief(b.brief)}>
+            <button
+              key={b.label}
+              type="button"
+              onClick={() => {
+                setBrief(b.brief);
+                setKind(b.kind ?? 'auto');
+              }}
+            >
               {b.label}
             </button>
           ))}
         </div>
+        <label className="kind">
+          <span>Business type</span>
+          <select value={kind} onChange={(e) => setKind(e.target.value)}>
+            <option value="auto">Work it out from the brief</option>
+            {BUSINESS_KINDS.map((k) => (
+              <option key={k.id} value={k.id}>
+                {k.label}
+              </option>
+            ))}
+          </select>
+        </label>
         {!hasKey && (
           <p className="hint warn">
             No OpenRouter key is set, so this will replay the built-in coffee site through the streaming pipeline instead of using your brief. Add OPENROUTER_API_KEY to .env.local and
@@ -498,7 +599,7 @@ function NewSite({ hasKey, onClose, onGenerate, onExample }: { hasKey: boolean; 
           <button type="button" className="btn-quiet" onClick={onClose}>
             Cancel
           </button>
-          <button type="button" className="btn-solid" disabled={!brief.trim()} onClick={() => onGenerate(brief)}>
+          <button type="button" className="btn-solid" disabled={!brief.trim()} onClick={() => onGenerate(brief, kind)}>
             Generate
           </button>
         </footer>

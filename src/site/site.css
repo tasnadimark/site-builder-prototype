@@ -74,6 +74,18 @@
 .site .sec[data-type='cta'] .h2 {
   font-size: calc(var(--fs-h2) * 1.2);
 }
+/* the title of a page other than Home */
+.site .h2.h2-page {
+  font-size: calc(var(--fs-h1) * 0.74);
+}
+/* Long compound words (common in Hungarian) hyphenate instead of overflowing. Short
+   words never do, so English headlines are left alone. */
+.site .h1,
+.site .h2,
+.site .h3 {
+  hyphens: auto;
+  hyphenate-limit-chars: 12 5 5;
+}
 .site .h3 {
   font-family: var(--font-display);
   font-weight: var(--hw);
@@ -1041,6 +1053,16 @@
   border-radius: calc(var(--r) + 8px);
   background: color-mix(in oklab, var(--ssurf) 60%, transparent);
 }
+/* A picture that spans the full width is always a wide band, whatever shape was asked
+   for. Otherwise a 4:3 picture across a whole page is taller than the screen. */
+.site .sec:not([data-layout='split']) .sec-media .pic {
+  aspect-ratio: 16 / 10;
+}
+@container site (min-width: 640px) {
+  .site .sec:not([data-layout='split']) .sec-media .pic {
+    aspect-ratio: 21 / 9;
+  }
+}
 /* shapes that only make sense on a tall picture fall back when the picture is wide */
 .site[data-image='arch'] .sec:not([data-layout='split']) .is-media,
 .site[data-image='blob'] .sec:not([data-layout='split']) .is-media {
@@ -1237,12 +1259,137 @@
   font-size: 0.94rem;
   font-weight: 500;
 }
-.site .nav-links a {
+.site .brand {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.site .nav-end {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+}
+.site .nav-links {
+  align-items: center;
+}
+.site .nav-links a,
+.site .nav-group > button {
   opacity: 0.82;
   transition: opacity 0.15s ease;
 }
-.site .nav-links a:hover {
+.site .nav-links a:hover,
+.site .nav-group > button:hover,
+.site .nav-links [aria-current='page'] {
   opacity: 1;
+}
+.site .nav-links [aria-current='page'] {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 7px;
+}
+/* a dropdown groups pages of the same kind, one level deep */
+.site .nav-group {
+  position: relative;
+}
+.site .nav-group > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.site .nav-group::after {
+  content: '';
+  position: absolute;
+  left: -14px;
+  right: -14px;
+  top: 100%;
+  height: 14px;
+}
+.site .nav-drop {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: -14px;
+  z-index: 30;
+  display: none;
+  min-width: 210px;
+  padding: 8px;
+  border: 1px solid var(--sline);
+  border-radius: var(--r);
+  background: var(--sraise);
+  color: var(--sink);
+  box-shadow: var(--shadow);
+}
+.site .nav-group:hover .nav-drop,
+.site .nav-group[data-open] .nav-drop {
+  display: grid;
+}
+.site .nav-group[data-shut] .nav-drop {
+  display: none;
+}
+.site .nav-drop a {
+  padding: 9px 12px;
+  border-radius: calc(var(--r) * 0.6);
+  opacity: 1;
+  white-space: nowrap;
+}
+.site .nav-drop a:hover {
+  background: color-mix(in oklab, var(--sacc) 13%, transparent);
+}
+.site .nav-burger {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: var(--r-btn);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.site .nav-panel {
+  display: grid;
+  padding: 4px var(--gutter) 22px;
+  background: var(--sbg);
+  border-bottom: 1px solid var(--sline);
+  font-size: 1.08rem;
+  font-weight: 500;
+}
+.site .nav-panel a {
+  padding: 13px 0;
+  border-bottom: 1px solid var(--sline);
+}
+.site .nav-panel-group {
+  display: grid;
+}
+.site .nav-panel-group > span {
+  padding-top: 16px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ssoft);
+}
+.site .nav-panel-group a {
+  padding-left: 14px;
+}
+.site .nav-panel .nav-panel-cta {
+  justify-content: center;
+  margin-top: 18px;
+  padding: 0.95em 1.2em;
+  border-bottom: 0;
+  font-size: 1rem;
+}
+/* On a narrow phone the bar is the name and the menu button; the action lives in the menu. */
+@container site (max-width: 479px) {
+  .site .nav-end .nav-cta {
+    display: none;
+  }
 }
 .site .nav .btn {
   padding: 0.72em 1.15em;
@@ -1267,6 +1414,10 @@
 @container site (min-width: 860px) {
   .site .nav-links {
     display: flex;
+  }
+  .site .nav-burger,
+  .site .nav-panel {
+    display: none;
   }
 }
 
@@ -1330,8 +1481,41 @@
   font-size: 0.84rem;
   color: var(--ssoft);
 }
+.site .foot-note {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 28px;
+}
 .site .foot[data-style='big'] .foot-note {
   margin-top: 24px;
+}
+.site .foot-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+}
+.site .foot-legal a,
+.site .foot-socials a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.site .foot-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+.site .foot-hours li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 260px;
+}
+.site .foot-hours li span:last-child {
+  color: var(--ssoft);
+  font-variant-numeric: tabular-nums;
 }
 @container site (min-width: 760px) {
   .site .foot-top {
@@ -1341,4 +1525,331 @@
   .site .foot-cols {
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   }
+}
+
+/* ---------------------------------------------------------------- rows
+   A line with a value on the right: a price, a menu item, a class in a timetable.
+   Rows that share a group sit together under its heading. */
+
+.site .rowgroup {
+  gap: 1rem;
+}
+.site .rowgroup-title {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--sline2);
+}
+.site [data-card='plain'] .rowgroup.boxed {
+  padding: 0;
+  border-top: 0;
+}
+.site .rows {
+  display: grid;
+  gap: 0.9rem;
+}
+.site .row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  border-radius: 4px;
+}
+.site .row-main {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+.site .row-title {
+  font-weight: 600;
+}
+.site .row-detail {
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--ssoft);
+}
+.site .row-dots {
+  flex: 1;
+  min-width: 14px;
+  border-bottom: 1px dotted var(--sline2);
+  translate: 0 -0.3em;
+}
+.site .row-value {
+  flex: none;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--sacc-text);
+}
+.site .blocks[data-kinds='rows'] {
+  row-gap: clamp(28px, 3.4cqi, 44px);
+}
+
+/* ---------------------------------------------------------------- person */
+
+.site .person {
+  gap: 1rem;
+}
+.site .person-pic {
+  aspect-ratio: 4 / 5;
+}
+.site[data-image='rounded'] .person-pic {
+  border-radius: var(--r-lg);
+}
+.site[data-image='arch'] .person-pic {
+  border-radius: 999px 999px var(--r) var(--r);
+}
+.site[data-image='blob'] .person-pic {
+  border-radius: 58% 42% 52% 48% / 46% 54% 46% 54%;
+}
+.site .person-initials {
+  display: grid;
+  place-items: center;
+  border-radius: var(--r);
+  background: var(--ssurf);
+  color: var(--ssoft);
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: var(--hw);
+}
+.site .person-body {
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
+}
+.site .person-role {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--sacc-text);
+}
+/* in a single column a person reads as a profile: portrait beside the text */
+.site .blocks[data-cols='1'] > .person {
+  display: grid;
+  grid-template-columns: clamp(96px, 18cqi, 190px) minmax(0, 1fr);
+  align-items: start;
+  column-gap: clamp(16px, 2.4cqi, 30px);
+}
+
+/* ---------------------------------------------------------------- contact */
+
+.site .contact {
+  gap: 1.3rem;
+}
+.site .facts {
+  display: grid;
+  gap: 1.05rem;
+  margin: 0;
+}
+.site .facts > div {
+  display: grid;
+  gap: 0.25rem;
+}
+.site .facts dt {
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ssoft);
+}
+.site .facts dd {
+  display: grid;
+  justify-items: start;
+  gap: 0.25rem;
+  margin: 0;
+}
+.site .facts-link {
+  font-size: 0.88rem;
+  color: var(--sacc-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.site .hours {
+  display: grid;
+  gap: 0.25rem;
+  width: 100%;
+  max-width: 330px;
+}
+.site .hours li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.site .hours li span:last-child {
+  font-variant-numeric: tabular-nums;
+  color: var(--ssoft);
+}
+.site .map {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--sline);
+  border-radius: var(--r);
+  background: var(--ssurf);
+}
+.site .map-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--ssoft);
+}
+.site .map iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+/* on a dark site the map is flipped to dark as well */
+.site[data-dark='true'] .map iframe {
+  filter: invert(0.92) hue-rotate(180deg);
+}
+
+/* ---------------------------------------------------------------- form */
+
+.site .form {
+  gap: 1.1rem;
+}
+.site .form-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.9rem;
+}
+.site .form-fields label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+.site .form input,
+.site .form textarea {
+  width: 100%;
+  padding: 0.8em 0.9em;
+  border: 1px solid var(--sline2);
+  border-radius: var(--r-btn);
+  background: var(--sbg);
+  color: var(--sink);
+  font: inherit;
+  font-weight: 400;
+  resize: vertical;
+}
+.site .form input:focus,
+.site .form textarea:focus {
+  outline: 2px solid var(--sacc-text);
+  outline-offset: 1px;
+}
+.site[data-button='hard'] .form input,
+.site[data-button='hard'] .form textarea {
+  border: 2px solid var(--sink);
+}
+.site .form .btn {
+  align-self: flex-start;
+}
+.site .form-sent {
+  padding: 0.8em 1em;
+  border-radius: var(--r-btn);
+  background: color-mix(in oklab, var(--sacc) 15%, transparent);
+  font-size: 0.92rem;
+}
+.site .form-note {
+  font-size: 0.84rem;
+  color: var(--ssoft);
+}
+@container site (min-width: 560px) {
+  .site .form-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .site .form-fields label[data-field='message'],
+  .site .form-fields label[data-field='service'] {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------------------------------------------------------------- rating and stars */
+
+.site .stars {
+  position: relative;
+  display: inline-flex;
+  line-height: 0;
+  color: var(--sline2);
+}
+.site .stars-off,
+.site .stars-on {
+  display: inline-flex;
+  gap: 2px;
+}
+.site .stars-on {
+  position: absolute;
+  inset: 0 auto 0 0;
+  overflow: hidden;
+  color: var(--sacc-text);
+}
+.site .stars-on svg,
+.site .stars-off svg {
+  flex: none;
+}
+.site .rating {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.65rem;
+  font-size: 0.95rem;
+}
+.site .rating b {
+  font-size: 1.05rem;
+}
+.site .rating > span:last-child {
+  color: var(--ssoft);
+}
+.site .quote .stars {
+  margin-bottom: 0.8rem;
+}
+
+/* ---------------------------------------------------------------- checklist */
+
+.site .check {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+.site .check svg {
+  flex: none;
+  margin-top: 0.22em;
+  color: var(--sacc-text);
+}
+.site .check-label {
+  display: block;
+  font-weight: 600;
+}
+.site .check-detail {
+  display: block;
+  font-size: 0.92rem;
+  color: var(--ssoft);
+}
+.site .blocks[data-kinds='check']:not([data-layout='bento']) {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem 2.2rem;
+}
+
+/* ---------------------------------------------------------------- legal pages */
+
+.site .legal {
+  --maxw: 820px;
+}
+.site .legal-notice {
+  display: inline-block;
+  margin-bottom: 2.2rem;
+  padding: 0.5em 0.9em;
+  border: 1px dashed var(--sline2);
+  border-radius: var(--r-btn);
+  font-size: 0.86rem;
+  color: var(--ssoft);
+}
+.site .legal-body {
+  display: grid;
+  gap: 2rem;
+}
+.site .legal-body > div {
+  display: grid;
+  gap: 0.5rem;
 }

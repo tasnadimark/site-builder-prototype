@@ -5,7 +5,7 @@ import {
   Globe, Heart, House, Layers, Leaf, Lock, Mail, MapPin, Moon, Music, Package, Phone, RefreshCw, Rocket, Scissors,
   Shield, Smile, Sparkles, Star, Sun, Target, Truck, Users, WandSparkles, Wrench, Zap, type LucideIcon,
 } from 'lucide-react';
-import { useCallback, useEffect, useSyncExternalStore, type ElementType } from 'react';
+import { useCallback, useEffect, useRef, useSyncExternalStore, type ElementType } from 'react';
 import type { Action, ImageRef } from '../schema';
 import type { IconName } from '../vocab';
 import { useSite, type ImageApi, type ImageState, type Path } from './context';
@@ -44,27 +44,78 @@ function serializeRich(el: HTMLElement): string {
   return out.replace(/\s+/g, ' ').replace(/\* \*/g, ' ').trim();
 }
 
+let measurer: CanvasRenderingContext2D | null = null;
+
+/**
+ * Shrinks a heading just enough that its longest word fits on one line. Long compound
+ * words are everywhere in Hungarian ("Villanyszerelés", "Időpontfoglalás"), and a
+ * headline broken mid-word looks like a mistake. Hyphenation stays as the last resort.
+ */
+function useFitLongestWord(enabled: boolean, text: string, font: string) {
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!enabled || !el) return;
+    const fit = () => {
+      el.style.fontSize = '';
+      const cs = getComputedStyle(el);
+      const size = parseFloat(cs.fontSize);
+      const room = (el.parentElement ?? el).clientWidth;
+      if (!size || !room) return;
+      measurer ??= document.createElement('canvas').getContext('2d');
+      if (!measurer) return;
+      measurer.font = `${cs.fontWeight} ${size}px ${cs.fontFamily}`;
+      const spacing = parseFloat(cs.letterSpacing) || 0;
+      let widest = 0;
+      for (const raw of (el.textContent ?? '').split(/\s+/)) {
+        const word = cs.textTransform === 'uppercase' ? raw.toUpperCase() : raw;
+        widest = Math.max(widest, measurer.measureText(word).width + spacing * word.length);
+      }
+      // A little slack for italics and the padding of highlighted words.
+      widest *= 1.07;
+      const scale = widest > room ? room / widest : 1;
+      if (scale < 1) el.style.fontSize = `${(size * Math.max(0.6, scale)).toFixed(1)}px`;
+      // Once every word fits, nothing may be split: balanced wrapping would otherwise
+      // hyphenate a word that fits, just to even out the lines. Only a word that is still
+      // too long at the smallest size is allowed to break.
+      el.style.hyphens = scale < 0.6 ? 'auto' : 'manual';
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el.parentElement ?? el);
+    void document.fonts?.ready.then(fit);
+    return () => ro.disconnect();
+  }, [enabled, text, font]);
+  return ref;
+}
+
 type TxtProps = {
   as?: ElementType;
   value: string;
+  /** Where the text lives in the document. Typing commits a `set` operation there. */
   path?: Path;
+  /** For text that is not a single field (a heading shared by several rows). */
+  commit?: (value: string) => boolean;
   className?: string;
   rich?: boolean;
   [attr: `data-${string}`]: string | undefined;
 };
 
 /** A piece of copy. In an editor it can be typed into directly; the change is one `set` operation. */
-export function Txt({ as, value, path, className, rich, ...rest }: TxtProps) {
+export function Txt({ as, value, path, commit, className, rich, ...rest }: TxtProps) {
   const { edit, theme } = useSite();
   const Tag = (as ?? 'span') as ElementType;
   const html = rich ? richToHtml(value, theme.traits.emphasis === 'highlight') : escapeHtml(value);
+  // Headings are the only rich text, and the only text large enough to need fitting.
+  const ref = useFitLongestWord(!!rich, value, `${theme.fonts.display}/${theme.scale}/${theme.traits.caps}`);
 
-  if (!edit || !path) return <Tag className={className} {...rest} dangerouslySetInnerHTML={{ __html: html }} />;
+  if (!edit || (!path && !commit)) return <Tag ref={ref} className={className} {...rest} dangerouslySetInnerHTML={{ __html: html }} />;
 
   const read = (el: HTMLElement) => (rich ? serializeRich(el) : (el.textContent ?? '').replace(/\s+/g, ' ').trim());
 
   return (
     <Tag
+      ref={ref}
       className={className}
       {...rest}
       data-text=""
@@ -95,7 +146,7 @@ export function Txt({ as, value, path, className, rich, ...rest }: TxtProps) {
       onBlur={(e: React.FocusEvent<HTMLElement>) => {
         const el = e.currentTarget;
         const next = read(el);
-        if (next === value || !edit.setText(path, next)) el.innerHTML = html;
+        if (next === value || !(commit ? commit(next) : edit.setText(path!, next))) el.innerHTML = html;
       }}
     />
   );
@@ -103,9 +154,28 @@ export function Txt({ as, value, path, className, rich, ...rest }: TxtProps) {
 
 // ---------------------------------------------------------------- buttons
 
+/**
+ * Links inside a site. "/services" goes to another page, "#prices" to a section on this
+ * one. In an editor a click is for typing, so nothing navigates.
+ */
+export function useLink(href: string) {
+  const { navigate, edit, doc } = useSite();
+  const page = href.startsWith('/') ? href.slice(1).split('#')[0] || 'home' : null;
+  return {
+    href,
+    onClick: (e: React.MouseEvent) => {
+      if (edit || !page) return;
+      if (!doc.pages.some((p) => p.id === page) && page !== 'privacy' && page !== 'imprint') return;
+      e.preventDefault();
+      navigate(page);
+    },
+  };
+}
+
 export function Btn({ action, path, className }: { action: Action; path?: Path; className?: string }) {
+  const link = useLink(action.href);
   return (
-    <a className={cx('btn', `btn-${action.kind}`, className)} href={action.href}>
+    <a className={cx('btn', `btn-${action.kind}`, className)} {...link}>
       <Txt value={action.label} path={path} />
     </a>
   );
@@ -159,6 +229,26 @@ const ICON_MAP: Record<IconName, LucideIcon> = {
   gift: Gift, award: Award, target: Target, rocket: Rocket, smile: Smile, check: Check, refresh: RefreshCw,
   scissors: Scissors, home: House, wrench: Wrench,
 };
+
+/** A row of five stars, filled up to `value` (halves and decimals included). */
+export function Stars({ value }: { value: number }) {
+  const pct = `${Math.max(0, Math.min(5, value)) * 20}%`;
+  const row = (
+    <>
+      {[0, 1, 2, 3, 4].map((i) => (
+        <Star key={i} size={16} strokeWidth={0} fill="currentColor" aria-hidden />
+      ))}
+    </>
+  );
+  return (
+    <span className="stars" role="img" aria-label={`${value} / 5`}>
+      <span className="stars-off">{row}</span>
+      <span className="stars-on" style={{ width: pct }}>
+        {row}
+      </span>
+    </span>
+  );
+}
 
 export function Icon({ name, size = 22 }: { name: IconName; size?: number }) {
   const C = ICON_MAP[name] ?? Sparkles;

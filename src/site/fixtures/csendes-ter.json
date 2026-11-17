@@ -1,0 +1,904 @@
+{
+  "version": 2,
+  "meta": {
+    "name": "Csendes Tér Jógastúdió",
+    "description": "Nyugodt, befogadó jógastúdió két budapesti helyszínen, kezdőknek és haladóknak.",
+    "language": "hu",
+    "kind": "studio"
+  },
+  "business": {
+    "phone": "+36 70 555 0101",
+    "email": "szia@csendester.example",
+    "socials": [],
+    "rating": {
+      "value": "4,9",
+      "count": "348",
+      "source": "Google"
+    },
+    "locations": [
+      {
+        "id": "buda",
+        "name": "Budai stúdió",
+        "address": "1114 Budapest, Bartók Béla út 29.",
+        "hours": []
+      },
+      {
+        "id": "pest",
+        "name": "Pesti stúdió",
+        "address": "1066 Budapest, Teréz körút 12.",
+        "hours": []
+      }
+    ],
+    "areas": []
+  },
+  "theme": {
+    "preset": "soft",
+    "palette": {
+      "bg": "#f6f1e9",
+      "surface": "#ede5d8",
+      "ink": "#2b2a26",
+      "accent": "#6b7f63",
+      "accent2": "#c98f6b"
+    },
+    "fonts": {
+      "display": "fraunces",
+      "body": "figtree"
+    },
+    "radius": "xl",
+    "density": "airy",
+    "scale": "regular",
+    "traits": {
+      "card": "tinted",
+      "button": "pill",
+      "emphasis": "italic",
+      "divider": "curve",
+      "motif": "blobs",
+      "image": "arch",
+      "eyebrow": "pill",
+      "caps": false
+    },
+    "imageStyle": "soft natural daylight photograph, warm neutral earth tones, sage green accents, calm minimal mood, shallow depth of field"
+  },
+  "nav": {
+    "style": "floating",
+    "brand": "Csendes Tér",
+    "links": [],
+    "cta": {
+      "label": "Első óra ingyen",
+      "href": "/kapcsolat",
+      "kind": "primary"
+    }
+  },
+  "footer": {
+    "style": "columns",
+    "tone": "inverse",
+    "tagline": "Csendes Tér Jógastúdió, Budapest",
+    "columns": []
+  },
+  "pages": [
+    {
+      "id": "home",
+      "title": "Home",
+      "role": "home",
+      "menu": true,
+      "sections": [
+        {
+          "id": "hero",
+          "type": "hero",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "motif",
+          "pad": "lg",
+          "layout": {
+            "kind": "split",
+            "columns": 3,
+            "flip": false,
+            "ratio": "media",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Jóga Budapesten",
+            "heading": "Találd meg a *csendet* a városban",
+            "body": "Hatha, vinyasa, yin és kismama jóga két stúdióban, kezdőknek és haladóknak. Az első óra ingyenes.",
+            "actions": [
+              {
+                "label": "Első óra ingyen",
+                "href": "/kapcsolat",
+                "kind": "primary"
+              },
+              {
+                "label": "Órarend",
+                "href": "/orak",
+                "kind": "secondary"
+              }
+            ],
+            "align": "start"
+          },
+          "media": {
+            "prompt": "bright quiet yoga studio room with wooden floor, rolled mats and soft window light",
+            "alt": "Csendes Tér jógastúdió terme",
+            "aspect": "portrait"
+          },
+          "blocks": [
+            {
+              "kind": "rating",
+              "size": "sm"
+            }
+          ]
+        },
+        {
+          "id": "classes",
+          "type": "features",
+          "tone": "muted",
+          "edge": "divider",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 4,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Óratípusok",
+            "heading": "Négy irány, egy nyugodt tempó",
+            "actions": [],
+            "align": "center"
+          },
+          "blocks": [
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "leaf",
+              "title": "Hatha",
+              "body": "Lassú, alapos gyakorlás az alapoktól."
+            },
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "sun",
+              "title": "Vinyasa",
+              "body": "Légzéssel összekötött, áramló mozgás."
+            },
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "moon",
+              "title": "Yin",
+              "body": "Hosszan tartott pózok mély ellazulásért."
+            },
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "heart",
+              "title": "Kismama jóga",
+              "body": "Biztonságos mozgás a várandósság alatt."
+            }
+          ]
+        },
+        {
+          "id": "coaches",
+          "type": "team",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "split",
+            "columns": 3,
+            "flip": true,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Oktatók",
+            "heading": "Négy oktató, akikben megbízhatsz",
+            "body": "Kis csoportok, odafigyelés, nyomás nélkül.",
+            "actions": [
+              {
+                "label": "Ismerd meg őket",
+                "href": "/oktatok",
+                "kind": "secondary"
+              }
+            ],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Anna",
+              "role": "Hatha, alapító"
+            },
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Bence",
+              "role": "Vinyasa"
+            },
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Réka",
+              "role": "Yin és kismama jóga"
+            },
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Zsófi",
+              "role": "Kezdő csoportok"
+            }
+          ]
+        },
+        {
+          "id": "method",
+          "type": "steps",
+          "tone": "inverse",
+          "edge": "none",
+          "backdrop": "glow",
+          "pad": "lg",
+          "layout": {
+            "kind": "grid",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Így indul az első órád",
+            "actions": [],
+            "align": "center"
+          },
+          "blocks": [
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Válassz órát",
+              "body": "Reggel, este vagy hétvégén, a szinted szerint."
+            },
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Gyere ahogy vagy",
+              "body": "Matracot és kellékeket adunk, kényelmes ruha elég."
+            },
+            {
+              "kind": "step",
+              "size": "sm",
+              "title": "Mozogj a saját tempódban",
+              "body": "Az oktató végig segít, semmi sem kötelező."
+            }
+          ]
+        },
+        {
+          "id": "passes",
+          "type": "pricing",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "eyebrow": "Bérletek",
+            "heading": "Az első óra *ingyenes*",
+            "actions": [],
+            "align": "center"
+          },
+          "blocks": [
+            {
+              "kind": "plan",
+              "size": "sm",
+              "name": "5 alkalmas",
+              "price": "Kérj árat",
+              "blurb": "Ha még ismerkedsz.",
+              "features": [
+                "5 óra bármelyik stúdióban",
+                "Bármely óratípus"
+              ],
+              "cta": "Ezt választom",
+              "featured": false
+            },
+            {
+              "kind": "plan",
+              "size": "sm",
+              "name": "10 alkalmas",
+              "price": "Kérj árat",
+              "blurb": "Rendszeres gyakorláshoz.",
+              "features": [
+                "10 óra bármelyik stúdióban",
+                "Bármely óratípus"
+              ],
+              "cta": "Ezt választom",
+              "featured": true
+            },
+            {
+              "kind": "plan",
+              "size": "sm",
+              "name": "Havi korlátlan",
+              "price": "Kérj árat",
+              "blurb": "Ha a jóga a napod része.",
+              "features": [
+                "Korlátlan óralátogatás",
+                "Mindkét stúdió"
+              ],
+              "cta": "Ezt választom",
+              "featured": false
+            }
+          ]
+        },
+        {
+          "id": "reviews",
+          "type": "testimonials",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "marquee",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Vendégeink mondták",
+            "actions": [],
+            "align": "center"
+          },
+          "blocks": [
+            {
+              "kind": "quote",
+              "size": "sm",
+              "text": "Rég féltem a jógától, itt az első órán otthon éreztem magam.",
+              "author": "Kata",
+              "stars": 5,
+              "source": "Google"
+            },
+            {
+              "kind": "quote",
+              "size": "sm",
+              "text": "Réka yin óráitól végre tényleg ellazulok.",
+              "author": "Dóra",
+              "stars": 5,
+              "source": "Google"
+            },
+            {
+              "kind": "quote",
+              "size": "sm",
+              "text": "Kismama jógára jártam, biztonságban éreztem magam.",
+              "author": "Eszter",
+              "stars": 5,
+              "source": "Google"
+            }
+          ]
+        },
+        {
+          "id": "homecta",
+          "type": "cta",
+          "tone": "accent",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Gyere el egy ingyenes órára",
+            "body": "Válassz stúdiót és időpontot, a többit megoldjuk.",
+            "actions": [
+              {
+                "label": "Jelentkezem",
+                "href": "/kapcsolat",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    },
+    {
+      "id": "orak",
+      "title": "Órák és órarend",
+      "role": "offer",
+      "menu": true,
+      "sections": [
+        {
+          "id": "orak-title",
+          "type": "features",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Órák és órarend",
+            "body": "Hétköznap reggel és este, hétvégén délelőtt.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": []
+        },
+        {
+          "id": "timetable",
+          "type": "timetable",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Heti órarend, Budai stúdió",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Hétfő",
+              "title": "Hatha",
+              "detail": "Anna, mindenkinek",
+              "value": "7:00"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Hétfő",
+              "title": "Yin",
+              "detail": "Réka, mindenkinek",
+              "value": "19:00"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Szerda",
+              "title": "Kezdő csoport",
+              "detail": "Zsófi, kezdő",
+              "value": "18:00"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Csütörtök",
+              "title": "Vinyasa",
+              "detail": "Bence, haladó",
+              "value": "7:00"
+            },
+            {
+              "kind": "row",
+              "size": "sm",
+              "group": "Szombat",
+              "title": "Kismama jóga",
+              "detail": "Réka",
+              "value": "10:00"
+            }
+          ]
+        },
+        {
+          "id": "orak-cta",
+          "type": "cta",
+          "tone": "inverse",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Próbáld ki ingyen",
+            "actions": [
+              {
+                "label": "Jelentkezem",
+                "href": "/kapcsolat",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    },
+    {
+      "id": "oktatok",
+      "title": "Oktatóink",
+      "role": "people",
+      "menu": true,
+      "sections": [
+        {
+          "id": "oktatok-title",
+          "type": "team",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Oktatóink",
+            "body": "Négy különböző stílus, ugyanaz a figyelem.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": []
+        },
+        {
+          "id": "coachlist",
+          "type": "team",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 2,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Anna",
+              "role": "Hatha, a stúdió alapítója",
+              "bio": "Az alapoktól tanít, türelmesen és pontosan.",
+              "image": {
+                "prompt": "portrait of a calm woman in her forties in a yoga studio",
+                "alt": "Anna, hatha oktató",
+                "aspect": "portrait"
+              }
+            },
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Bence",
+              "role": "Vinyasa",
+              "bio": "Áramló, légzésvezetett órák.",
+              "image": {
+                "prompt": "portrait of a friendly man in his thirties in a bright yoga room",
+                "alt": "Bence, vinyasa oktató",
+                "aspect": "portrait"
+              }
+            },
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Réka",
+              "role": "Yin és kismama jóga",
+              "bio": "Lassú, ellazító órák és biztonságos mozgás kismamáknak.",
+              "image": {
+                "prompt": "portrait of a gentle woman sitting on a yoga mat",
+                "alt": "Réka, yin és kismama jóga oktató",
+                "aspect": "portrait"
+              }
+            },
+            {
+              "kind": "person",
+              "size": "sm",
+              "name": "Zsófi",
+              "role": "Kezdő csoportok",
+              "bio": "Segít az első lépésekben, ítélkezés nélkül.",
+              "image": {
+                "prompt": "portrait of a smiling young woman in a sunlit studio",
+                "alt": "Zsófi, kezdő csoportok oktatója",
+                "aspect": "portrait"
+              }
+            }
+          ]
+        },
+        {
+          "id": "oktatok-cta",
+          "type": "cta",
+          "tone": "accent",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Találkozzunk egy órán",
+            "actions": [
+              {
+                "label": "Jelentkezem",
+                "href": "/kapcsolat",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    },
+    {
+      "id": "modszer",
+      "title": "Módszerünk",
+      "role": "approach",
+      "menu": true,
+      "sections": [
+        {
+          "id": "modszer-title",
+          "type": "story",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Módszerünk",
+            "body": "Jóga ezotéria nélkül: mozgás, légzés, megnyugvás.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": []
+        },
+        {
+          "id": "for-whom",
+          "type": "features",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Kinek való?",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "smile",
+              "title": "Kezdőknek",
+              "body": "Zsófi csoportjaiban az alapoktól indulunk."
+            },
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "flame",
+              "title": "Haladóknak",
+              "body": "Vinyasa és mélyebb hatha órák."
+            },
+            {
+              "kind": "card",
+              "size": "sm",
+              "icon": "heart",
+              "title": "Kismamáknak",
+              "body": "Réka órái a várandósság minden szakaszában."
+            }
+          ]
+        },
+        {
+          "id": "modszer-cta",
+          "type": "cta",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Az első óra ingyenes",
+            "actions": [
+              {
+                "label": "Jelentkezem",
+                "href": "/kapcsolat",
+                "kind": "primary"
+              }
+            ],
+            "align": "center"
+          },
+          "blocks": []
+        }
+      ]
+    },
+    {
+      "id": "buda",
+      "title": "Budai stúdió",
+      "role": "location",
+      "group": "Helyszínek",
+      "menu": true,
+      "sections": [
+        {
+          "id": "buda-details",
+          "type": "contact",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "wide"
+          },
+          "intro": {
+            "heading": "Budai stúdió",
+            "body": "1114 Budapest, Bartók Béla út 29.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "contact",
+              "size": "sm",
+              "location": "buda",
+              "map": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pest",
+      "title": "Pesti stúdió",
+      "role": "location",
+      "group": "Helyszínek",
+      "menu": true,
+      "sections": [
+        {
+          "id": "pest-details",
+          "type": "contact",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "wide"
+          },
+          "intro": {
+            "heading": "Pesti stúdió",
+            "body": "1066 Budapest, Teréz körút 12.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "contact",
+              "size": "sm",
+              "location": "pest",
+              "map": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kapcsolat",
+      "title": "Kapcsolat és jelentkezés",
+      "role": "contact",
+      "menu": true,
+      "sections": [
+        {
+          "id": "kapcsolat-title",
+          "type": "contact",
+          "tone": "base",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "sm",
+          "layout": {
+            "kind": "stack",
+            "columns": 3,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "heading": "Kapcsolat és jelentkezés",
+            "body": "Írj, hívj, vagy jelentkezz az ingyenes első órára.",
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": []
+        },
+        {
+          "id": "kapcsolat-form",
+          "type": "contact",
+          "tone": "muted",
+          "edge": "none",
+          "backdrop": "none",
+          "pad": "md",
+          "layout": {
+            "kind": "grid",
+            "columns": 2,
+            "flip": false,
+            "ratio": "even",
+            "width": "normal"
+          },
+          "intro": {
+            "actions": [],
+            "align": "start"
+          },
+          "blocks": [
+            {
+              "kind": "form",
+              "size": "sm",
+              "title": "Jelentkezés első órára",
+              "fields": [
+                "name",
+                "email",
+                "phone",
+                "service",
+                "message"
+              ],
+              "submit": "Elküldöm"
+            },
+            {
+              "kind": "contact",
+              "size": "sm",
+              "location": "buda",
+              "map": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
