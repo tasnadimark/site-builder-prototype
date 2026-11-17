@@ -11,6 +11,8 @@ import { CheckIcon, Icon, Pic, Stars, Txt, cx } from './parts';
 type Common = { 'data-block': number; 'data-kind': string; 'data-size': string; 'data-selected'?: true; style?: CSSProperties };
 type BlockProps = { s: Section; b: Exclude<Block, { kind: 'row' }>; i: number; boxed: boolean; asList: boolean; stepNo: number; style?: CSSProperties };
 
+export const personKey = (name: string) => name.trim().toLowerCase();
+
 const initials = (name: string) =>
   name
     .split(/\s+/)
@@ -210,7 +212,7 @@ function RowGroup({ s, item, boxed, selected, style }: { s: Section; item: Extra
 }
 
 export function BlockView({ s, b, i, boxed, asList, stepNo, style }: BlockProps) {
-  const { edit, theme, t } = useSite();
+  const { edit, theme, t, portraits } = useSite();
   const base: Path = ['section', s.id, 'blocks', i];
   const selected = edit?.selection?.sectionId === s.id && edit.selection.block === i;
   const common: Common = { 'data-block': i, 'data-kind': b.kind, 'data-size': b.size, 'data-selected': selected || undefined, style };
@@ -333,11 +335,12 @@ export function BlockView({ s, b, i, boxed, asList, stepNo, style }: BlockProps)
         </div>
       );
 
-    case 'person':
+    case 'person': {
+      const portrait = b.image ?? portraits.get(personKey(b.name));
       return (
         <article className="blk person" {...common}>
-          {b.image ? (
-            <Pic image={b.image} className="person-pic" />
+          {portrait ? (
+            <Pic image={portrait} className="person-pic" />
           ) : (
             <div className="person-pic person-initials" aria-hidden>
               {initials(b.name)}
@@ -350,6 +353,7 @@ export function BlockView({ s, b, i, boxed, asList, stepNo, style }: BlockProps)
           </div>
         </article>
       );
+    }
 
     case 'contact':
       return <Contact b={b} common={common} />;

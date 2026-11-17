@@ -47,45 +47,78 @@ function serializeRich(el: HTMLElement): string {
 let measurer: CanvasRenderingContext2D | null = null;
 
 /**
- * Shrinks a heading just enough that its longest word fits on one line. Long compound
- * words are everywhere in Hungarian ("Villanyszerelés", "Időpontfoglalás"), and a
- * headline broken mid-word looks like a mistake. Hyphenation stays as the last resort.
+ * How a heading is fitted to the room it has:
+ * - "word": shrink just enough that the longest word fits on one line (the default).
+ * - "giant": as large as the width allows, over one to three lines.
+ * - "line": one line that fills the width.
  */
-function useFitLongestWord(enabled: boolean, text: string, font: string) {
+export type Fit = 'word' | 'giant' | 'line';
+
+/**
+ * Fits a heading to its container. Long compound words are everywhere in Hungarian
+ * ("Villanyszerelés", "Időpontfoglalás"), and a headline broken mid-word looks like a
+ * mistake, so no mode ever lets a word be split unless it cannot fit at any allowed size.
+ */
+function useFitHeading(mode: Fit | null, text: string, font: string) {
   const ref = useRef<HTMLElement>(null);
   useEffect(() => {
     const el = ref.current;
-    if (!enabled || !el) return;
+    if (!mode || !el) return;
+    const box = el.parentElement ?? el;
     const fit = () => {
       el.style.fontSize = '';
+      el.style.whiteSpace = '';
       const cs = getComputedStyle(el);
       const size = parseFloat(cs.fontSize);
-      const room = (el.parentElement ?? el).clientWidth;
+      const room = box.clientWidth;
       if (!size || !room) return;
       measurer ??= document.createElement('canvas').getContext('2d');
       if (!measurer) return;
       measurer.font = `${cs.fontWeight} ${size}px ${cs.fontFamily}`;
       const spacing = parseFloat(cs.letterSpacing) || 0;
-      let widest = 0;
-      for (const raw of (el.textContent ?? '').split(/\s+/)) {
-        const word = cs.textTransform === 'uppercase' ? raw.toUpperCase() : raw;
-        widest = Math.max(widest, measurer.measureText(word).width + spacing * word.length);
-      }
+      const widthOf = (raw: string) => {
+        const t = cs.textTransform === 'uppercase' ? raw.toUpperCase() : raw;
+        return measurer!.measureText(t).width + spacing * t.length;
+      };
+      const words = (el.textContent ?? '').trim().split(/\s+/);
       // A little slack for italics and the padding of highlighted words.
-      widest *= 1.07;
-      const scale = widest > room ? room / widest : 1;
-      if (scale < 1) el.style.fontSize = `${(size * Math.max(0.6, scale)).toFixed(1)}px`;
-      // Once every word fits, nothing may be split: balanced wrapping would otherwise
-      // hyphenate a word that fits, just to even out the lines. Only a word that is still
-      // too long at the smallest size is allowed to break.
-      el.style.hyphens = scale < 0.6 ? 'auto' : 'manual';
+      const widest = Math.max(...words.map(widthOf)) * 1.07;
+
+      if (mode === 'word') {
+        const scale = widest > room ? room / widest : 1;
+        if (scale < 1) el.style.fontSize = `${(size * Math.max(0.6, scale)).toFixed(1)}px`;
+        // Once every word fits, nothing may be split: balanced wrapping would otherwise
+        // hyphenate a word that fits, just to even out the lines.
+        el.style.hyphens = scale < 0.6 ? 'auto' : 'manual';
+        return;
+      }
+
+      // Widths per pixel of font size, so any size can be tried without measuring again.
+      const whole = (widthOf(words.join(' ')) * 1.04) / size;
+      const word = widest / size;
+      let px: number;
+      let lines = 1;
+      if (mode === 'line') {
+        px = Math.min(room / whole, room * 0.36);
+      } else {
+        // On a phone "giant" means several short lines; on a desktop, one or two long ones.
+        const smallest = room < 600 ? 0.125 : 0.064;
+        const sizeFor = (n: number) => room / ((whole / n) * (n === 1 ? 1 : 1.14));
+        while (lines < 3 && sizeFor(lines) / room < smallest) lines++;
+        px = Math.min(sizeFor(lines), room * 0.2, room / word);
+      }
+      el.style.fontSize = `${px.toFixed(1)}px`;
+      el.style.whiteSpace = lines === 1 ? 'nowrap' : '';
+      el.style.hyphens = 'manual';
+      // The picture is positioned relative to the size the heading ended up at.
+      box.style.setProperty('--giant', `${px.toFixed(1)}px`);
     };
     fit();
     const ro = new ResizeObserver(fit);
-    ro.observe(el.parentElement ?? el);
+    ro.observe(box);
     void document.fonts?.ready.then(fit);
     return () => ro.disconnect();
-  }, [enabled, text, font]);
+  }, [mode, text, font]);
   return ref;
 }
 
@@ -98,16 +131,18 @@ type TxtProps = {
   commit?: (value: string) => boolean;
   className?: string;
   rich?: boolean;
+  /** How a heading is fitted to its container. Rich text is fitted by its longest word unless told otherwise. */
+  fit?: Fit | false;
   [attr: `data-${string}`]: string | undefined;
 };
 
 /** A piece of copy. In an editor it can be typed into directly; the change is one `set` operation. */
-export function Txt({ as, value, path, commit, className, rich, ...rest }: TxtProps) {
+export function Txt({ as, value, path, commit, className, rich, fit, ...rest }: TxtProps) {
   const { edit, theme } = useSite();
   const Tag = (as ?? 'span') as ElementType;
   const html = rich ? richToHtml(value, theme.traits.emphasis === 'highlight') : escapeHtml(value);
   // Headings are the only rich text, and the only text large enough to need fitting.
-  const ref = useFitLongestWord(!!rich, value, `${theme.fonts.display}/${theme.scale}/${theme.traits.caps}`);
+  const ref = useFitHeading(fit === false ? null : (fit ?? (rich ? 'word' : null)), value, `${theme.fonts.display}/${theme.scale}/${theme.traits.caps}`);
 
   if (!edit || (!path && !commit)) return <Tag ref={ref} className={className} {...rest} dangerouslySetInnerHTML={{ __html: html }} />;
 

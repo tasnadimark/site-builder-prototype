@@ -1853,3 +1853,269 @@
   display: grid;
   gap: 0.5rem;
 }
+
+/* ---------------------------------------------------------------- hero styles
+   Different ways to compose the first screen from the same heading, body, buttons,
+   picture and blocks. --giant is the size the heading was fitted to (set in parts.tsx). */
+
+.site .hero-giant {
+  position: relative;
+  z-index: 3;
+  margin: 0;
+  line-height: 0.94;
+}
+.site .hero-copy {
+  display: grid;
+  align-content: end;
+  justify-items: start;
+  gap: clamp(18px, 2.4cqi, 30px);
+  min-width: 0;
+}
+
+/* a photo backdrop with centred text puts the text in the middle of the photo */
+.site .sec[data-backdrop='media']:has(.intro[data-align='center']) {
+  align-items: center;
+}
+
+/* overlap: a very large heading across the full width, over the top of a tall picture */
+.site .hero-overlap {
+  display: grid;
+  gap: clamp(20px, 3cqi, 36px);
+}
+.site .hero-overlap-media {
+  position: relative;
+  z-index: 1;
+  margin: calc(var(--giant, 4rem) * -0.4) 0 0;
+}
+.site .hero-overlap-media .pic {
+  aspect-ratio: 4 / 5;
+}
+/* the picture is washed out where the heading crosses it, so the heading stays readable */
+.site .hero-overlap-media .pic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to bottom, color-mix(in oklab, var(--sbg) 66%, transparent), transparent 44%);
+  pointer-events: none;
+}
+@container site (min-width: 880px) {
+  .site .hero-overlap {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    /* the heading's row is only as tall as the heading; the picture's extra height goes to the copy's row */
+    grid-template-rows: auto 1fr;
+    column-gap: var(--gap);
+    row-gap: 0;
+  }
+  .site .hero-overlap > .hero-giant {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    align-self: start;
+  }
+  .site .hero-overlap-media {
+    grid-column: 7 / -1;
+    grid-row: 1 / span 2;
+    margin-top: calc(var(--giant, 6rem) * 0.55);
+  }
+  .site .hero-overlap > .hero-copy {
+    grid-column: 1 / span 5;
+    grid-row: 2;
+    padding-block: clamp(40px, 8cqi, 120px) clamp(8px, 2cqi, 32px);
+  }
+  .site .hero-overlap[data-flip] .hero-overlap-media {
+    grid-column: 1 / span 6;
+  }
+  .site .hero-overlap[data-flip] > .hero-copy {
+    grid-column: 8 / -1;
+  }
+}
+
+/* wordmark: the heading as one giant word, the picture in the middle of it */
+.site .sec[data-hero='wordmark'] {
+  padding-bottom: 0;
+}
+.site .hero-wordmark {
+  display: grid;
+}
+.site .hero-wordmark > .hero-giant {
+  z-index: 1;
+  justify-self: center;
+  line-height: 0.86;
+  text-align: center;
+}
+.site .hero-wordmark-row {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: clamp(18px, 3cqi, 40px);
+  margin-top: calc(var(--giant, 5rem) * -0.36);
+}
+.site .hero-wordmark-media {
+  order: -1;
+  width: min(74%, 400px);
+  margin: 0;
+}
+.site .hero-wordmark-media .pic {
+  aspect-ratio: 4 / 5;
+}
+.site .hero-side {
+  max-width: 24ch;
+  font-size: 1.04rem;
+  line-height: 1.35;
+  text-align: center;
+  text-wrap: balance;
+}
+.site .hero-side:empty {
+  display: none;
+}
+.site .hero-wordmark-blocks {
+  display: grid;
+  justify-content: center;
+  margin-top: clamp(24px, 3cqi, 44px);
+}
+.site .hero-bar {
+  display: grid;
+  width: 100cqi;
+  margin-top: clamp(28px, 4.5cqi, 60px);
+  margin-left: calc((100% - 100cqi) / 2);
+  border-top: 1px solid var(--sink);
+}
+.site .hero-bar-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 1.25rem var(--gutter);
+  border-top: 1px solid var(--sink);
+  font-size: 1.1rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.site .hero-bar-cell:first-child {
+  border-top: 0;
+}
+.site .hero-bar-cell:hover {
+  background: var(--sink);
+  color: var(--sbg);
+}
+@container site (min-width: 760px) {
+  .site .hero-wordmark-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 32%) minmax(0, 1fr);
+    align-items: center;
+  }
+  .site .hero-wordmark-media {
+    order: 0;
+    width: 100%;
+  }
+  .site .hero-side:empty {
+    display: block;
+  }
+  .site .hero-bar {
+    grid-template-columns: repeat(var(--cells, 2), minmax(0, 1fr));
+  }
+  .site .hero-bar-cell {
+    border-top: 0;
+    border-left: 1px solid var(--sink);
+  }
+  .site .hero-bar-cell:first-child {
+    border-left: 0;
+  }
+}
+
+/* ticker: a full photo, a short statement, and the heading as one giant moving line */
+.site .sec[data-hero='ticker'] {
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(560px, 62cqi, 860px);
+  padding-bottom: 0;
+  overflow: hidden;
+}
+.site .sec[data-hero='ticker'] > .wrap {
+  flex: 1;
+}
+.site .hero-statement {
+  max-width: 17em;
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  font-size: clamp(1.5rem, 3.3cqi, 2.7rem);
+  line-height: 1.08;
+  letter-spacing: var(--htrack);
+  text-transform: var(--hcase);
+  text-wrap: balance;
+}
+.site .hero-ticker {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  margin-top: clamp(32px, 6cqi, 80px);
+}
+.site .hero-ticker-group {
+  display: flex;
+  align-items: center;
+  gap: 0.26em;
+  padding: 0 0.26em 0.07em 0;
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  font-size: clamp(5rem, 21cqi, 19rem);
+  line-height: 0.92;
+  letter-spacing: var(--htrack);
+  text-transform: var(--hcase);
+  white-space: nowrap;
+}
+.site .hero-ticker-group h1 {
+  margin: 0;
+  font: inherit;
+  letter-spacing: inherit;
+}
+.site .hero-ticker-group .sep {
+  font-size: 0.34em;
+  color: var(--sacc-text);
+}
+
+/* edge: copy on one side, a picture that runs to the edge of the screen on the other */
+.site .sec[data-hero='edge'] {
+  padding: 80px 0 0;
+}
+.site .hero-edge {
+  display: grid;
+}
+.site .hero-edge-copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  align-content: center;
+  gap: clamp(26px, 3.6cqi, 46px);
+  padding: clamp(28px, 6cqi, 64px) var(--gutter) clamp(36px, 7cqi, 72px);
+}
+.site .hero-edge-copy .intro {
+  max-width: none;
+  margin: 0;
+}
+.site .hero-edge-media {
+  position: relative;
+  min-height: clamp(300px, 78cqi, 460px);
+}
+.site .hero-edge-media .pic {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+@container site (min-width: 880px) {
+  .site .hero-edge {
+    --inset: max(var(--gutter), calc((100cqi - var(--maxw)) / 2));
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: clamp(520px, 50cqi, 760px);
+  }
+  .site .hero-edge-copy {
+    padding: var(--padv) clamp(32px, 5cqi, 80px) var(--padv) var(--inset);
+  }
+  .site .hero-edge[data-flip] .hero-edge-copy {
+    order: 2;
+    padding: var(--padv) var(--inset) var(--padv) clamp(32px, 5cqi, 80px);
+  }
+  .site .hero-edge-media {
+    min-height: 0;
+  }
+}

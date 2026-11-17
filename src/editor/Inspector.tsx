@@ -4,7 +4,7 @@
 // document into a state the renderer cannot draw.
 
 import {
-  ArrowDown, ArrowUp, Columns2, GalleryHorizontalEnd, LayoutDashboard, LayoutGrid, Plus, Rows3, Shuffle, Trash2,
+  ArrowDown, ArrowUp, Columns2, GalleryHorizontalEnd, LayoutDashboard, LayoutGrid, PanelRightClose, Plus, Rows3, Shuffle, Trash2,
 } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import type { OpResult } from '@/site/ops';
@@ -34,6 +34,7 @@ export type InspectorProps = {
   runBurst(key: string, op: unknown): void;
   tab: Tab;
   setTab(t: Tab): void;
+  onCollapse(): void;
 };
 
 // ---------------------------------------------------------------- small controls
@@ -251,6 +252,14 @@ function ThemeTab({ doc, theme, run, runBurst }: InspectorProps) {
 
 const strip = (s?: string) => (s ?? '').replace(/\*/g, '');
 
+const HERO_LABEL: Record<(typeof V.HERO_STYLES)[number], string> = {
+  standard: 'Standard (follows the layout below)',
+  overlap: 'Giant heading over the picture',
+  wordmark: 'One giant word, picture in the middle',
+  ticker: 'Photo with a moving headline',
+  edge: 'Picture to the edge of the screen',
+};
+
 function blockLabel(b: Block): string {
   switch (b.kind) {
     case 'card': return b.title;
@@ -456,6 +465,13 @@ function SectionTab({ doc, page, goTo, theme, plan, selection, select, run }: In
         <p className="empty">Click a section on the page, or pick one above, to change its layout.</p>
       ) : (
         <>
+          {s.type === 'hero' && (
+            <Group title="Hero style">
+              <Pick value={s.hero} options={V.HERO_STYLES} onChange={(v) => up({ hero: v })} label={(v) => HERO_LABEL[v]} />
+              <p className="hint">Every style uses the same heading, text, buttons and picture, so you can switch freely.</p>
+            </Group>
+          )}
+
           <Group title="Layout">
             <Seg
               value={s.layout.kind}
@@ -706,6 +722,9 @@ export function Inspector(props: InspectorProps) {
         </button>
         <button type="button" data-on={props.tab === 'business' || undefined} onClick={() => props.setTab('business')}>
           Business
+        </button>
+        <button type="button" className="icon" onClick={props.onCollapse} aria-label="Hide the inspector" title="Hide this panel">
+          <PanelRightClose size={15} />
         </button>
       </div>
       <div className="scroll">{props.tab === 'theme' ? <ThemeTab {...props} /> : props.tab === 'section' ? <SectionTab {...props} /> : <BusinessTab {...props} />}</div>

@@ -7,7 +7,7 @@
 // State lives in memory, plus session storage so a reload of the tab keeps the current
 // site. Use the State drawer to copy the document out.
 
-import { ArrowDown, ArrowUp, Braces, Copy, Monitor, Plus, Redo2, Smartphone, Tablet, Trash2, Undo2, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, Braces, Copy, Monitor, PanelLeftOpen, PanelRightOpen, Plus, Redo2, Smartphone, Tablet, Trash2, Undo2, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { EXAMPLES, starterDoc, type Example } from '@/site/fixtures/examples';
 import { EXAMPLE_BRIEFS } from '@/site/fixtures/northfold';
@@ -35,6 +35,7 @@ type RunOpts = { source?: 'you' | 'ai'; record?: boolean; quiet?: boolean; apply
 type Tab = 'theme' | 'section' | 'business';
 
 const STORE_KEY = 'site-builder-prototype:doc';
+const PANELS_KEY = 'site-builder-prototype:panels';
 
 let uid = 0;
 
@@ -64,6 +65,24 @@ export default function Editor() {
   const [model, setModel] = useState('auto');
   const [showState, setShowState] = useState(false);
   const [showNew, setShowNew] = useState(false);
+
+  // Either side panel can be minimised to give the page more room. The choice is
+  // remembered on this device.
+  const [panels, setPanels] = useState({ left: true, right: true });
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(PANELS_KEY) ?? 'null');
+      if (saved) setPanels({ left: saved.left !== false, right: saved.right !== false });
+    } catch {}
+  }, []);
+  const togglePanel = (side: 'left' | 'right') =>
+    setPanels((p) => {
+      const next = { ...p, [side]: !p[side] };
+      try {
+        localStorage.setItem(PANELS_KEY, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
 
   const images = useMemo(() => createImageStore(), []);
   const abortRef = useRef<AbortController | null>(null);
@@ -401,8 +420,12 @@ export default function Editor() {
         </button>
       </header>
 
-      <div className="work">
-        <Chat messages={messages} busy={!!busy} hasKey={status ? status.hasKey : null} selected={selection?.sectionId ?? null} onSend={sendEdit} onStop={() => abortRef.current?.abort()} />
+      <div className="work" data-left-closed={!panels.left || undefined} data-right-closed={!panels.right || undefined}>
+        {panels.left ? (
+          <Chat messages={messages} busy={!!busy} hasKey={status ? status.hasKey : null} selected={selection?.sectionId ?? null} onSend={sendEdit} onStop={() => abortRef.current?.abort()} onCollapse={() => togglePanel('left')} />
+        ) : (
+          <Rail side="left" label="AI editor" busy={!!busy} onOpen={() => togglePanel('left')} />
+        )}
 
         <div className="center">
           <PageBar doc={doc} pageId={pageId} goTo={goTo} onAdd={(role) => addPage(role)} />
@@ -420,12 +443,32 @@ export default function Editor() {
           </main>
         </div>
 
-        <Inspector doc={doc} page={page} goTo={goTo} theme={theme} plan={plan} selection={selection} select={select} run={run} runBurst={runBurst} tab={tab} setTab={setTab} />
+        {panels.right ? (
+          <Inspector doc={doc} page={page} goTo={goTo} theme={theme} plan={plan} selection={selection} select={select} run={run} runBurst={runBurst} tab={tab} setTab={setTab} onCollapse={() => togglePanel('right')} />
+        ) : (
+          <Rail side="right" label="inspector" onOpen={() => togglePanel('right')} />
+        )}
       </div>
 
       {showState && <StateDrawer doc={doc} log={log} onClose={() => setShowState(false)} onLoad={(raw) => run({ op: 'load', doc: raw })} />}
       {showNew && <NewSite hasKey={!!status?.hasKey} onClose={() => setShowNew(false)} onGenerate={generate} onExample={openExample} />}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------- minimised panel
+
+/** What a minimised side panel leaves behind: a slim strip with a button to bring it back. */
+function Rail({ side, label, busy, onOpen }: { side: 'left' | 'right'; label: string; busy?: boolean; onOpen(): void }) {
+  const Icon = side === 'left' ? PanelLeftOpen : PanelRightOpen;
+  return (
+    <aside className="rail" data-side={side}>
+      <button type="button" onClick={onOpen} aria-label={`Show the ${label}`} title={`Show the ${label}`}>
+        <Icon size={16} />
+      </button>
+      <span>{label}</span>
+      {busy && <i className="rail-busy" title="Working" />}
+    </aside>
   );
 }
 

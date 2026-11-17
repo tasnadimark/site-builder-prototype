@@ -30,12 +30,13 @@ Every distinct image prompt is one paid call to the image model. Results are cac
 
 ## Bundled examples
 
-Five finished sites ship with the repository, pictures included. "New site" lists them all. The four generated ones are exactly as Claude Sonnet 5.5 wrote them, with pictures by Gemini 3.1 Flash Lite Image.
+Six finished sites ship with the repository, pictures included. "New site" lists them all. The five generated ones are exactly as Claude Sonnet 5.5 wrote them, with pictures by Gemini 3.1 Flash Lite Image.
 
 | Site | Kind | What it shows |
 | - | - | - |
 | Scorch Bros (the starter) | Hot sauce brand, English | A one-page site, generated in 22 seconds |
 | Csendes Tér | Yoga studio, Hungarian | Seven pages, two studios under a dropdown, a timetable, coaches |
+| Fészek Stúdió | Interior design, Hungarian | Five pages, the giant-heading hero (chosen by the model), an "Our work" gallery |
 | Hajlak Szalon | Hairdresser, Hungarian | Three pages, a grouped price list, contact and booking |
 | Kovács Villany | Electrician, Hungarian | Three pages built around a phone call and a quote request |
 | Northfold Coffee | Coffee roaster, English | Written by hand to exercise the whole vocabulary (overlap, photo backdrop, fade) |
@@ -105,6 +106,20 @@ The new blocks are general on purpose. A **row** is a name, a detail and a value
 
 **Language.** A site is written in the language of its brief. The few words the renderer writes itself (form labels, "Opening hours", the legal pages) exist in English and Hungarian (`src/site/strings.ts`). All 21 fonts cover ő and ű. Headings shrink until their longest word fits, because a Hungarian headline often has one very long word.
 
+## Hero styles
+
+The first screen can be composed five ways. Every style arranges the same things a hero already has (heading, eyebrow, body, buttons, picture, blocks), so switching never loses content and needs no new content.
+
+| Style | What it does | Needs |
+| - | - | - |
+| standard | Follows the section's layout: a split with a picture, a centred stack, or a full photo behind the text | Nothing |
+| overlap | A very large heading runs the full width and crosses the top of a tall picture | A picture |
+| wordmark | The heading as one giant word, the picture in the middle of it, notes either side, the buttons as a bar of links | A picture and a heading of one or two words |
+| ticker | A full photo, a short statement, and the heading as one giant moving line | A heading |
+| edge | Copy on one side, a picture that runs to the edge of the screen on the other | A picture |
+
+If a style's needs are not met, the planner draws the nearest one that works and the inspector says why (a wordmark with a long heading is drawn as overlap). Select a hero and use "Hero style" in the Sections tab to try them.
+
 ## Things to try
 
 - **Theme tab**: click the four presets, then Shuffle. The same document becomes a different site.
@@ -138,6 +153,9 @@ Multi-page sites for the three test businesses (one run each, 17 Nov 2026, Hunga
 | Hairdresser | 3 | 20 applied, 0 rejected | 1.9s | 28.6s |
 | Electrician | 3 | 23 applied, 0 rejected | 1.9s | 31.8s |
 | Yoga studio, two locations | 7 | 28 applied, 0 rejected | 1.6s | 30.4s |
+| Interior design studio | 5 | 29 applied, 0 rejected | 2.3s | 36.6s |
+
+The interior design run came after the hero styles were added: the model chose the overlap style unprompted and added the "Munkáink" (Our work) page.
 
 Each came out with the pages the rule gives its kind, in Hungarian, and with the contact details from the brief and nothing invented (the electrician's brief gave no prices, so its price list reads "ajánlat szerint", by quote). The 30 pictures generated while building these cost $1.01 in total, about $0.034 each.
 

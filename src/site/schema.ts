@@ -176,6 +176,8 @@ const SectionObject = z
     edge: pick(V.EDGES, 'none'),
     backdrop: pick(V.BACKDROPS, 'none'),
     pad: pick(V.PADS, 'md'),
+    /** Only used when the section is a hero. */
+    hero: pick(V.HERO_STYLES, 'standard'),
     layout: LayoutSchema,
     intro: IntroSchema,
     media: optImage,

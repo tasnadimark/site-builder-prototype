@@ -7,11 +7,12 @@
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { planSections, type Effective } from '../plan';
-import { LEGAL_PAGES, type Footer, type LegalPage, type Nav, type Section, type SiteDoc } from '../schema';
+import { LEGAL_PAGES, type Footer, type ImageRef, type LegalPage, type Nav, type Section, type SiteDoc } from '../schema';
 import { STRINGS, legalPage } from '../strings';
 import { resolveTheme, toneVars, type ToneColors } from '../theme';
 import type { Divider } from '../vocab';
-import { BlocksView } from './blocks';
+import { BlocksView, personKey } from './blocks';
+import { HeroTicker, HeroView } from './hero';
 import { SiteCtx, useSite, type EditApi, type ImageApi, type Path, type SiteContext } from './context';
 import { Btn, Pic, Txt, cx } from './parts';
 import '../site.css';
@@ -122,6 +123,7 @@ function SectionView({ s, e, index, total, first, n }: SectionProps) {
       style={style}
       data-type={s.type}
       data-layout={e.layout}
+      data-hero={e.hero === 'standard' ? undefined : e.hero}
       data-edge={e.edge}
       data-edge-shape={theme.traits.divider}
       data-backdrop={e.backdrop}
@@ -146,8 +148,13 @@ function SectionView({ s, e, index, total, first, n }: SectionProps) {
       {e.backdrop === 'motif' && <div className="backdrop backdrop-motif" aria-hidden />}
       {e.backdrop === 'glow' && <div className="backdrop backdrop-glow" aria-hidden />}
 
+      {e.hero === 'edge' ? (
+        <HeroView s={s} e={e} n={n} blocks={blocks(e.cols)} intro={<IntroView s={s} level={level} n={n} />} />
+      ) : (
       <div className="wrap">
-        {e.layout === 'split' ? (
+        {e.hero !== 'standard' ? (
+          <HeroView s={s} e={e} n={n} blocks={blocks(e.cols)} intro={null} />
+        ) : e.layout === 'split' ? (
           <div className="split" data-ratio={s.layout.ratio} data-flip={s.layout.flip || undefined} data-sticky={(!media && s.blocks.length > 2) || undefined}>
             <div className="split-a">
               <IntroView s={s} level={level} n={n} />
@@ -163,6 +170,8 @@ function SectionView({ s, e, index, total, first, n }: SectionProps) {
           </>
         )}
       </div>
+      )}
+      {e.hero === 'ticker' && <HeroTicker s={s} />}
 
       <EdgeView kind={e.edge} shape={theme.traits.divider} flip={index % 2 === 1} />
       {edit?.sectionChrome?.(s, index, total, e)}
@@ -487,9 +496,14 @@ export function Site({ doc, pageId = 'home', onNavigate, edit = null, images = n
   const page = doc.pages.find((p) => p.id === pageId) ?? doc.pages[0];
   const sections = legal ? [] : page.sections;
   const plan = useMemo(() => planSections(sections, theme, doc.footer.tone), [sections, theme, doc.footer.tone]);
+  const portraits = useMemo(() => {
+    const map = new Map<string, ImageRef>();
+    for (const p of doc.pages) for (const s of p.sections) for (const b of s.blocks) if (b.kind === 'person' && b.image && !map.has(personKey(b.name))) map.set(personKey(b.name), b.image);
+    return map;
+  }, [doc.pages]);
   const ctx = useMemo<SiteContext>(
-    () => ({ doc, theme, t: STRINGS[doc.meta.language], edit, images, navigate: (id) => onNavigate?.(id) }),
-    [doc, theme, edit, images, onNavigate],
+    () => ({ doc, theme, t: STRINGS[doc.meta.language], edit, images, navigate: (id) => onNavigate?.(id), portraits }),
+    [doc, theme, edit, images, onNavigate, portraits],
   );
   useFontLinks(theme.fontLinks);
 

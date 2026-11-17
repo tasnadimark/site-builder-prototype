@@ -38,6 +38,11 @@ export type SiteContext = {
   images: ImageApi | null;
   /** Go to another page of the site. */
   navigate(pageId: string): void;
+  /**
+   * Each person's portrait, by name. Someone introduced with a picture on one page keeps
+   * it everywhere else they are mentioned, so a team never has some faces and some blanks.
+   */
+  portraits: Map<string, ImageRef>;
 };
 
 export const SiteCtx = createContext<SiteContext | null>(null);

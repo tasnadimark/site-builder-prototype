@@ -29,6 +29,12 @@ export const EXAMPLE_BRIEFS: { label: string; brief: string; kind?: string }[] =
     brief:
       'Csendes Tér Jógastúdió: két stúdió Budapesten. Budai stúdió: 1114 Budapest, Bartók Béla út 29. Pesti stúdió: 1066 Budapest, Teréz körút 12. Hatha, vinyasa, yin és kismama jóga, kezdőknek és haladóknak, hétköznap reggel és este, hétvégén délelőtt. Négy oktató: Anna (hatha, alapító), Bence (vinyasa), Réka (yin és kismama), Zsófi (kezdő csoportok). Az első óra ingyenes, bérletek 5 és 10 alkalomra, valamint havi korlátlan bérlet. Telefon: +36 70 555 0101, e-mail: szia@csendester.example. Google értékelés: 4,9 (348 értékelés). Hangulat: nyugodt, befogadó, nem ezoterikus.',
   },
+  {
+    label: 'Lakberendező',
+    kind: 'creative',
+    brief:
+      'Fészek Stúdió: lakberendező stúdió Budapesten (1024 Budapest, Margit körút 15.). Két tervező, Nóra és Dani, lakások és családi házak teljes belsőépítészeti tervezését vállalja a koncepciótól a kivitelezés felügyeletéig. Eddig 60 befejezett otthon. Csomagok: konzultáció, látványterv, teljes tervezés. Telefon: +36 30 765 4321, e-mail: hello@feszekstudio.example. Hétfő–péntek 9–17. Google értékelés: 5,0 (41 értékelés). Hangulat: letisztult, meleg, magabiztos.',
+  },
   { label: 'Coffee roaster', brief: NORTHFOLD_BRIEF },
   {
     label: 'B2B invoicing tool',

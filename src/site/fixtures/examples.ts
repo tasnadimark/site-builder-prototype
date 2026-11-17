@@ -5,6 +5,7 @@ import { docFromOps } from '../ops';
 import { parseDoc, type SiteDoc } from '../schema';
 import { NORTHFOLD_OPS } from './northfold';
 import csendesTer from './csendes-ter.json';
+import feszekStudio from './feszek-studio.json';
 import hajlakSzalon from './hajlak-szalon.json';
 import kovacsVillany from './kovacs-villany.json';
 import scorchBros from './scorch-bros.json';
@@ -23,6 +24,12 @@ export const EXAMPLES: Example[] = [
     label: 'Csendes Tér (yoga studio, Hungarian)',
     note: 'Generated in 30 seconds. Seven pages, with both studios under a dropdown, a timetable and the coaches.',
     load: () => parseDoc(csendesTer),
+  },
+  {
+    id: 'feszek-studio',
+    label: 'Fészek Stúdió (interior design, Hungarian)',
+    note: 'Generated in 37 seconds. The AI chose the giant-heading hero by itself; five pages including an “Our work” gallery.',
+    load: () => parseDoc(feszekStudio),
   },
   {
     id: 'hajlak-szalon',

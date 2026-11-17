@@ -73,6 +73,7 @@ Section = {
   edge: ${any(V.EDGES)},      how this section hands over to the next one
   backdrop: ${any(V.BACKDROPS)},
   pad: ${any(V.PADS)},
+  hero?: ${any(V.HERO_STYLES)},       only on a section of type "hero"; see hero styles below
   layout: { kind: ${any(V.LAYOUTS)}, columns?: 1-4, flip?: boolean, ratio?: ${any(V.RATIOS)}, width?: ${any(V.WIDTHS)} },
   intro: { eyebrow?: string, heading?: string, body?: string, actions?: Action[] (max 2), align: ${any(V.ALIGNS)} },
   media?: Image,              the section's main picture
@@ -112,6 +113,14 @@ Layouts arrange the intro, the media and the blocks:
 - "bento": intro above a mosaic of mixed kinds (card, stat, image, quote). Sizes are "feature" (2×2), "wide" (2×1), "tall" (1×2), "sm" (1×1). These orders tile cleanly: with columns 3 use feature, sm, sm, wide, sm; with columns 4 use feature, sm, sm, wide, wide, sm, sm. Give the feature block an image. A card with a title and one sentence is "sm".
 - "marquee": blocks drift sideways across the full width. Good for logos, short quotes, images.
 
+Hero styles compose the first screen. They all use the same heading, body, actions, media and blocks, only arranged differently:
+- "standard": follows "layout". A split with a picture, a centred stack, or backdrop "media" for a full photo (with intro.align "center" the text sits in the middle of the photo).
+- "overlap": a very large heading runs the full width and crosses the top of a tall picture; body and buttons sit at the bottom beside it. Needs media. Best with a heading of two to five words.
+- "wordmark": the heading becomes one giant word filling the width, with the picture in the middle of it, the eyebrow and body as small notes left and right, and the actions as a bar of links along the bottom. Needs media and a heading of one or two words, usually the brand name. Keep eyebrow and body under ten words each.
+- "ticker": a full photo, the body as a short statement, and the heading as one giant line drifting along the bottom. Loud; for bold brands only.
+- "edge": copy on one side, a picture that runs to the edge of the screen on the other. Calm and spacious.
+Choose the hero style for the brand. Do not default to "standard": a business with a short, strong name suits "wordmark", a confident modern one "overlap", a calm service business "edge".
+
 Tones: "base" is the page colour, "muted" a quiet panel, "inverse" swaps ink and background, "accent" floods the section with the brand colour.
 Edges: "divider" draws the theme's divider shape into the next section, "overlap" lets a grid or bento straddle the boundary, "fade" blends the two colours, "none" is a clean cut. Edges only show between two different tones.
 Backdrops: "motif" draws the theme pattern, "glow" a soft accent light, "media" uses the section image as a full-bleed photo behind white text (dramatic; use at most once per site).
@@ -126,8 +135,9 @@ ${pageRuleText()}
 5. Language. Write every word of copy in the language of the brief and set meta.language to match ("hu" for Hungarian, otherwise "en"). Ids and image prompts stay in English.
 6. Copy is specific to this business: its real services, prices, people and places. No lorem ipsum, no filler such as "we are passionate about". Headings under nine words. Never invent real company names for logos or testimonials; plausible fictional people are fine for reviews.
 7. Facts. Take phone, email, address, opening hours and review score from the brief and put them in "business". If the brief does not give one, leave that field out. Never make up contact details.
-8. Images: at most 10 in the whole site, about four on Home and one or two on each other page. Each prompt describes the subject and composition only. No style words (those live in theme.imageStyle) and never text or logos in an image.
-9. The first section of every page other than Home is its title: a section with a heading and one sentence, no "hero" type.`;
+8. People: give each person a portrait image where they are introduced in full (the people page, or Home if there is no such page). Wherever else that person appears, leave the image out; their portrait is reused automatically.
+9. Images: at most 10 in the whole site, about four on Home and one or two on each other page. Each prompt describes the subject and composition only. No style words (those live in theme.imageStyle) and never text or logos in an image.
+10. The first section of every page other than Home is its title: a section with a heading and one sentence, no "hero" type.`;
 
 const kindHint = (kind?: string) => {
   const k = BUSINESS_KINDS.find((x) => x.id === kind);
