@@ -1,0 +1,1344 @@
+/* ==========================================================================
+   Site renderer styles.
+   Everything is scoped under .site and driven by tokens set in theme.ts.
+   Responsive rules are container queries, so the same markup adapts to the
+   width of whatever it is placed in (a browser, or the editor's device preview).
+   ========================================================================== */
+
+.site {
+  container: site / inline-size;
+  position: relative;
+  isolation: isolate;
+  background: var(--page-bg);
+  color: var(--page-ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+  overflow-wrap: break-word;
+
+  --gutter: clamp(20px, 5cqi, 64px);
+  --maxw: 1200px;
+  --gap: clamp(14px, 1.8cqi, 24px);
+  --card-pad: clamp(20px, 2.4cqi, 32px);
+  --fs-h1: clamp(calc(2.35rem * var(--dk)), calc(6.3cqi * var(--k1) * var(--dk)), calc(5.3rem * var(--k1) * var(--dk)));
+  --fs-h2: clamp(calc(1.8rem * var(--dk)), calc(4.1cqi * var(--k2) * var(--dk)), calc(3.3rem * var(--k2) * var(--dk)));
+  --fs-h3: clamp(1.15rem, 1.9cqi, 1.42rem);
+  --fs-lead: clamp(1.04rem, 1.6cqi, 1.26rem);
+  --pad: clamp(calc(56px * var(--dn)), calc(9cqi * var(--dn)), calc(132px * var(--dn)));
+}
+
+.site *,
+.site *::before,
+.site *::after {
+  box-sizing: border-box;
+}
+.site :where(h1, h2, h3, p, ul, ol, figure, blockquote) {
+  margin: 0;
+  padding: 0;
+}
+.site :where(ul, ol) {
+  list-style: none;
+}
+.site :where(a) {
+  color: inherit;
+  text-decoration: none;
+}
+.site :where(img) {
+  display: block;
+  max-width: 100%;
+}
+.site :where(button) {
+  font: inherit;
+}
+
+/* ---------------------------------------------------------------- type */
+
+.site .h1,
+.site .h2 {
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  letter-spacing: var(--htrack);
+  line-height: var(--hlead);
+  text-transform: var(--hcase);
+  text-wrap: balance;
+}
+.site .h1 {
+  font-size: var(--fs-h1);
+}
+.site .h2 {
+  font-size: var(--fs-h2);
+}
+.site .sec[data-type='cta'] .h2 {
+  font-size: calc(var(--fs-h2) * 1.2);
+}
+.site .h3 {
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  font-size: var(--fs-h3);
+  line-height: 1.2;
+  letter-spacing: calc(var(--htrack) * 0.6);
+  text-transform: var(--hcase);
+  text-wrap: balance;
+}
+.site .lead {
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  color: var(--ssoft);
+  max-width: 58ch;
+  text-wrap: pretty;
+}
+.site .body {
+  color: var(--ssoft);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+/* Emphasised words in headings. One treatment per site, set by the theme. */
+.site .em {
+  font-style: normal;
+}
+.site[data-emphasis='italic'] .em {
+  font-style: italic;
+  color: var(--sacc-text);
+}
+/* inline-block keeps the marker exactly one line tall, so stacked lines never collide
+   however tall the typeface's ascenders are */
+.site[data-emphasis='highlight'] .em {
+  display: inline-block;
+  background: var(--sacc);
+  color: var(--sacc-ink);
+  padding: 0 0.16em;
+  border-radius: calc(var(--r) * 0.3);
+}
+/* bridge the space to the next word of the same phrase */
+.site[data-emphasis='highlight'] .em:has(+ .em-c) {
+  box-shadow: 0.3em 0 0 var(--sacc);
+}
+.site[data-emphasis='gradient'] .em {
+  background: linear-gradient(100deg, var(--sacc-text), var(--sacc2-text));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.site[data-emphasis='underline'] .em {
+  text-decoration: underline;
+  text-decoration-color: var(--sacc);
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.12em;
+  text-decoration-skip-ink: none;
+}
+.site[data-emphasis='outline'] .em {
+  color: transparent;
+  -webkit-text-stroke: 0.03em var(--sink);
+}
+
+.site .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--sacc-text);
+}
+.site[data-eyebrow='pill'] .eyebrow {
+  font-size: 0.84rem;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  padding: 0.36em 0.95em;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--sacc) 15%, transparent);
+}
+.site[data-eyebrow='mono'] .eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+}
+.site[data-eyebrow='mono'] .eyebrow::before {
+  content: '//';
+  opacity: 0.6;
+}
+.site[data-eyebrow='rule'] .eyebrow::before {
+  content: '';
+  width: 2.4em;
+  height: 1px;
+  background: currentColor;
+}
+.site[data-eyebrow='number'] .eyebrow::before {
+  content: attr(data-n);
+  font-variant-numeric: tabular-nums;
+  color: var(--ssoft);
+  padding-right: 0.7em;
+  border-right: 1px solid var(--sline2);
+}
+
+/* ---------------------------------------------------------------- buttons */
+
+.site .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font: 600 0.96rem/1 var(--font-body);
+  padding: 0.98em 1.45em;
+  border-radius: var(--r-btn);
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+.site .btn-primary {
+  background: var(--sacc);
+  color: var(--sacc-ink);
+}
+.site .btn-secondary {
+  border-color: var(--sline2);
+  color: var(--sink);
+}
+.site .btn-secondary:hover {
+  border-color: var(--sink);
+}
+.site[data-button='solid'] .btn-primary:hover {
+  transform: translateY(-1px);
+}
+.site[data-button='pill'] .btn {
+  border-radius: 999px;
+}
+.site[data-button='pill'] .btn-primary:hover {
+  transform: scale(1.03);
+}
+.site[data-button='hard'] .btn {
+  border: 2px solid var(--sink);
+  box-shadow: 4px 4px 0 var(--sink);
+  text-transform: var(--hcase);
+  letter-spacing: 0.01em;
+}
+.site[data-button='hard'] .btn-secondary {
+  background: var(--sbg);
+}
+.site[data-button='hard'] .btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--sink);
+}
+.site[data-button='underline'] .btn {
+  padding: 0.5em 0;
+  border: 0;
+  border-bottom: 1.5px solid var(--sline2);
+  border-radius: 0;
+  background: none;
+  color: var(--sink);
+}
+.site[data-button='underline'] .btn-primary {
+  border-bottom-color: var(--sacc-text);
+}
+.site[data-button='underline'] .btn-primary::after {
+  content: '\2192';
+  transition: transform 0.15s ease;
+}
+.site[data-button='underline'] .btn-primary:hover::after {
+  transform: translateX(4px);
+}
+/* Inside a boxed plan or the nav an underlined link still needs to read as a button. */
+.site[data-button='underline'] .plan .btn,
+.site[data-button='underline'] .nav-cta {
+  padding: 0.9em 1.3em;
+  border: 1.5px solid var(--sline2);
+  justify-content: center;
+}
+.site[data-button='underline'] .plan .btn-primary,
+.site[data-button='underline'] .nav-cta.btn-primary {
+  background: var(--sacc);
+  color: var(--sacc-ink);
+  border-color: transparent;
+}
+.site[data-button='underline'] .plan .btn::after,
+.site[data-button='underline'] .nav-cta::after {
+  content: none;
+}
+
+/* ---------------------------------------------------------------- sections */
+
+.site .sec {
+  --padv: var(--pad);
+  position: relative;
+  background: var(--sbg);
+  color: var(--sink);
+  padding-block: var(--padv);
+}
+.site .sec[data-pad='sm'] {
+  --padv: calc(var(--pad) * 0.58);
+}
+.site .sec[data-pad='lg'] {
+  --padv: calc(var(--pad) * 1.3);
+}
+.site .sec[data-first] {
+  padding-top: calc(var(--padv) * 0.6 + 96px);
+}
+.site .wrap {
+  position: relative;
+  z-index: 2;
+  width: min(100% - 2 * var(--gutter), var(--maxw));
+  margin-inline: auto;
+}
+
+.site .intro {
+  display: grid;
+  gap: clamp(16px, 2.4cqi, 28px);
+  margin-bottom: clamp(32px, 5cqi, 68px);
+}
+.site .intro:last-child {
+  margin-bottom: 0;
+}
+.site .intro-main,
+.site .intro-side {
+  display: grid;
+  justify-items: start;
+  min-width: 0;
+}
+.site .intro-main {
+  gap: clamp(14px, 1.8cqi, 22px);
+}
+.site .intro-side {
+  gap: clamp(18px, 2.4cqi, 30px);
+}
+.site .intro[data-align='start'] {
+  max-width: 860px;
+}
+.site .intro[data-align='center'] {
+  max-width: 900px;
+  margin-inline: auto;
+  text-align: center;
+}
+.site .intro[data-align='center'] .intro-main,
+.site .intro[data-align='center'] .intro-side {
+  justify-items: center;
+}
+.site .intro[data-align='center'] .actions {
+  justify-content: center;
+}
+.site .actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+}
+.site[data-button='underline'] .actions {
+  gap: 12px 30px;
+}
+
+.site .sec-media {
+  margin-bottom: clamp(28px, 4cqi, 56px);
+}
+.site .sec-media:last-child {
+  margin-bottom: 0;
+}
+
+/* split: copy on one side, a picture or the blocks on the other */
+.site .split {
+  display: grid;
+  gap: clamp(36px, 6cqi, 92px);
+  align-items: center;
+}
+.site .split-a,
+.site .split-b {
+  min-width: 0;
+}
+.site .split-a {
+  display: grid;
+  gap: clamp(26px, 3.6cqi, 46px);
+  align-content: center;
+}
+.site .split .intro {
+  margin: 0;
+  max-width: none;
+}
+.site .split .sec-media {
+  margin: 0;
+}
+
+@container site (min-width: 820px) {
+  .site .intro[data-align='split'] {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: clamp(32px, 6cqi, 96px);
+    align-items: end;
+  }
+  .site .split .intro[data-align='split'] {
+    grid-template-columns: 1fr;
+  }
+}
+
+@container site (min-width: 880px) {
+  .site .split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .site .split[data-ratio='media'] {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+  .site .split[data-ratio='text'] {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  }
+  .site .split[data-flip] .split-a {
+    order: 2;
+  }
+  .site .split[data-flip][data-ratio='media'] {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  }
+  .site .split[data-flip][data-ratio='text'] {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+  .site .split[data-sticky] {
+    align-items: start;
+  }
+  .site .split[data-sticky] .split-a {
+    position: sticky;
+    top: 40px;
+  }
+}
+
+/* ---------------------------------------------------------------- block layouts */
+
+.site .blocks {
+  display: grid;
+  gap: var(--gap);
+}
+.site .blk {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.site .blocks[data-layout='stack'][data-width='narrow'] {
+  max-width: 680px;
+}
+.site .blocks[data-layout='stack'][data-width='normal'] {
+  max-width: 860px;
+}
+.site .intro[data-align='center'] ~ .blocks[data-layout='stack'] {
+  margin-inline: auto;
+}
+.site .blocks[data-kinds='qa'][data-cols='1'],
+.site .blocks[data-kinds='step'][data-cols='1'] {
+  gap: 0;
+}
+
+.site .blocks[data-layout='grid'] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.site .blocks[data-layout='grid'][data-kinds='stat']:not([data-cols='1']) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.site .blocks[data-layout='grid'][data-kinds='stat'][data-count='3'] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.site .blocks[data-kinds='logo'] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 44px;
+}
+
+.site .blocks[data-layout='bento'] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.site .blocks[data-layout='bento'] > .blk {
+  min-height: 150px;
+}
+
+@container site (min-width: 640px) {
+  .site .blocks[data-layout='grid']:not([data-cols='1']) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .site .blocks[data-layout='grid'][data-kinds='stat'][data-cols='3'] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .site .blocks[data-layout='bento'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(clamp(170px, 18cqi, 230px), auto);
+  }
+  .site .blocks[data-layout='bento'] > .blk {
+    grid-column: var(--mc);
+    grid-row: var(--mr);
+    min-height: 0;
+  }
+}
+
+@container site (min-width: 1000px) {
+  .site .sec:not([data-layout='split']) .blocks[data-layout='grid'][data-cols='3'] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .site .sec:not([data-layout='split']) .blocks[data-layout='grid'][data-cols='4'] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .site .blocks[data-layout='bento'][data-cols='3'] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .site .blocks[data-layout='bento'][data-cols='4'] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .site .blocks[data-layout='bento'] > .blk {
+    grid-column: var(--lc);
+    grid-row: var(--lr);
+  }
+}
+
+/* marquee: blocks drift sideways, edge to edge */
+.site .marquee {
+  width: 100cqi;
+  margin-left: calc((100% - 100cqi) / 2);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+}
+.site .marquee-track {
+  display: flex;
+  width: max-content;
+  animation: site-marquee var(--dur, 40s) linear infinite;
+}
+.site .marquee:hover .marquee-track,
+.site .marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+.site .marquee-group {
+  display: flex;
+  align-items: stretch;
+  gap: var(--gap);
+  padding-right: var(--gap);
+}
+.site .marquee .blk {
+  flex: none;
+  width: clamp(270px, 30cqi, 390px);
+}
+.site .marquee .stat {
+  width: clamp(190px, 20cqi, 250px);
+}
+.site .marquee .logo {
+  width: auto;
+  padding-inline: clamp(14px, 2.4cqi, 34px);
+}
+.site .marquee .pic-block {
+  width: clamp(240px, 26cqi, 340px);
+}
+@keyframes site-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site .marquee-track {
+    animation: none;
+  }
+  .site .marquee {
+    overflow-x: auto;
+  }
+}
+
+/* ---------------------------------------------------------------- block surfaces
+   The card style is a theme trait. It is set on the blocks container, because the
+   layout planner may upgrade it (a bento cell always needs a surface). */
+
+.site .boxed {
+  padding: var(--card-pad);
+  border-radius: var(--r);
+}
+.site [data-card='plain'] .boxed {
+  padding: var(--card-pad) 0 0;
+  border-top: 1px solid var(--sline2);
+  border-radius: 0;
+}
+.site [data-card='outline'] .boxed {
+  border: 1px solid var(--sline2);
+  background: color-mix(in oklab, var(--ssurf) 50%, transparent);
+}
+.site [data-card='raised'] .boxed {
+  background: var(--sraise);
+  box-shadow: var(--shadow);
+}
+.site [data-card='tinted'] .boxed {
+  background: var(--ssurf);
+}
+.site [data-card='hard'] .boxed {
+  background: var(--sraise);
+  border: 2px solid var(--sink);
+  box-shadow: 5px 5px 0 var(--sink);
+}
+
+/* card */
+.site .card.boxed {
+  padding: 0;
+  overflow: hidden;
+}
+.site .card-body {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  padding: var(--card-pad);
+}
+.site .card-pic {
+  aspect-ratio: 16 / 10;
+  border-radius: 0;
+}
+.site [data-card='plain'] .card.boxed {
+  border-top: 0;
+  overflow: visible;
+}
+.site [data-card='plain'] .card-body {
+  padding: var(--card-pad) 0 0;
+  border-top: 1px solid var(--sline2);
+}
+.site [data-card='plain'] .card-pic {
+  border-radius: var(--r);
+}
+.site [data-card='plain'] .card-pic + .card-body {
+  border-top: 0;
+  padding-top: calc(var(--card-pad) * 0.7);
+}
+.site .blocks[data-layout='bento'] .card:has(.card-pic) .card-pic {
+  flex: 1 1 0;
+  min-height: 150px;
+  aspect-ratio: auto;
+}
+.site .blocks[data-layout='bento'] .card:not(:has(.card-pic)) .card-body {
+  flex: 1;
+  align-content: end;
+}
+.site .blk[data-size='feature'] .h3 {
+  font-size: calc(var(--fs-h3) * 1.32);
+}
+
+.site .icon-chip {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 0.5rem;
+  border-radius: var(--r-sm);
+  background: color-mix(in oklab, var(--sacc) 14%, transparent);
+  color: var(--sacc-text);
+}
+.site [data-card='plain'] .icon-chip {
+  width: auto;
+  height: auto;
+  justify-content: start;
+  background: none;
+}
+.site [data-card='hard'] .icon-chip {
+  background: var(--sacc);
+  color: var(--sacc-ink);
+  border: 2px solid var(--sink);
+}
+.site .tag {
+  justify-self: start;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sacc-text);
+}
+
+/* stat */
+.site .stat {
+  gap: 0.4rem;
+}
+.site .stat:not(.boxed) {
+  padding-top: 16px;
+  border-top: 1px solid var(--sline2);
+}
+.site .stat.boxed {
+  justify-content: flex-end;
+}
+.site .stat-value {
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  font-size: clamp(2.2rem, 4.6cqi, 3.7rem);
+  line-height: 1;
+  letter-spacing: var(--htrack);
+  color: var(--sacc-text);
+}
+.site .stat-label {
+  max-width: 26ch;
+  font-size: 0.94rem;
+  line-height: 1.4;
+  color: var(--ssoft);
+}
+
+/* quote */
+.site .quote {
+  gap: 1.4rem;
+  justify-content: space-between;
+}
+.site .quote-text {
+  font-family: var(--font-quote);
+  font-weight: var(--quote-w);
+  font-size: clamp(1.1rem, 1.75cqi, 1.34rem);
+  line-height: 1.38;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+.site .quote figcaption {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+.site .avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: var(--sacc);
+  color: var(--sacc-ink);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.site .quote-author {
+  display: block;
+  font-weight: 600;
+}
+.site .quote-role {
+  display: block;
+  color: var(--ssoft);
+}
+/* a single quote on its own becomes a pull quote */
+.site .blocks[data-layout='stack'][data-count='1'] .quote {
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  gap: 2rem;
+}
+.site .blocks[data-layout='stack'][data-count='1'] .quote-text {
+  font-size: clamp(1.5rem, 3.4cqi, 2.6rem);
+  line-height: 1.2;
+  letter-spacing: var(--htrack);
+}
+
+/* image block */
+.site .pic-block .pic {
+  height: 100%;
+}
+.site .blocks[data-layout='bento'] .pic-block .pic {
+  aspect-ratio: auto;
+  min-height: 170px;
+}
+.site [data-card='hard'] .pic-block .pic {
+  border: 2px solid var(--sink);
+  box-shadow: 5px 5px 0 var(--sink);
+}
+.site [data-card='outline'] .pic-block .pic {
+  border: 1px solid var(--sline2);
+}
+.site .pic-block figcaption {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 2;
+  padding: 0.35em 0.8em;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--sbg) 88%, transparent);
+  color: var(--sink);
+  font-size: 0.78rem;
+  font-weight: 500;
+  backdrop-filter: blur(6px);
+}
+
+/* plan */
+.site .plan {
+  gap: 0.9rem;
+}
+.site .plan-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 1.8rem;
+}
+.site .plan-name {
+  font: 600 1rem/1.2 var(--font-body);
+}
+.site .plan-badge {
+  padding: 0.34em 0.75em;
+  border-radius: 999px;
+  background: var(--sacc);
+  color: var(--sacc-ink);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.site .plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+.site .price {
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  font-size: clamp(2.5rem, 4.4cqi, 3.5rem);
+  line-height: 1;
+  letter-spacing: var(--htrack);
+}
+.site .period {
+  font-size: 0.92rem;
+  color: var(--ssoft);
+}
+.site .plan-features {
+  display: grid;
+  gap: 0.62rem;
+  margin-bottom: auto;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--sline);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+.site .plan-features li {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 0.65rem;
+  align-items: start;
+}
+.site .plan-features svg {
+  margin-top: 0.22em;
+  color: var(--sacc-text);
+}
+.site .plan .btn {
+  justify-content: center;
+  margin-top: 1.2rem;
+}
+.site [data-card] .plan[data-featured] {
+  padding: var(--card-pad);
+  border: 0;
+  border-radius: var(--r);
+  background: var(--sbg);
+  color: var(--sink);
+}
+.site [data-card='hard'] .plan[data-featured] {
+  border: 2px solid var(--sink);
+  box-shadow: 5px 5px 0 var(--sacc);
+}
+.site [data-card='plain'] .plan:not([data-featured]) {
+  padding-inline: 0;
+}
+
+/* question and answer */
+.site .qa {
+  border-top: 1px solid var(--sline2);
+}
+.site .qa:last-child {
+  border-bottom: 1px solid var(--sline2);
+}
+.site .qa-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-block: 1.3rem;
+  cursor: pointer;
+}
+.site .qa-head h3 {
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  font-size: var(--fs-h3);
+  line-height: 1.25;
+  letter-spacing: calc(var(--htrack) * 0.6);
+}
+.site .qa-toggle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--sline2);
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.25s ease, background-color 0.15s ease;
+}
+.site .qa[data-open] .qa-toggle {
+  transform: rotate(45deg);
+  background: var(--sacc);
+  border-color: transparent;
+  color: var(--sacc-ink);
+}
+.site .qa-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s ease;
+}
+.site .qa[data-open] .qa-body {
+  grid-template-rows: 1fr;
+}
+.site .qa-body > div {
+  overflow: hidden;
+}
+.site .qa-body p {
+  max-width: 66ch;
+  padding-bottom: 1.5rem;
+  color: var(--ssoft);
+}
+
+/* step */
+.site .step {
+  gap: 0.5rem;
+}
+.site .step:not(.boxed) {
+  padding-top: 18px;
+  border-top: 1px solid var(--sline2);
+}
+.site .step-n {
+  margin-bottom: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  font-size: clamp(2rem, 3.4cqi, 2.8rem);
+  line-height: 1;
+  letter-spacing: var(--htrack);
+  color: var(--sacc-text);
+}
+.site .blocks[data-cols='1'] > .step:not(.boxed) {
+  display: grid;
+  grid-template-columns: clamp(56px, 8cqi, 104px) minmax(0, 1fr);
+  column-gap: 16px;
+  row-gap: 0.4rem;
+  padding-block: 24px;
+}
+.site .blocks[data-cols='1'] > .step:not(.boxed) .step-n {
+  grid-row: span 2;
+  margin: 0;
+}
+.site .blocks[data-cols='1'] > .step:not(.boxed) > :not(.step-n) {
+  grid-column: 2;
+}
+.site .blocks[data-cols='1'] > .step:last-child:not(.boxed) {
+  border-bottom: 1px solid var(--sline2);
+}
+
+/* logo */
+.site .logo {
+  align-items: center;
+  justify-content: center;
+}
+.site .logo-word {
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  font-size: clamp(1.15rem, 2.2cqi, 1.65rem);
+  letter-spacing: var(--htrack);
+  text-transform: var(--hcase);
+  white-space: nowrap;
+  color: var(--ssoft);
+}
+
+/* ---------------------------------------------------------------- pictures */
+
+.site .pic {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r);
+  background:
+    radial-gradient(90% 70% at 22% 18%, color-mix(in oklab, var(--sacc) 34%, transparent), transparent 62%),
+    radial-gradient(80% 80% at 86% 92%, color-mix(in oklab, var(--sacc2) 30%, transparent), transparent 60%),
+    var(--ssurf);
+}
+.site .pic[data-aspect='wide'] {
+  aspect-ratio: 16 / 10;
+}
+.site .pic[data-aspect='square'] {
+  aspect-ratio: 1;
+}
+.site .pic[data-aspect='portrait'] {
+  aspect-ratio: 4 / 5;
+}
+@container site (min-width: 640px) {
+  .site .pic[data-aspect='wide'] {
+    aspect-ratio: 21 / 9;
+  }
+}
+.site .pic img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: site-fade 0.7s ease both;
+}
+.site .pic[data-state='loading']::after,
+.site .pic[data-state='queued']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, color-mix(in oklab, var(--sbg) 55%, transparent) 50%, transparent 70%);
+  background-size: 220% 100%;
+  animation: site-shimmer 1.8s linear infinite;
+}
+.site .pic-note {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 10px;
+  z-index: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font: 500 11px/1.4 var(--font-mono);
+  color: var(--ssoft);
+}
+.site .pic-note b {
+  margin-right: 0.5em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sink);
+}
+@keyframes site-fade {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+}
+@keyframes site-shimmer {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+/* The shape of a section's main picture is a theme trait. */
+.site[data-image='plain'] .is-media {
+  border-radius: 0;
+}
+.site[data-image='rounded'] .is-media {
+  border-radius: var(--r-lg);
+}
+.site[data-image='arch'] .is-media {
+  border-radius: 999px 999px var(--r) var(--r);
+}
+.site[data-image='blob'] .is-media {
+  border-radius: 58% 42% 52% 48% / 46% 54% 46% 54%;
+}
+.site[data-image='tilt'] .is-media {
+  rotate: -1.6deg;
+  border: 2px solid var(--sink);
+  box-shadow: 10px 10px 0 var(--sacc);
+}
+.site[data-image='frame'] .sec-media {
+  padding: 8px;
+  border: 1px solid var(--sline2);
+  border-radius: calc(var(--r) + 8px);
+  background: color-mix(in oklab, var(--ssurf) 60%, transparent);
+}
+/* shapes that only make sense on a tall picture fall back when the picture is wide */
+.site[data-image='arch'] .sec:not([data-layout='split']) .is-media,
+.site[data-image='blob'] .sec:not([data-layout='split']) .is-media {
+  border-radius: var(--r-lg);
+}
+
+/* ---------------------------------------------------------------- backdrops */
+
+.site .backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--sink);
+}
+.site .backdrop-glow {
+  background: radial-gradient(70cqi 44cqi at 50% -8%, color-mix(in oklab, var(--sacc) 36%, transparent), transparent 70%);
+}
+.site[data-motif='grid'] .backdrop-motif {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, currentColor 10%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, currentColor 10%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 0%, #000 15%, transparent 78%);
+  mask-image: radial-gradient(120% 90% at 50% 0%, #000 15%, transparent 78%);
+}
+.site[data-motif='dots'] .backdrop-motif {
+  background-image: radial-gradient(color-mix(in oklab, currentColor 26%, transparent) 1.3px, transparent 1.7px);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(115deg, #000, transparent 68%);
+  mask-image: linear-gradient(115deg, #000, transparent 68%);
+}
+.site[data-motif='lines'] .backdrop-motif {
+  background-image: repeating-linear-gradient(-45deg, color-mix(in oklab, currentColor 12%, transparent) 0 1px, transparent 1px 14px);
+  -webkit-mask-image: radial-gradient(90% 100% at 100% 0%, #000, transparent 72%);
+  mask-image: radial-gradient(90% 100% at 100% 0%, #000, transparent 72%);
+}
+.site[data-motif='rings'] .backdrop-motif {
+  background-image: repeating-radial-gradient(circle at 100% 0%, transparent 0 54px, color-mix(in oklab, currentColor 12%, transparent) 54px 55px);
+  -webkit-mask-image: radial-gradient(85% 95% at 100% 0%, #000, transparent 72%);
+  mask-image: radial-gradient(85% 95% at 100% 0%, #000, transparent 72%);
+}
+.site[data-motif='blobs'] .backdrop-motif {
+  background:
+    radial-gradient(34cqi 34cqi at 90% 8%, color-mix(in oklab, var(--sacc) 30%, transparent), transparent 70%),
+    radial-gradient(30cqi 30cqi at 4% 96%, color-mix(in oklab, var(--sacc2) 26%, transparent), transparent 70%);
+}
+.site[data-motif='grain'] .backdrop-motif {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.6 0 0 0 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.17;
+  mix-blend-mode: multiply;
+}
+.site[data-motif='grain'][data-dark='true'] .backdrop-motif {
+  filter: invert(1);
+  mix-blend-mode: screen;
+  opacity: 0.2;
+}
+
+/* a photo as the whole section background */
+.site .sec[data-backdrop='media'] {
+  display: grid;
+  align-items: end;
+  min-height: clamp(480px, 58cqi, 760px);
+}
+.site .backdrop-cover .pic {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+.site .backdrop-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(10, 10, 10, 0.86), rgba(10, 10, 10, 0.4) 55%, rgba(10, 10, 10, 0.52));
+}
+.site .backdrop-cover .pic-note {
+  top: 104px;
+  z-index: 2;
+}
+
+/* ---------------------------------------------------------------- edges
+   How one section hands over to the next. --next-bg is the next section's colour. */
+
+.site .edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  z-index: 1;
+  line-height: 0;
+  color: var(--next-bg);
+  pointer-events: none;
+}
+.site .edge svg {
+  display: block;
+  width: 100%;
+  height: var(--edge-h);
+}
+.site .sec[data-edge='divider'] {
+  --edge-h: clamp(36px, 7cqi, 104px);
+  padding-bottom: calc(var(--padv) + var(--edge-h) * 0.7);
+}
+.site .sec[data-edge='divider'][data-edge-shape='zigzag'] {
+  --edge-h: 16px;
+}
+.site .sec[data-edge='divider'][data-edge-shape='scallop'] {
+  --edge-h: 22px;
+}
+.site .edge-rule {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: min(100% - 2 * var(--gutter), var(--maxw));
+  height: 1px;
+  background: var(--sline2);
+  translate: -50% 0;
+}
+.site .sec[data-edge='fade']::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 1;
+  height: min(var(--padv) * 1.5, 260px);
+  background: linear-gradient(to bottom, transparent, var(--next-bg));
+  pointer-events: none;
+}
+
+/* overlap: the next section's colour rises behind the lower half of the blocks, so
+   they straddle the boundary. Nothing moves, so nothing can collide. */
+.site .sec[data-edge='overlap'] {
+  padding-bottom: calc(var(--padv) * 0.5);
+}
+.site .ov {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+.site .ov::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  width: 100cqi;
+  top: max(50%, 100% - 240px);
+  bottom: calc(var(--padv) * -0.5 - 1px);
+  background: var(--next-bg);
+  translate: -50% 0;
+}
+
+/* blocks that straddle two tones need a surface that reads on both */
+.site .ov[data-card='tinted'] .boxed,
+.site .ov[data-card='outline'] .boxed {
+  background: var(--sraise);
+  box-shadow: var(--shadow);
+}
+
+/* ---------------------------------------------------------------- nav */
+
+.site .nav {
+  position: relative;
+  z-index: 20;
+  background: var(--sbg);
+  color: var(--sink);
+}
+.site .nav[data-overlay] {
+  position: absolute;
+  inset: 0 0 auto 0;
+  background: none;
+}
+.site .nav-in {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: min(100% - 2 * var(--gutter), var(--maxw));
+  height: 80px;
+  margin-inline: auto;
+}
+.site .brand {
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  font-size: 1.35rem;
+  letter-spacing: var(--htrack);
+  text-transform: var(--hcase);
+  white-space: nowrap;
+}
+.site .nav-links {
+  display: none;
+  gap: clamp(18px, 2.6cqi, 36px);
+  font-size: 0.94rem;
+  font-weight: 500;
+}
+.site .nav-links a {
+  opacity: 0.82;
+  transition: opacity 0.15s ease;
+}
+.site .nav-links a:hover {
+  opacity: 1;
+}
+.site .nav .btn {
+  padding: 0.72em 1.15em;
+  font-size: 0.88rem;
+}
+.site .nav[data-style='bar'] {
+  border-bottom: 1px solid var(--sline);
+}
+.site .nav[data-style='floating'] {
+  top: 14px;
+}
+.site .nav[data-style='floating'] .nav-in {
+  width: min(100% - 2 * var(--gutter), 1000px);
+  height: 62px;
+  padding-inline: 24px 10px;
+  border: 1px solid var(--sline);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--sraise) 78%, transparent);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+}
+@container site (min-width: 860px) {
+  .site .nav-links {
+    display: flex;
+  }
+}
+
+/* ---------------------------------------------------------------- footer */
+
+.site .foot {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(52px, 7cqi, 100px) 28px;
+  background: var(--sbg);
+  color: var(--sink);
+}
+.site .foot-top {
+  display: grid;
+  gap: 40px;
+}
+.site .foot-brand {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+.site .foot-tagline {
+  max-width: 34ch;
+  color: var(--ssoft);
+}
+.site .foot-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px 24px;
+}
+.site .foot-title {
+  margin-bottom: 14px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ssoft);
+}
+.site .foot-links {
+  display: grid;
+  gap: 10px;
+  font-size: 0.95rem;
+}
+.site .foot-links a:hover {
+  color: var(--sacc-text);
+}
+.site .foot-word {
+  margin-top: clamp(40px, 6cqi, 80px);
+  font-size: 12cqi;
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  line-height: 0.86;
+  letter-spacing: var(--htrack);
+  text-transform: var(--hcase);
+  white-space: nowrap;
+}
+.site .foot-note {
+  margin-top: clamp(32px, 5cqi, 56px);
+  padding-top: 20px;
+  border-top: 1px solid var(--sline);
+  font-size: 0.84rem;
+  color: var(--ssoft);
+}
+.site .foot[data-style='big'] .foot-note {
+  margin-top: 24px;
+}
+@container site (min-width: 760px) {
+  .site .foot-top {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr);
+    gap: 64px;
+  }
+  .site .foot-cols {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  }
+}

@@ -1,0 +1,85 @@
+# Site builder prototype
+
+**PROTOTYPE. Throwaway code that answers one question.** Nothing here is production quality: no tests, no real persistence (the current site is kept in the tab's session storage so a reload does not lose a paid generation), minimal error handling.
+
+## The question
+
+Can a website builder where the AI never writes code (it only edits a JSON document that a fixed renderer draws) produce sites that
+
+1. appear quickly,
+2. cannot be broken by editing, by hand or by AI,
+3. still feel free to edit, and
+4. look like designed, cohesive sites and not stacked template blocks?
+
+## Run it
+
+```bash
+npm run dev
+```
+
+Open http://localhost:3210. It starts with a hand-written coffee roaster site and works without a key (demo mode: "New site" replays that site through the real streaming pipeline, AI edits are disabled, images stay as placeholders).
+
+To use real models, copy `.env.local.example` to `.env.local`, add your OpenRouter key and restart. Defaults: Claude Sonnet 5.5 builds a site, Claude Haiku 5.5 handles edits, `google/gemini-3.1-flash-lite-image` makes the pictures. All three can be overridden in `.env.local`; the text model can also be switched in the top bar.
+
+Every distinct image prompt is one paid call to the image model. Results are cached in `.prototype-cache/images` (safe to delete), so a prompt is only paid for once. With a key set, the starter site requests its four images as soon as the page loads.
+
+## How it works
+
+```
+brief or chat message
+        │
+        ▼
+model writes operations, one JSON object per line      src/ai/prompt.ts
+        │  (streamed)
+        ▼
+each operation is validated and applied, or rejected   src/site/ops.ts, schema.ts
+        │
+        ▼
+one document: theme + nav + sections + footer          (see the State drawer)
+        │
+        ▼
+planner resolves anything that would look broken        src/site/plan.ts
+        │
+        ▼
+renderer draws it                                       src/site/render, site.css
+```
+
+- **The document** has three layers. *Theme*: a preset plus overrides for palette, fonts, radius, density, scale, and site-wide traits (card style, button style, heading emphasis, divider shape, background pattern, picture shape, eyebrow style). *Sections*: type, tone, edge (how it hands over to the next section), backdrop, layout. *Blocks*: card, stat, quote, image, plan, qa, step, logo.
+- **Layouts** are primitives, not templates: stack, split, grid, bento, marquee. Any block list can go in any of them. Switching grid to bento is one field.
+- **Operations** are the only way the document changes. The AI, the inspector and typing on the canvas all go through `applyOp`. An operation produces a valid document or is rejected and changes nothing.
+- **Guardrails** are in three places. The schema drops or defaults anything it does not recognise. The theme resolver fixes colour contrast on every tone. The planner swaps an impossible request for the nearest thing that works (a bento of two blocks becomes a grid) without changing the document.
+- **Cohesion** comes from making look decisions once, in the theme. A section says "divider below"; the theme decides whether that is a curve, a zigzag or a hairline. Image prompts all get the theme's `imageStyle` appended.
+
+The whole vocabulary lives in `src/site/vocab.ts`. The schema, the inspector and the AI prompt are generated from it.
+
+`src/site` has no dependency on Next.js or the editor, so the schema, operations and renderer can be lifted into another React app.
+
+## Things to try
+
+- **Theme tab**: click the four presets, then Shuffle. The same document becomes a different site.
+- Click a section, then change its layout, tone and "edge below" in the **Sections** tab.
+- Click any text on the page and type. Mark words with `*asterisks*` in a heading to emphasise them.
+- **State** (top bar): the live document, a log of every operation with applied or rejected, and a Load tab. Paste malformed JSON into Load to see what the validator does with it.
+- The device buttons lay the page out at a true desktop, tablet or phone width.
+
+## What has and has not been checked
+
+Checked in the browser: all four presets, desktop, tablet and phone widths, selecting, relayout, inline text edits, undo and redo, demo-mode streaming, and loading a deliberately malformed document.
+
+Checked against a local mock of OpenRouter (same wire format, deliberately messy output): streamed generation, chat edits on a selected section, rejection of bad operations, image generation and caching.
+
+Checked with a real key (one run each, 17 Nov 2026, hot sauce brief):
+
+| What | Model | Result |
+| - | - | - |
+| Build a site | Claude Sonnet 5.5 | 8 sections, 12 operations applied, none rejected. First change on screen after 1.3s, finished in 22.3s. |
+| Edit a selected section | Claude Haiku 5.5 | "Make this a marquee on a dark background and add two reviews": 3 operations applied, first change after 1.0s, finished in 1.8s. |
+| Pictures | `google/gemini-3.1-flash-lite-image` | 7 images across two sites, consistent within each site. |
+
+Each image's cost, as reported by OpenRouter, is saved beside it in `.prototype-cache/images/<hash>.json` (`costUsd`) for images generated from now on.
+
+That is one run per path, so treat the timings as a first data point. The run also showed the model ignoring one design rule (two neighbouring sections shared a layout twice); the prompt was tightened afterwards and has not been re-run.
+
+## Left out on purpose
+
+Custom code blocks (the plan is a `custom` block rendered in a sandboxed frame that receives the theme tokens), multiple pages, saving, publishing, drag and drop, real links and forms, a mobile nav menu.
