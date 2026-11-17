@@ -87,6 +87,8 @@ The whole vocabulary lives in `src/site/vocab.ts`. The schema, the inspector and
 
 Checked in the browser: all four presets, desktop, tablet and phone widths, selecting, relayout, inline text edits, undo and redo, demo-mode streaming, and loading a deliberately malformed document.
 
+Checked on a fresh clone from GitHub with no key and no image cache: it opens on Scorch Bros with its three pictures, and the Northfold example loads with its four.
+
 Checked against a local mock of OpenRouter (same wire format, deliberately messy output): streamed generation, chat edits on a selected section, rejection of bad operations, image generation and caching.
 
 Checked with a real key (one run each, 17 Nov 2026, hot sauce brief):
