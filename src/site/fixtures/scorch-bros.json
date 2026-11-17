@@ -1,0 +1,309 @@
+{
+  "version": 1,
+  "meta": {
+    "name": "Scorch Bros",
+    "description": "Small-batch hot sauce made by two brothers in a railway arch. Three heat levels, loud on purpose."
+  },
+  "theme": {
+    "preset": "bold",
+    "palette": { "bg": "#fff4e0", "surface": "#ffe3b8", "ink": "#1d0f0a", "accent": "#e4261b", "accent2": "#ffb400" },
+    "fonts": { "display": "anton", "body": "dm-sans" },
+    "radius": "sm",
+    "density": "regular",
+    "scale": "dramatic",
+    "traits": {
+      "card": "hard",
+      "button": "hard",
+      "emphasis": "highlight",
+      "divider": "zigzag",
+      "motif": "dots",
+      "image": "tilt",
+      "eyebrow": "pill",
+      "caps": true
+    },
+    "imageStyle": "punchy flash photography, saturated reds and yellows, hard shadows, playful street-food poster energy"
+  },
+  "nav": {
+    "style": "bar",
+    "brand": "Scorch Bros",
+    "links": [
+      { "label": "The Sauces", "href": "#sauces" },
+      { "label": "How it's made", "href": "#steps" },
+      { "label": "Reviews", "href": "#reviews" },
+      { "label": "FAQ", "href": "#faq" }
+    ],
+    "cta": { "label": "Buy sauce", "href": "#sauces", "kind": "primary" }
+  },
+  "footer": {
+    "style": "big",
+    "tone": "inverse",
+    "tagline": "Made under arch 14. Served everywhere.",
+    "columns": [
+      { "title": "Shop", "links": ["Mild Mannered", "Brother's Keeper", "Arch Enemy", "Bundles"] },
+      { "title": "Find us", "links": ["Camden Yard", "Bermondsey", "Wholesale"] },
+      { "title": "Help", "links": ["Shipping", "Contact", "FAQ"] }
+    ],
+    "note": "© Scorch Bros. Please eat responsibly."
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "type": "hero",
+      "tone": "base",
+      "edge": "divider",
+      "backdrop": "motif",
+      "pad": "lg",
+      "layout": { "kind": "split", "columns": 3, "flip": false, "ratio": "media", "width": "wide" },
+      "intro": {
+        "eyebrow": "Made under a railway arch",
+        "heading": "Hot sauce that *fights back*",
+        "body": "Two brothers, one arch, 40 bottles per batch. Three heat levels, zero apologies. Trains go over, flavour comes out.",
+        "actions": [
+          { "label": "Shop the trio", "href": "#sauces", "kind": "primary" },
+          { "label": "Find a market", "href": "#faq", "kind": "secondary" }
+        ],
+        "align": "start"
+      },
+      "media": {
+        "prompt": "Three hot sauce bottles with red, orange and yellow labels lined up on a market stall counter, chillies scattered around, brick arch behind",
+        "alt": "Three Scorch Bros hot sauce bottles on a market stall",
+        "aspect": "portrait"
+      },
+      "blocks": [
+        { "kind": "stat", "size": "sm", "value": "3", "label": "heat levels" },
+        { "kind": "stat", "size": "sm", "value": "40", "label": "bottles a batch" },
+        { "kind": "stat", "size": "sm", "value": "12k", "label": "bottles sold" }
+      ]
+    },
+    {
+      "id": "logos",
+      "type": "logos",
+      "tone": "accent",
+      "edge": "none",
+      "backdrop": "none",
+      "pad": "sm",
+      "layout": { "kind": "marquee", "columns": 3, "flip": false, "ratio": "even", "width": "normal" },
+      "intro": { "eyebrow": "Found at", "actions": [], "align": "center" },
+      "blocks": [
+        { "kind": "logo", "size": "sm", "name": "Camden Yard Market" },
+        { "kind": "logo", "size": "sm", "name": "The Smoking Spoon" },
+        { "kind": "logo", "size": "sm", "name": "Bermondsey Bites" },
+        { "kind": "logo", "size": "sm", "name": "Greasy Dave's Burgers" },
+        { "kind": "logo", "size": "sm", "name": "Arch 14 Taproom" },
+        { "kind": "logo", "size": "sm", "name": "Night Noodle Club" }
+      ]
+    },
+    {
+      "id": "sauces",
+      "type": "features",
+      "tone": "base",
+      "edge": "none",
+      "backdrop": "none",
+      "pad": "lg",
+      "layout": { "kind": "bento", "columns": 3, "flip": false, "ratio": "even", "width": "wide" },
+      "intro": {
+        "eyebrow": "The lineup",
+        "heading": "Pick your *pain* level",
+        "body": "Every bottle is fermented for 21 days with fresh chillies. Nothing else needed.",
+        "actions": [],
+        "align": "start"
+      },
+      "blocks": [
+        {
+          "kind": "card",
+          "size": "feature",
+          "icon": "smile",
+          "tag": "£6.50",
+          "title": "Mild Mannered",
+          "body": "Smoked pineapple and Fresno chilli. Goes on everything, scares no one. Heat 3/10.",
+          "image": {
+            "prompt": "Single yellow-labelled hot sauce bottle with pineapple slices and chillies, bright yellow backdrop",
+            "alt": "Mild Mannered hot sauce bottle",
+            "aspect": "square"
+          }
+        },
+        {
+          "kind": "card",
+          "size": "wide",
+          "icon": "flame",
+          "tag": "£6.50",
+          "title": "Brother's Keeper",
+          "body": "Habanero, burnt orange, garlic. Our best seller. Heat 6/10."
+        },
+        { "kind": "stat", "size": "sm", "value": "21", "label": "days fermenting" },
+        {
+          "kind": "card",
+          "size": "wide",
+          "icon": "zap",
+          "tag": "£7.50",
+          "title": "Arch Enemy",
+          "body": "Ghost pepper and Carolina Reaper. Sign the waiver. Heat 10/10."
+        },
+        { "kind": "quote", "size": "sm", "text": "Cried. Reordered.", "author": "Priya, Peckham" }
+      ]
+    },
+    {
+      "id": "steps",
+      "type": "steps",
+      "tone": "inverse",
+      "edge": "divider",
+      "backdrop": "glow",
+      "pad": "md",
+      "layout": { "kind": "split", "columns": 3, "flip": true, "ratio": "even", "width": "normal" },
+      "intro": {
+        "eyebrow": "How it's made",
+        "heading": "From chilli to *bottle* in 3 steps",
+        "actions": [],
+        "align": "start"
+      },
+      "media": {
+        "prompt": "Two bearded brothers in aprons stirring a huge steel pot of red sauce under a brick railway arch",
+        "alt": "The Scorch brothers cooking sauce in their arch",
+        "aspect": "landscape"
+      },
+      "blocks": [
+        {
+          "kind": "step",
+          "size": "sm",
+          "title": "Chop and ferment",
+          "body": "Fresh chillies, salt and patience. 21 days in tubs by the arch door."
+        },
+        { "kind": "step", "size": "sm", "title": "Blend and cook", "body": "Small pots, big arguments about garlic." },
+        {
+          "kind": "step",
+          "size": "sm",
+          "title": "Bottle and label",
+          "body": "Hand-filled, hand-labelled, occasionally hand-burnt."
+        }
+      ]
+    },
+    {
+      "id": "reviews",
+      "type": "testimonials",
+      "tone": "base",
+      "edge": "none",
+      "backdrop": "none",
+      "pad": "md",
+      "layout": { "kind": "grid", "columns": 3, "flip": false, "ratio": "even", "width": "wide" },
+      "intro": { "eyebrow": "Reviews", "heading": "People *love* suffering", "actions": [], "align": "center" },
+      "blocks": [
+        {
+          "kind": "quote",
+          "size": "sm",
+          "text": "Brother's Keeper is on my eggs, my pizza and my cat's birthday cake. Joking about the cat.",
+          "author": "Marcus T.",
+          "role": "Regular at Camden Yard"
+        },
+        {
+          "kind": "quote",
+          "size": "sm",
+          "text": "Arch Enemy made me see through time. Ten out of ten.",
+          "author": "Dani O.",
+          "role": "Street food vendor"
+        },
+        {
+          "kind": "quote",
+          "size": "sm",
+          "text": "Finally a mild one with actual flavour. Pineapple smoke is unreal.",
+          "author": "Helen R.",
+          "role": "Online customer"
+        }
+      ]
+    },
+    {
+      "id": "pricing",
+      "type": "pricing",
+      "tone": "muted",
+      "edge": "divider",
+      "backdrop": "none",
+      "pad": "lg",
+      "layout": { "kind": "grid", "columns": 3, "flip": false, "ratio": "even", "width": "wide" },
+      "intro": { "eyebrow": "Bundles", "heading": "Buy more, *burn* less", "actions": [], "align": "center" },
+      "blocks": [
+        {
+          "kind": "plan",
+          "size": "sm",
+          "name": "Single",
+          "price": "£6.50",
+          "period": "bottle",
+          "blurb": "Start brave or start safe.",
+          "features": ["150ml bottle", "Any heat level", "Ships in 2 days"],
+          "cta": "Get started",
+          "featured": false
+        },
+        {
+          "kind": "plan",
+          "size": "sm",
+          "name": "The Trio",
+          "price": "£18",
+          "period": "set",
+          "blurb": "One of each. Family feud included.",
+          "features": ["All three sauces", "Free sticker pack", "Free UK delivery"],
+          "cta": "Get started",
+          "featured": true
+        },
+        {
+          "kind": "plan",
+          "size": "sm",
+          "name": "Monthly Mayhem",
+          "price": "£15",
+          "period": "month",
+          "blurb": "Two bottles, delivered monthly.",
+          "features": ["Two bottles a month", "Early access to limited batches", "Pause anytime"],
+          "cta": "Get started",
+          "featured": false
+        }
+      ]
+    },
+    {
+      "id": "faq",
+      "type": "faq",
+      "tone": "base",
+      "edge": "none",
+      "backdrop": "none",
+      "pad": "md",
+      "layout": { "kind": "stack", "columns": 3, "flip": false, "ratio": "even", "width": "narrow" },
+      "intro": { "eyebrow": "Questions", "heading": "Asked *often*, answered rudely", "actions": [], "align": "center" },
+      "blocks": [
+        {
+          "kind": "qa",
+          "size": "sm",
+          "q": "How hot is Arch Enemy really?",
+          "a": "Very. Start with a drop on a spoon, not a tablespoon."
+        },
+        {
+          "kind": "qa",
+          "size": "sm",
+          "q": "Where can I find you at markets?",
+          "a": "Camden Yard on Saturdays, Bermondsey on Sundays. Look for the loud arch."
+        },
+        { "kind": "qa", "size": "sm", "q": "Is it vegan?", "a": "Yes, all three sauces are vegan and gluten free." },
+        {
+          "kind": "qa",
+          "size": "sm",
+          "q": "How long does a bottle last?",
+          "a": "Unopened, 12 months. Opened, 3 months in the fridge, though yours won't last that long."
+        }
+      ]
+    },
+    {
+      "id": "cta",
+      "type": "cta",
+      "tone": "accent",
+      "edge": "none",
+      "backdrop": "motif",
+      "pad": "lg",
+      "layout": { "kind": "stack", "columns": 3, "flip": false, "ratio": "even", "width": "normal" },
+      "intro": {
+        "heading": "Go on. *Light* it up",
+        "body": "Free UK delivery on the Trio. Trains still rumble overhead.",
+        "actions": [
+          { "label": "Get the Trio £18", "href": "#pricing", "kind": "primary" },
+          { "label": "Shop singles", "href": "#sauces", "kind": "secondary" }
+        ],
+        "align": "center"
+      },
+      "blocks": []
+    }
+  ]
+}

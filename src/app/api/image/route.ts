@@ -8,6 +8,9 @@ export const dynamic = 'force-dynamic';
 // PROTOTYPE cache, safe to delete. Each distinct prompt is only ever paid for once.
 const CACHE_DIR = path.join(process.cwd(), '.prototype-cache', 'images');
 
+// Pictures for the bundled example sites, committed to the repository (see scripts/bundle-starter-images.mjs).
+const BUNDLED_DIR = path.join(process.cwd(), 'public', 'starter');
+
 const RATIO: Record<string, string> = { wide: '21:9', landscape: '4:3', square: '1:1', portrait: '4:5' };
 
 export async function POST(req: Request) {
@@ -25,6 +28,16 @@ export async function POST(req: Request) {
     const { mtimeMs } = await stat(path.join(CACHE_DIR, `${hash}.bin`));
     return Response.json({ url: `${url}?v=${Math.round(mtimeMs)}`, cached: true });
   } catch {}
+
+  // A bundled picture is keyed by what it shows, not by which model made it, so it is
+  // found whatever image model is configured. No key and no paid call are needed.
+  const bundled = createHash('sha256').update([ratio, style ?? '', prompt].join('\n')).digest('hex').slice(0, 24);
+  for (const ext of ['jpg', 'png', 'webp']) {
+    try {
+      await stat(path.join(BUNDLED_DIR, `${bundled}.${ext}`));
+      return Response.json({ url: `/starter/${bundled}.${ext}`, cached: true, bundled: true });
+    } catch {}
+  }
 
   if (!apiKey()) return Response.json({ error: 'no-key' });
 

@@ -61,6 +61,8 @@ export function Txt({ as, value, path, className, rich, ...rest }: TxtProps) {
 
   if (!edit || !path) return <Tag className={className} {...rest} dangerouslySetInnerHTML={{ __html: html }} />;
 
+  const read = (el: HTMLElement) => (rich ? serializeRich(el) : (el.textContent ?? '').replace(/\s+/g, ' ').trim());
+
   return (
     <Tag
       className={className}
@@ -72,6 +74,16 @@ export function Txt({ as, value, path, className, rich, ...rest }: TxtProps) {
       dangerouslySetInnerHTML={{ __html: html }}
       onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => {
         e.stopPropagation();
+        const el = e.currentTarget;
+        if ((e.metaKey || e.ctrlKey) && /^[zy]$/i.test(e.key)) {
+          // The browser's undo history knows nothing about committed edits and can replay
+          // stale text into the field. The first press discards what was typed here; with
+          // nothing typed it leaves the field, so the next press undoes the last change to the site.
+          e.preventDefault();
+          if (read(el) !== value) el.innerHTML = html;
+          else el.blur();
+          return;
+        }
         if (e.key === 'Enter') {
           e.preventDefault();
           e.currentTarget.blur();
@@ -82,7 +94,7 @@ export function Txt({ as, value, path, className, rich, ...rest }: TxtProps) {
       }}
       onBlur={(e: React.FocusEvent<HTMLElement>) => {
         const el = e.currentTarget;
-        const next = rich ? serializeRich(el) : (el.textContent ?? '').replace(/\s+/g, ' ').trim();
+        const next = read(el);
         if (next === value || !edit.setText(path, next)) el.innerHTML = html;
       }}
     />
