@@ -161,12 +161,59 @@ Wedding planner or decorator (kind "creative")
 - The main button asks about a date: it leads to the enquiry form, which has a date field.
 - Pictures: tables, flowers, the venue, guests seen from a distance. Never a posed stock-photo couple.
 
+Accountant or bookkeeper (kind "b2b")
+- Visitors are owners of small businesses. They want: do you handle my kind of company, what does it cost per month, will someone answer when I call.
+- Home holds: who it is for as cards (sole traders, small companies, new businesses); monthly packages as plans; what is included as check blocks; how changing accountant works as steps; the team as person blocks with their qualifications and registration; references as quotes.
+- Pictures: a calm office, people at a desk with papers and a laptop. Never a stock-photo handshake.
+
+Cleaning company (kind "b2b")
+- Visitors want: what do you clean and how often, what does it cost, are the staff insured and vetted, can I trust you with the keys.
+- Home holds: the services as cards (offices, stairwells, after renovation, windows); how pricing works as rows; the guarantees as check blocks (insured, vetted staff, own equipment, cover when someone is ill); a "gallery" section of two "beforeafter" blocks; the kinds of client served as stats or quotes; the areas covered as check blocks.
+- Pictures: clean, bright rooms and stairwells, equipment, staff seen from a distance.
+
+Landscaper or garden builder (kind "b2b")
+- Finished work is the product. Pages: Home, Services, Our work / Munkáink (role "proof", one "project" block per garden), About, Contact and quote.
+- Visitors want: have you built a garden like the one I want, how does it go and what does it cost, who looks after it afterwards.
+- Home holds: finished gardens as "project" blocks (tag = kind of garden and size); a "gallery" section of two "beforeafter" blocks; the services as cards (design, building, irrigation, lawn, upkeep); the steps from survey to aftercare; reviews.
+- Pictures: finished gardens in daylight, whole views first, then details of paving, planting and water.
+
+HR consultant (kind "consultant")
+- Visitors are owners and managers of companies. They want: which of my problems do you solve, have you worked with firms like mine, how do we start.
+- The main button books a first call.
+- Home holds: the problems solved as cards (hiring, keeping people, appraisals, employment law); the ways of working together as plans or cards (a project, a monthly retainer); how an engagement runs as steps; the consultant as a person block with their background; client references as quotes.
+- Pictures: the consultant at work, a workshop seen from the side. Never a stock-photo boardroom.
+
+Financial adviser (kind "consultant")
+- Visitors want: can I trust you, how are you paid, what will I actually get.
+- The main button books a first conversation.
+- Home holds: the questions answered as cards (savings, a home loan, insurance, retirement); how advice works as steps; fees stated plainly as rows or plans; licence and registration as check blocks; the adviser as a person block; reviews.
+- Never promise returns or name a figure a client will earn.
+- Pictures: a calm conversation at a table, documents, a notebook.
+
+Language teacher or tutor (kind "consultant")
+- Visitors want: do you teach my level or exam, when, what does a lesson cost, online or in person.
+- The main button books a trial lesson.
+- Home holds: who the lessons are for as cards (beginners returning, exam preparation, business language); lesson formats and prices as rows or plans (single lesson, pass, small group); how the trial lesson works as steps; the teacher as a person block with qualifications; results as stats; reviews from students.
+- Pictures: a lesson in progress, books and notes, an online call.
+
 Electrician or other tradesperson (kind "trades")
 - Visitors want: do you do this job, do you come to my area, can I trust you, how fast. Then they call.
 - The main button everywhere is a phone call: href "tel:" plus the number. The second is "request a quote".
 - Home: hero stating the trade, the area and a promise (for example same-week appointments); a row of check blocks for what makes them safe to hire (licensed, insured, written quote, guarantee); the main jobs as cards with icons; references as images or quotes with stars; the areas covered as check blocks; a contact block.
 - Services: one card or row per job with a typical price, then steps for how a job runs, then a short FAQ.
 - Pictures: tidy finished work (a fuse board, neat cabling, fitted lights), tools, a van. Never a posed stock-photo smile.
+
+Air-conditioning installer (kind "trades")
+- Visitors want: which unit suits my home, what does it cost installed, how soon can you come, do you service it afterwards.
+- The main button is a phone call; the second is "request a quote".
+- Home holds: the main jobs as cards (installation, cleaning and maintenance, repair, heating with a heat pump); typical installed prices by size of room as rows; how a job runs as steps (survey, quote, installation in a day); what makes them safe to hire as check blocks (certified, warranty, written quote); reviews; the areas covered as check blocks.
+- Pictures: neatly fitted indoor and outdoor units, tidy pipe covers, a technician's hands at work.
+
+Tiler (kind "trades")
+- Finished work is the product. Pages: Home, Services, Our work / Munkáink (role "proof", one "project" block per job), Contact and quote.
+- Visitors want: is the work neat, have they done a room like mine, what is the price per square metre, when can they start.
+- Home holds: finished rooms as "project" blocks (tag = kind of room and size); a "gallery" section of two "beforeafter" blocks; what they tile as cards (bathroom, kitchen, floors, terrace); prices per square metre as rows; how a job runs as steps; reviews.
+- Pictures: finished tiled surfaces in daylight, then close-ups of joints, corners and edges.
 
 Yoga or pilates studio (kind "studio")
 - Visitors want: is there a class for my level, when is it, who teaches, what does a first class cost.
