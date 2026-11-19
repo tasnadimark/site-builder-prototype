@@ -76,6 +76,7 @@ Section = {
   backdrop: ${any(V.BACKDROPS)},
   pad: ${any(V.PADS)},
   hero?: ${any(V.HERO_STYLES)},       only on a section of type "hero"; see hero styles below
+  variant?: string,           the arrangement of a "cta", "title", "features" or "testimonials" section; see arrangements below
   layout: { kind: ${any(V.LAYOUTS)}, columns?: 1-4, flip?: boolean, ratio?: ${any(V.RATIOS)}, width?: ${any(V.WIDTHS)} },
   intro: { eyebrow?: string, heading?: string, body?: string, actions?: Action[] (max 2), align: ${any(V.ALIGNS)} },
   media?: Image,              the section's main picture
@@ -123,6 +124,13 @@ Hero styles compose the first screen. They all use the same heading, body, actio
 - "edge": copy on one side, a picture that runs to the edge of the screen on the other. Calm and spacious.
 For a new site the hero style is given to you under "Direction for this site". When editing, change it only if the user asks.
 
+Arrangements are other ways to draw four kinds of section. Like hero styles they rearrange the same content. Set "variant" to one of:
+- type "cta" (a call to action): ${any(V.VARIANTS.cta)}. "band" is centred text and buttons, "facts" shows the phone number and opening hours beside the words, "statement" sets the heading very large with the buttons beside it, "picture" puts the section media beside the words.
+- type "title" (the title of a page other than Home): ${any(V.VARIANTS.title)}. "plain" is a heading and a sentence, "picture" sets them on the section media, "facts" shows two or three stat or check blocks beside them, "links" adds links to the sections of the page.
+- type "features" whose blocks are all cards: ${any(V.VARIANTS.features)}. "cards" is a row of cards, "list" a numbered list with rules and no boxes, "rows" one row per card with its image and words changing sides, "lead" one large card with the rest beside it.
+- type "testimonials": ${any(V.VARIANTS.testimonials)}. "cards" is a row of review cards, "single" one large review with the others small beneath it, "score" the review score large beside the reviews, "wall" staggered columns of reviews.
+An arrangement that lacks what it needs (a picture, a review score) is drawn as the first one in its list. For a new site the arrangements are given to you under "Direction for this site".
+
 Tones: "base" is the page colour, "muted" a quiet panel, "inverse" swaps ink and background, "accent" floods the section with the brand colour.
 Edges: dividers are drawn for you between sections of different tones, as theme.traits.edges says. A section's own "edge" overrides that for one boundary: "overlap" lets a grid or bento straddle it, "fade" blends the two colours, "divider" forces the divider shape, "none" keeps it a clean cut.
 Backdrops: "motif" draws the theme pattern, "glow" a soft accent light, "media" uses the section image as a full-bleed photo behind white text (dramatic; use at most once per site).
@@ -138,8 +146,8 @@ ${pageRuleText()}
 6. Copy is specific to this business: its real services, prices, people and places. No lorem ipsum, no filler such as "we are passionate about". Headings under nine words. Never invent real company names for logos or testimonials; plausible fictional people are fine for reviews.
 7. Facts. Take phone, email, address, opening hours and review score from the brief and put them in "business". If the brief does not give one, leave that field out. Never make up contact details.
 8. People: give each person a portrait image where they are introduced in full (the people page, or Home if there is no such page). That includes people the brief counts but does not name: every person block there has an image. Wherever else that person appears, leave the image out; their portrait is reused automatically.
-9. Images: at most 10 in the whole site, about four on Home and one or two on each other page. In a gallery every tile is a picture: an image block with a caption, or a card with an image. Do not mix text-only tiles into a gallery. Each prompt describes the subject and composition only. No style words (those live in theme.imageStyle) and never text or logos in an image.
-10. The first section of every page other than Home is its title: a section with a heading and one sentence, no "hero" type.`;
+9. Images: at most 12 in the whole site, about four on Home and one or two on each other page. In a gallery every tile is a picture: an image block with a caption, or a card with an image. Do not mix text-only tiles into a gallery. Each prompt describes the subject and composition only. No style words (those live in theme.imageStyle) and never text or logos in an image.
+10. The first section of every page other than Home is its title: a section of type "title" with a heading and one sentence. Never a "hero".`;
 
 const kindHint = (kind?: string) => {
   const k = BUSINESS_KINDS.find((x) => x.id === kind);

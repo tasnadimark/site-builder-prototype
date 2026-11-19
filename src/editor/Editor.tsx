@@ -310,7 +310,15 @@ export default function Editor() {
       setPageId(page.id);
     }
   }, [page]);
-  const plan = useMemo(() => planSections(page?.sections ?? [], theme, doc.footer.tone), [page, theme, doc.footer.tone]);
+  const plan = useMemo(
+    () =>
+      planSections(page?.sections ?? [], theme, doc.footer.tone, {
+        rating: !!doc.business.rating,
+        contact: !!doc.business.phone || doc.business.locations.some((l) => l.hours.length > 0),
+        inner: !!page && page !== doc.pages[0],
+      }),
+    [page, theme, doc.footer.tone, doc.business, doc.pages],
+  );
 
   const addPage = (role: keyof typeof PAGE_TEMPLATES) => {
     const before = new Set(doc.pages.map((p) => p.id));

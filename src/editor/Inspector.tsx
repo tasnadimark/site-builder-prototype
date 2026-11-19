@@ -255,6 +255,25 @@ function ThemeTab({ doc, theme, run, runBurst }: InspectorProps) {
 
 const strip = (s?: string) => (s ?? '').replace(/\*/g, '');
 
+const VARIANT_LABEL: Record<string, string> = {
+  'cta/band': 'Centred band',
+  'cta/facts': 'With phone and opening hours',
+  'cta/statement': 'Large statement, buttons beside it',
+  'cta/picture': 'Beside a picture',
+  'title/plain': 'Title and one sentence',
+  'title/picture': 'On a picture',
+  'title/facts': 'With key facts beside it',
+  'title/links': 'With links to the sections below',
+  'features/cards': 'Row of cards',
+  'features/list': 'Numbered list with rules',
+  'features/rows': 'Picture and text rows',
+  'features/lead': 'One large card, the rest beside it',
+  'testimonials/cards': 'Row of review cards',
+  'testimonials/single': 'One large review',
+  'testimonials/score': 'The score beside the reviews',
+  'testimonials/wall': 'Staggered wall',
+};
+
 const RHYTHM_LABEL: Record<(typeof V.EDGE_RHYTHMS)[number], string> = {
   cut: 'Nowhere (clean cuts)',
   strong: 'Around dark and accent sections',
@@ -486,6 +505,13 @@ function SectionTab({ doc, page, goTo, theme, plan, selection, select, run }: In
             <Group title="Hero style">
               <Pick value={s.hero} options={V.HERO_STYLES} onChange={(v) => up({ hero: v })} label={(v) => HERO_LABEL[v]} />
               <p className="hint">Every style uses the same heading, text, buttons and picture, so you can switch freely.</p>
+            </Group>
+          )}
+
+          {e?.family && (
+            <Group title="Arrangement">
+              <Pick value={s.variant && (V.VARIANTS[e.family] as readonly string[]).includes(s.variant) ? s.variant : V.VARIANTS[e.family][0]} options={V.VARIANTS[e.family] as readonly string[]} onChange={(v) => up({ variant: v })} label={(v) => VARIANT_LABEL[`${e.family}/${v}`] ?? v} />
+              <p className="hint">Another way to draw the same content. Nothing is lost by switching.</p>
             </Group>
           )}
 

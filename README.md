@@ -122,44 +122,61 @@ If a style's needs are not met, the planner draws the nearest one that works and
 
 ## What the code decides for a new site
 
-Left to itself the AI converges. In a test of twenty sites it used two of the five hero styles, one order of sections and less than one divider per site, because each choice looked reasonable taken alone. So four choices are drawn by code from the brief and handed to the AI as decisions (`src/site/direction.ts`):
+Left to itself the AI converges. In a test of twenty sites it used two of the five hero styles, one order of sections and less than one divider per site, because each choice looked reasonable taken alone. So these choices are drawn by code from the brief and handed to the AI as decisions (`src/site/direction.ts`):
 
 | Choice | Options |
 | - | - |
-| First screen | Eight compositions: picture to the right or left edge, giant heading over a picture, the name as a giant word, a full photo with a moving line, a full photo with centred text, a shaped picture beside the copy, centred text over a wide picture |
+| First screen | Three of eight compositions are offered and the AI picks one: picture to the right or left edge, giant heading over a picture, the name as a giant word, a full photo with a moving line, a full photo with centred text, a shaped picture beside the copy, centred text over a wide picture |
 | What Home leads with | The offer, the people, proof, or how it works |
 | How Home ends | A call-to-action band, a contact section, or a call to action beside a picture |
 | Where dividers go | Nowhere, around dark and accent sections, or at every change of colour |
+| Arrangements | One each for calls to action, page titles, rows of cards and reviews (see below), the same across the whole site |
 
-The draw depends only on the brief, so the same brief always gets the same shape. The AI still writes everything and still chooses the look. After it finishes, the first screen and the divider rule are checked and corrected in code, the same way location pages are. In the test the AI had already followed them on 18 and 20 of 20 sites.
+The draw depends only on the brief, so the same brief always gets the same shape. The AI still writes everything and still chooses the look. After it finishes, the first screen, the divider rule and the arrangements are checked and corrected in code, the same way location pages are. In the tests the AI had already followed them on nearly every site.
 
 Dividers are no longer asked for section by section. A section's "edge below" is Automatic by default and follows "Divider placement" in the Theme tab; setting it by hand makes that one boundary an exception.
+
+## Arrangements
+
+Four kinds of section looked the same on every site however the rest was steered, so each has four arrangements. Like a hero style, an arrangement only rearranges what the section already holds, and one that lacks what it needs (a picture, a review score) is drawn as the plain one. Each such section has an "Arrangement" control in the Sections tab.
+
+| Section | Arrangements |
+| - | - |
+| Call to action | Centred band · with phone and opening hours beside it · large statement with the buttons beside it · beside a picture |
+| Title of an inner page | Title and one sentence · on a picture · with key facts beside it · with links to the sections below |
+| Row of cards | Row of cards · numbered list with rules · picture and text rows · one large card with the rest beside it |
+| Reviews | Row of review cards · one large review · the score beside the reviews · staggered wall |
 
 ## The variety test
 
 `scripts/variety-test` generates twenty sites from twenty briefs (five hairdressers, five electricians, five yoga studios, five interior designers), photographs every page and measures how alike the sites are. Run it again after any change that is meant to make sites differ. With the app running:
 
 ```bash
-node --import ./scripts/variety-test/hooks.mjs scripts/variety-test/generate.mjs round-3   # about 3 minutes, about $1
-node scripts/variety-test/shots.mjs round-3                                                # generates the pictures, about $3
-node --import ./scripts/variety-test/hooks.mjs scripts/variety-test/analyze.mjs round-3
-node scripts/variety-test/compare.mjs variety-2 round-3
-python3 scripts/variety-test/sheets.py round-3                                             # contact sheets, needs Pillow
+node --import ./scripts/variety-test/hooks.mjs scripts/variety-test/generate.mjs round-4   # about 3 minutes, about $1
+node scripts/variety-test/shots.mjs round-4                                                # generates the pictures, about $5
+node --import ./scripts/variety-test/hooks.mjs scripts/variety-test/analyze.mjs round-4
+node scripts/variety-test/compare.mjs variety-3 round-4
+python3 scripts/variety-test/sheets.py round-4                                             # contact sheets, needs Pillow
 ```
 
 Results land in `.prototype-cache/runs/<name>` and any site can be opened by itself at `/preview/<name>/<site>`. Restart the dev server after changing the AI's instructions; it can keep serving the old ones.
 
-| Measure | Round one | Round two (choices drawn by code) |
-| - | - | - |
-| First-screen compositions in use | 2 | 8 |
-| Sites with text on the left and a picture on the right | 20 of 20 | 10 of 20 |
-| Home ends with the call-to-action band | 17 | 9 |
-| Dividers drawn across all pages | 15 | 120 |
-| Section order shared by two sites of the same type | 71% | 56% |
-| Inner pages that end with the same band | 52 of 60 | 54 of 60 |
-| Operations rejected | 0 of 475 | 0 of 470 |
+| Measure | Round one | Round two (choices drawn by code) | Round three (arrangements) |
+| - | - | - | - |
+| First-screen compositions in use | 2 | 8 | 6 |
+| Sites with text on the left and a picture on the right | 20 of 20 | 10 of 20 | 15 of 20 |
+| Calls to action drawn as the plain centred band | 69 of 69 | 66 of 66 | 25 of 76 |
+| Inner-page titles drawn as a plain title | 58 of 58 | 57 of 57 | 9 of 57 |
+| Card sections drawn as a plain row of cards | 20 of 20 | 18 of 18 | 5 of 20 |
+| Review sections drawn as a plain row of cards | 18 of 18 | 16 of 16 | 5 of 20 |
+| Inner pages with no picture | 45 of 60 | 46 of 60 | 24 of 59 |
+| Dividers drawn across all pages | 15 | 120 | 41 |
+| Section order shared by two sites of the same type | 71% | 56% | 70% |
+| Operations rejected | 0 of 475 | 0 of 470 | 0 of 465 |
 
-Round two changed no components. What it did not move is what needs new variants: inner pages are still one template, and the card row, the review row, the closing band and the numbered steps are each drawn one way.
+Round two changed no components: the code started drawing the first screen, the order and ending of Home and the divider rule. Round three added the arrangements.
+
+Two things in round three need reading with care. Offering three first screens and letting the AI pick brought its favourites back: it never chose the full photo in twelve offers. And the draw was fixed in that round so that a site's choices no longer arrive as a package, which reshuffled every brief's draws: twelve of the twenty briefs happened to draw "no dividers" and none drew the contact ending, so dividers and shared order moved for reasons of luck. Over 10,000 draws each option comes up as often as it should.
 
 ## Things to try
 

@@ -14,7 +14,7 @@ import type { Divider } from '../vocab';
 import { BlocksView, personKey } from './blocks';
 import { HeroTicker, HeroView } from './hero';
 import { SiteCtx, useSite, type EditApi, type ImageApi, type Path, type SiteContext } from './context';
-import { Btn, Pic, Txt, cx } from './parts';
+import { Btn, Pic, Stars, Txt, cx } from './parts';
 import '../site.css';
 
 function useFontLinks(hrefs: string[]) {
@@ -98,9 +98,66 @@ function IntroView({ s, level, n }: { s: Section; level: 1 | 2; n: string }) {
   );
 }
 
-type SectionProps = { s: Section; e: Effective; index: number; total: number; first: boolean; n: string };
+/** How to reach the business, for a call to action that shows it beside the words. */
+function Facts() {
+  const { doc, t } = useSite();
+  const b = doc.business;
+  const loc = b.locations[0];
+  return (
+    <dl className="facts">
+      {b.phone && (
+        <div>
+          <dt>{t.phone}</dt>
+          <dd>
+            <a className="facts-phone" href={`tel:${b.phone.replace(/\s+/g, '')}`}>
+              {b.phone}
+            </a>
+          </dd>
+        </div>
+      )}
+      {!!loc?.hours.length && (
+        <div>
+          <dt>{t.hours}</dt>
+          <dd>
+            {loc.hours.map((h, i) => (
+              <span key={i}>
+                <b>{h.days}</b> {h.time}
+              </span>
+            ))}
+          </dd>
+        </div>
+      )}
+      {loc?.address && (
+        <div>
+          <dt>{t.address}</dt>
+          <dd>{loc.address}</dd>
+        </div>
+      )}
+    </dl>
+  );
+}
 
-function SectionView({ s, e, index, total, first, n }: SectionProps) {
+/** The review score, large, for reviews arranged around it. */
+function Score() {
+  const { doc, t } = useSite();
+  const r = doc.business.rating;
+  if (!r) return null;
+  return (
+    <div className="score-big">
+      <b>{r.value}</b>
+      <Stars value={parseFloat(r.value.replace(',', '.')) || 5} />
+      <span>
+        {r.count ? `${r.count} ${t.reviews} · ` : ''}
+        {r.source}
+      </span>
+    </div>
+  );
+}
+
+type JumpLink = { id: string; label: string };
+type SectionProps = { s: Section; e: Effective; index: number; total: number; first: boolean; n: string; links?: JumpLink[] };
+
+function SectionView({ s, e, index, total, first, n, links }: SectionProps) {
   const { theme, edit } = useSite();
   const tone: ToneColors = e.cover ? theme.cover : theme.tones[s.tone];
   const style = { ...toneVars(tone), '--next-bg': e.nextBg } as CSSProperties;
@@ -124,6 +181,8 @@ function SectionView({ s, e, index, total, first, n }: SectionProps) {
       data-type={s.type}
       data-layout={e.layout}
       data-hero={e.hero === 'standard' ? undefined : e.hero}
+      data-family={e.family ?? undefined}
+      data-variant={e.variant ?? undefined}
       data-edge={e.edge}
       data-edge-shape={theme.traits.divider}
       data-backdrop={e.backdrop}
@@ -164,9 +223,32 @@ function SectionView({ s, e, index, total, first, n }: SectionProps) {
           </div>
         ) : (
           <>
-            <IntroView s={s} level={level} n={n} />
+            {e.family === 'cta' && e.variant === 'facts' ? (
+              <div className="cta-facts">
+                <IntroView s={s} level={level} n={n} />
+                <Facts />
+              </div>
+            ) : (
+              <IntroView s={s} level={level} n={n} />
+            )}
+            {e.family === 'title' && e.variant === 'links' && !!links?.length && (
+              <nav className="title-links">
+                {links.map((l) => (
+                  <a key={l.id} href={`#${l.id}`}>
+                    {l.label}
+                  </a>
+                ))}
+              </nav>
+            )}
             {media}
-            {blocks(e.cols)}
+            {e.family === 'testimonials' && e.variant === 'score' ? (
+              <div className="score">
+                <Score />
+                {blocks(e.cols)}
+              </div>
+            ) : (
+              blocks(e.cols)
+            )}
           </>
         )}
       </div>
@@ -495,7 +577,17 @@ export function Site({ doc, pageId = 'home', onNavigate, edit = null, images = n
   const legal = isLegal(pageId) ? pageId : null;
   const page = doc.pages.find((p) => p.id === pageId) ?? doc.pages[0];
   const sections = legal ? [] : page.sections;
-  const plan = useMemo(() => planSections(sections, theme, doc.footer.tone), [sections, theme, doc.footer.tone]);
+  const inner = !legal && page !== doc.pages[0];
+  const facts = useMemo(
+    () => ({ rating: !!doc.business.rating, contact: !!doc.business.phone || doc.business.locations.some((l) => l.hours.length > 0), inner }),
+    [doc.business, inner],
+  );
+  const plan = useMemo(() => planSections(sections, theme, doc.footer.tone, facts), [sections, theme, doc.footer.tone, facts]);
+  // Where a page title can jump to: the page's own sections, by their headings.
+  const links = useMemo(
+    () => sections.slice(1).filter((s) => s.intro.heading && s.type !== 'cta').map((s) => ({ id: s.id, label: (s.intro.heading ?? '').replace(/\*/g, '') })),
+    [sections],
+  );
   const portraits = useMemo(() => {
     const map = new Map<string, ImageRef>();
     for (const p of doc.pages) for (const s of p.sections) for (const b of s.blocks) if (b.kind === 'person' && b.image && !map.has(personKey(b.name))) map.set(personKey(b.name), b.image);
@@ -532,7 +624,7 @@ export function Site({ doc, pageId = 'home', onNavigate, edit = null, images = n
         {legal && <LegalView which={legal} tone={theme.tones.base} />}
         {sections.map((s, i) => {
           if (s.intro.eyebrow) eyebrowCount++;
-          return <SectionView key={s.id} s={s} e={plan[i]} index={i} total={sections.length} first={i === 0} n={String(eyebrowCount).padStart(2, '0')} />;
+          return <SectionView key={s.id} s={s} e={plan[i]} index={i} total={sections.length} first={i === 0} n={String(eyebrowCount).padStart(2, '0')} links={i === 0 ? links : undefined} />;
         })}
         <FooterView footer={doc.footer} name={name} tone={theme.tones[doc.footer.tone]} />
       </div>

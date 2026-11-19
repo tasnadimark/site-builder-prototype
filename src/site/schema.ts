@@ -178,6 +178,8 @@ const SectionObject = z
     pad: pick(V.PADS, 'md'),
     /** Only used when the section is a hero. */
     hero: pick(V.HERO_STYLES, 'standard'),
+    /** The arrangement, for the kinds of section that have several (see VARIANTS). */
+    variant: opt(16),
     layout: LayoutSchema,
     intro: IntroSchema,
     media: optImage,

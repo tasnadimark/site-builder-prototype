@@ -17,7 +17,7 @@ const { createOpStream } = await import('@/site/ops');
 const { emptyDoc } = await import('@/site/schema');
 const { createObjectStream } = await import('@/site/stream');
 const { STRINGS } = await import('@/site/strings');
-const { describeDirection, directionFor, directionOps } = await import('@/site/direction');
+const { describeDirection, directionFor, directionOps, heroWritten: whichHero } = await import('@/site/direction');
 
 const batch = process.argv[2] || 'variety-1';
 const concurrency = Number(process.argv[3]) || 4;
@@ -88,6 +88,9 @@ async function generate(b) {
   const first = doc.pages[0]?.sections[0];
   const heroWritten = first && { hero: first.hero, layout: first.layout.kind, flip: first.layout.flip, backdrop: first.backdrop, align: first.intro.align };
   const edgesWritten = doc.theme.traits?.edges ?? null;
+  // Which of the three first screens it chose, and whether it chose one of them at all.
+  const heroChoice = first?.type === 'hero' ? whichHero(first, direction) : null;
+  const variantsWritten = doc.pages.flatMap((p) => p.sections).filter((s) => s.variant).length;
   if (applied && !error) for (const op of directionOps(doc, direction)) doc = apply(doc, op).doc;
 
   const result = {
@@ -103,7 +106,9 @@ async function generate(b) {
     locationsAdded,
     direction: describeDirection(direction),
     heroWritten,
+    heroPicked: heroChoice && { id: heroChoice.plan.id, followed: heroChoice.followed },
     edgesWritten,
+    variantsWritten,
     truncated: parser.pending,
     said,
     error,

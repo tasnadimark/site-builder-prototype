@@ -59,7 +59,8 @@ function describe(run) {
   const set = doc.theme;
 
   const pages = doc.pages.map((p) => {
-    const plan = planSections(p.sections, theme, doc.footer.tone);
+    const facts = { rating: !!doc.business.rating, contact: !!doc.business.phone || doc.business.locations.some((l) => l.hours.length > 0), inner: p !== doc.pages[0] };
+    const plan = planSections(p.sections, theme, doc.footer.tone, facts);
     return {
       id: p.id,
       title: p.title,
@@ -67,6 +68,9 @@ function describe(run) {
       group: p.group ?? null,
       sections: p.sections.map((s, i) => ({
         type: s.type,
+        family: plan[i].family,
+        variant: plan[i].variant,
+        variantAsked: s.variant ?? null,
         layout: plan[i].layout,
         cols: plan[i].cols,
         tone: plan[i].cover ? 'photo' : s.tone,
@@ -150,11 +154,15 @@ function describe(run) {
     direction: d,
     followed: d && {
       // Before the code enforced it: did the AI write the first screen it was given?
-      hero: !!w && w.hero === hero?.heroShown && (composition.startsWith('edge') || composition.startsWith('split') ? !!w.flip === !!flip : true) && (composition === 'photo') === (w.backdrop === 'media'),
+      // Round two gave one first screen; from round three the AI chooses among three.
+      hero: run.heroPicked ? run.heroPicked.followed : !!w && w.hero === hero?.heroShown && (composition.startsWith('edge') || composition.startsWith('split') ? !!w.flip === !!flip : true) && (composition === 'photo') === (w.backdrop === 'media'),
       edges: run.edgesWritten === d.edges,
       angle: early.some((t) => FAMILY[d.angle]?.includes(t)),
-      ending: ending === d.ending,
+      ending: d.ending === 'cta' ? ending === 'band' || ending === 'picture' : ending === d.ending,
     },
+    heroOffered: d?.heroes ?? null,
+    // Every section that belongs to a family of arrangements, with the one drawn.
+    arranged: all.filter((s) => s.family).map((s) => ({ family: s.family, variant: s.variant, asked: s.variantAsked })),
     ending,
     edgeRhythm: theme.traits.edges,
     explicitEdges: all.filter((s) => s.edgeAsked !== 'auto').length,
@@ -248,6 +256,13 @@ const shape = {
   explicitEdges: sites.reduce((n, s) => n + s.explicitEdges, 0),
   dividersDrawn: sites.reduce((n, s) => n + (s.counts.edges.divider ?? 0), 0),
   followed: directed.length ? Object.fromEntries(['hero', 'edges', 'angle', 'ending'].map((k) => [k, directed.filter((s) => s.followed[k]).length])) : null,
+  // For each family: how many sections were drawn in each arrangement, and how many asked for one that fell back.
+  arranged: Object.fromEntries(
+    Object.keys(V.VARIANTS).map((f) => {
+      const all = sites.flatMap((s) => s.arranged.filter((x) => x.family === f));
+      return [f, { drawn: tally(all.map((x) => x.variant)), total: all.length, fellBack: all.filter((x) => x.asked && x.asked !== x.variant).length }];
+    }),
+  ),
   directed: directed.length,
 };
 
@@ -298,6 +313,7 @@ console.log(`  first screen   ${line(shape.composition)}`);
 console.log(`  2nd section    ${line(shape.second)}`);
 console.log(`  Home ends with ${line(shape.ending)}`);
 console.log(`  divider rule   ${line(shape.edgeRhythm)}   | dividers drawn ${shape.dividersDrawn}, edges set by hand ${shape.explicitEdges}`);
+for (const [f, v] of Object.entries(shape.arranged)) console.log(`  ${f.padEnd(14)} ${line(v.drawn)}${v.fellBack ? `   | ${v.fellBack} fell back to the plain one` : ''}`);
 if (shape.followed) console.log(`  AI followed its direction (of ${shape.directed}): first screen ${shape.followed.hero}, divider rule ${shape.followed.edges}, order ${shape.followed.angle}, ending ${shape.followed.ending}`);
 console.log('\nSECTIONS ACROSS ALL PAGES (count, then sites using it)');
 for (const [key, v] of Object.entries(structure)) {
@@ -305,7 +321,7 @@ for (const [key, v] of Object.entries(structure)) {
 }
 console.log('\nHOME, SECTION BY SECTION');
 for (const s of sites) {
-  console.log(`  ${s.id.padEnd(22)} ${s.look.preset.padEnd(9)} ${String(s.composition).padEnd(11)} ${s.direction ? `${s.direction.angle}/${s.direction.ending}`.padEnd(16) : ''} ${s.home.map((x) => `${x.type}/${x.layout}`).join(' > ')}`);
+  console.log(`  ${s.id.padEnd(22)} ${s.look.preset.padEnd(9)} ${String(s.composition).padEnd(11)} ${s.direction ? `${s.direction.angle}/${s.direction.ending}`.padEnd(16) : ''.padEnd(16)} ${s.home.map((x) => `${x.type}/${x.layout}`).join(' > ')}`);
 }
 console.log('\nPAGES');
 for (const s of sites) console.log(`  ${s.id.padEnd(22)} ${s.pages.map((p) => `${p.title}${p.group ? ` [${p.group}]` : ''}`).join(' | ')}`);

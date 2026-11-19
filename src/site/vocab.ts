@@ -38,7 +38,22 @@ export const SECTION_TYPES = [
   'timetable',
   'team',
   'contact',
+  'title',
 ] as const;
+
+/**
+ * Arrangements of the sections that would otherwise look the same on every site: the
+ * closing call to action, the title of an inner page, a row of cards and the reviews.
+ * The first of each list is the plain one. Like a hero style, an arrangement only
+ * rearranges what the section already holds.
+ */
+export const VARIANTS = {
+  cta: ['band', 'facts', 'statement', 'picture'],
+  title: ['plain', 'picture', 'facts', 'links'],
+  features: ['cards', 'list', 'rows', 'lead'],
+  testimonials: ['cards', 'single', 'score', 'wall'],
+} as const;
+export type VariantFamily = keyof typeof VARIANTS;
 
 export const BLOCK_KINDS = [
   'card', 'stat', 'quote', 'image', 'plan', 'qa', 'step', 'logo',

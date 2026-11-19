@@ -117,6 +117,10 @@ export const SECTION_TEMPLATES: Record<SectionType, { label: string; section: ob
     label: 'Team',
     section: { type: 'team', layout: { kind: 'grid', columns: 3 }, intro: { eyebrow: 'Team', heading: 'Who you will meet', align: 'start' }, blocks: copies(BLOCK_TEMPLATES.person, 3) },
   },
+  title: {
+    label: 'Page title',
+    section: { type: 'title', layout: { kind: 'stack' }, intro: { heading: 'Page title', body: 'One sentence about what this page holds.', align: 'start' } },
+  },
   contact: {
     label: 'Contact',
     section: {

@@ -1,17 +1,17 @@
-// Puts two test runs next to each other: the same measures for each, so a change to the
+// Puts test runs next to each other: the same measures for each, so a change to the
 // builder can be judged by what it did to twenty sites rather than to one.
 //
-//   node scripts/variety-test/compare.mjs [before] [after]
+//   node scripts/variety-test/compare.mjs <run> <run> [<run> ...]
 //
-// Both runs must have been analysed (analyze.mjs) and photographed (shots.mjs) first.
-// Prints a table and writes .prototype-cache/runs/<after>/compare.json.
+// Every run must have been analysed (analyze.mjs) and photographed (shots.mjs) first.
+// Prints a table and writes .prototype-cache/runs/<last run>/compare.json.
 
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const [before = 'variety-1', after = 'variety-2'] = process.argv.slice(2);
+const batches = process.argv.slice(2).length ? process.argv.slice(2) : ['variety-1', 'variety-2'];
 const dir = (batch) => path.join(root, '.prototype-cache', 'runs', batch);
 const json = async (file) => JSON.parse(await readFile(file, 'utf8'));
 const pct = (x) => `${Math.round(x * 100)}%`;
@@ -41,6 +41,7 @@ async function measure(batch) {
   const isPicture = (b) => b.kind === 'image' || (b.kind === 'card' && !!b.image);
   const first = most(a.sites.map((s) => s.composition));
   const textLeft = a.sites.filter((s) => ['edge-right', 'split-right', 'overlap'].includes(s.composition)).length;
+  const plain = (family, name) => `${a.shape.arranged[family].drawn[name] ?? 0} of ${a.shape.arranged[family].total}`;
 
   return {
     batch,
@@ -61,6 +62,11 @@ async function measure(batch) {
       ['Look settings shared by two sites of one type', pct(a.likeness.sameType.look)],
       ['Inner pages that end with the band', `${inner.filter((p) => p.sections[p.sections.length - 1]?.startsWith('cta')).length} of ${inner.length}`],
       ['Inner pages with no picture', `${innerShots.filter((p) => p.pics === 0).length} of ${innerShots.length}`],
+      ['Calls to action drawn as the plain centred band', plain('cta', 'band')],
+      ['Inner-page titles drawn as a plain title', plain('title', 'plain')],
+      ['Card sections drawn as a plain row of cards', plain('features', 'cards')],
+      ['Review sections drawn as a plain row of cards', plain('testimonials', 'cards')],
+      ['Arrangements that fell back to the plain one', Object.values(a.shape.arranged).reduce((k, f) => k + f.fellBack, 0)],
       ['Staff cards without a portrait', `${people.filter((p) => !p).length} of ${people.length}`],
       ['Mosaics that mix pictures with text-only tiles', `${mosaics.filter((s) => s.blocks.some(isPicture) && s.blocks.some((b) => !isPicture(b))).length} of ${mosaics.length}`],
       ['Operations rejected', `${runs.reduce((k, r) => k + r.rejected.length, 0)} of ${runs.reduce((k, r) => k + r.applied + r.rejected.length, 0)}`],
@@ -71,11 +77,13 @@ async function measure(batch) {
   };
 }
 
-const [b, a] = await Promise.all([measure(before), measure(after)]);
-const rows = a.rows.map(([label, value], i) => ({ label, before: b.rows[i][1], after: value }));
-await writeFile(path.join(dir(after), 'compare.json'), JSON.stringify({ before, after, rows, followed: a.followed }, null, 1));
+const runs = await Promise.all(batches.map(measure));
+const last = runs[runs.length - 1];
+const rows = last.rows.map(([label], i) => ({ label, values: runs.map((r) => r.rows[i][1]) }));
+await writeFile(path.join(dir(last.batch), 'compare.json'), JSON.stringify({ batches, rows, followed: last.followed }, null, 1));
 
 const wide = Math.max(...rows.map((r) => r.label.length));
-console.log(`${''.padEnd(wide)}  ${before.padEnd(16)} ${after}`);
-for (const r of rows) console.log(`${r.label.padEnd(wide)}  ${String(r.before).padEnd(16)} ${r.after}`);
-if (a.followed) console.log(`\nThe AI followed its direction before the code enforced it, of ${a.followed.of} sites: first screen ${a.followed.hero}, divider rule ${a.followed.edges}, order of Home ${a.followed.angle}, ending ${a.followed.ending}`);
+console.log(`${''.padEnd(wide)}  ${batches.map((b) => b.padEnd(16)).join(' ')}`);
+for (const r of rows) console.log(`${r.label.padEnd(wide)}  ${r.values.map((v) => String(v).padEnd(16)).join(' ')}`);
+const f = last.followed;
+if (f) console.log(`\nThe AI followed its direction before the code enforced it, of ${f.of} sites: first screen ${f.hero}, divider rule ${f.edges}, order of Home ${f.angle}, ending ${f.ending}`);
