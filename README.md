@@ -115,7 +115,9 @@ The page rule works at the level of eight kinds of business. A recipe (`src/site
 | Hairdresser, electrician, yoga studio | Yes, in the three variety rounds |
 | Beautician, nail studio, masseur, photographer, wedding services, interior designer | Yes, eleven sites (`scripts/variety-test/briefs-library-1.mjs`) |
 | Air-conditioning installer, tiler, accountant, cleaning company, landscaper, HR consultant, financial adviser, language teacher | Yes, eight sites (`scripts/variety-test/briefs-library-2.mjs`) |
-| Health and movement, hospitality | Page rule only, never generated |
+| Physiotherapist, psychologist, personal trainer, café, bistro, pastry shop | Yes, six sites (`scripts/variety-test/briefs-library-3.mjs`) |
+
+After generating sample sites for a new type, `node scripts/variety-test/summary.mjs <run>` prints each site's pages, the pieces it used and its main button, which is the quickest way to see whether it followed its recipe.
 
 Two blocks exist for businesses whose finished work is what they sell: **before and after** (two pictures of the same thing side by side) and **project** (one piece of work with its own pictures, a title and a line of text). With generated pictures the two halves of a before-and-after never show the same subject, and a portfolio shows only that the layout works; both need the owner's own photos.
 
@@ -242,6 +244,6 @@ That is one run per path, so treat the timings as a first data point. The run al
 - **Forms are not connected.** Submitting shows a note and sends nothing.
 - **Pictures are all generated.** For a real business that is wrong for anything that claims to show the actual premises, people or work; uploading real photos is the missing piece.
 - **Legal pages are placeholders.** The privacy notice and company details are template text filled in from the business facts, and need a lawyer's version.
-- **Kinds of business without a tested recipe.** Seventeen types have a recipe and sample sites (see above). Health and movement and hospitality have only the page rule. A recipe's before-and-after pairs are followed about two times in three.
+- **Kinds of business without a tested recipe.** Twenty-three types have a recipe and at least one sample site (see above), most of them exactly one. A recipe's before-and-after pairs are followed about two times in three. Accommodation is deliberately not covered.
 - **The draw ignores the mood of the business.** A quiet neighbourhood salon can draw the loudest first screen. Weighting the draw by kind or mood is the obvious next step.
 - Custom code blocks (the plan is a `custom` block rendered in a sandboxed frame that receives the theme tokens), saving, publishing, drag and drop.

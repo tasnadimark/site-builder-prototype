@@ -196,6 +196,49 @@ Language teacher or tutor (kind "consultant")
 - Home holds: who the lessons are for as cards (beginners returning, exam preparation, business language); lesson formats and prices as rows or plans (single lesson, pass, small group); how the trial lesson works as steps; the teacher as a person block with qualifications; results as stats; reviews from students.
 - Pictures: a lesson in progress, books and notes, an online call.
 
+Physiotherapist (kind "health")
+- Visitors want: do you treat my problem, how many sessions will it take, what does it cost, do I need a referral.
+- The main button books a first appointment.
+- Home holds: the complaints treated as cards (back and neck pain, recovery after surgery, sports injuries, posture); how a first appointment runs as steps (assessment, plan, exercises to take home); prices and session length as rows; the therapist as a person block with qualifications; reviews.
+- Never promise a cure, or a number of sessions that will fix a problem.
+- Pictures: the treatment room, guided exercises, hands supporting a shoulder or a knee. No faces in pain.
+
+Psychologist or therapist (kind "health")
+- Visitors want: can this person help with what I am going through, what is a first session like, what does it cost, is it confidential.
+- The main button books a first session.
+- Home holds: what people come with as cards, worded gently (anxiety, burnout, relationships, grief); how a first session runs as steps; the approach in a short "story" section; fees and session length as rows; the psychologist as a person block with qualifications, registration and memberships; common questions as qa blocks (confidentiality, how long it takes, online sessions).
+- No reviews, quotes or ratings from clients anywhere on this site, and no "testimonials" section: confidentiality comes first. Where the direction asks for proof, the proof is qualifications, registration and years of practice. Never promise an outcome.
+- Pictures: a calm room, two chairs, daylight, a plant. Never a person in distress.
+
+Personal trainer (kind "health")
+- Visitors want: will this work for my goal, where and when, what does it cost, what is a first session like.
+- The main button books a trial session.
+- Home holds: the goals trained for as cards (losing weight, getting stronger, training after an injury, preparing for an event); how the start goes as steps (assessment, plan, first sessions); packages as plans (single session, pass, monthly, online coaching); the trainer as a person block with qualifications; client results as quotes and stats.
+- No before-and-after pictures of bodies.
+- Pictures: training in progress seen from the side, equipment, the gym or the park. No posed fitness-model shots.
+
+Café (kind "hospitality")
+- Visitors want: where is it, when is it open, what do you serve, is it a nice place to sit.
+- The main button is "find us": it leads to the page with the map and opening hours. There is no booking.
+- Home holds: a "contact" section near the top with the address and opening hours; a few favourites from the menu as rows with prices; the place as a gallery of images; the story behind it (the beans, the people); reviews.
+- Menu: rows grouped by kind (coffee, other drinks, pastries, breakfast), with a short description in "detail" and the price in "value".
+- Pictures: the room and its light, the counter, cups, pastries. Guests seen from a distance.
+
+Bistro or restaurant (kind "hospitality")
+- Visitors want: the menu and prices, the weekly lunch menu, a table.
+- The main button reserves a table: "tel:" plus the number, or the booking form.
+- Home holds: this week's lunch menu as rows grouped by day; three or four signature dishes as cards with an image each; the chef and the story in a "story" section; reviews; a "contact" section with opening hours and the map.
+- Menu: rows grouped by course (starters, mains, desserts, drinks), with what is in the dish in "detail" and the price in "value".
+- Find us: a contact block and a form with date and message for booking a table.
+- Pictures: plated dishes from above or from the side, the dining room in the evening.
+
+Pastry shop or bakery (kind "hospitality")
+- Visitors want: what cakes do you have, can I order one for an occasion and how far ahead, what does a slice cost, when are you open.
+- The main button orders a cake: it leads to the order form.
+- Home holds: the cakes as a gallery of images; favourites as rows with the price per slice; how ordering a cake works as steps (size and flavour, how many days ahead, pick-up); the story of the shop; reviews; a "contact" section with opening hours.
+- Find us: a contact block and an order form with date and message.
+- Pictures: whole cakes and slices on plain backgrounds, the display counter, hands decorating.
+
 Electrician or other tradesperson (kind "trades")
 - Visitors want: do you do this job, do you come to my area, can I trust you, how fast. Then they call.
 - The main button everywhere is a phone call: href "tel:" plus the number. The second is "request a quote".
