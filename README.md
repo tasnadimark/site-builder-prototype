@@ -98,13 +98,32 @@ Every site is built from the same page roles: home, offer, approach, proof, peop
 | Creative and events | Portfolio, Packages, About, Contact | Reviews |
 | Local business services | Services, About, Contact and quote | References |
 
-Adjustments the model is told to make: fold a page with too little to say back into Home; give a long price list or a team of three or more its own page; add an "Our work" page where finished work is the product (home design, landscaping, tiling, photography); keep the menu to five entries.
+Every business gets all the pages of its kind, however short its brief: the owner is not a web expert, so the site is given complete and corrected afterwards. Adjustments the model is told to make: give a long price list or a team of three or more its own page; add an "Our work" page where finished work is the product (home design, landscaping, tiling, photography); keep the menu to five entries.
 
 One part of the rule is enforced in code, not left to the model: a business with two or more locations always gets a page per location, grouped under one dropdown (`ensureLocations` in `src/site/ops.ts`). In both test runs the model left those pages out and the rule added them.
 
 The new blocks are general on purpose. A **row** is a name, a detail and a value on the right, so it is a price, a menu item, a class in a timetable. Rows that share a group are drawn together under its heading. That is why there is no timetable component and no menu component.
 
 **Language.** A site is written in the language of its brief. The few words the renderer writes itself (form labels, "Opening hours", the legal pages) exist in English and Hungarian (`src/site/strings.ts`). All 21 fonts cover ő and ű. Headings shrink until their longest word fits, because a Hungarian headline often has one very long word.
+
+## Recipes for business types
+
+The page rule works at the level of eight kinds of business. A recipe (`src/site/recipes.ts`) goes one level finer: half a page of plain guidance for one type of business, saying what its visitors come for, what Home holds and what its pictures should show. Supporting another type means writing a recipe, and building a new piece only when at least two types need it.
+
+| Has a recipe | Sample sites generated |
+| - | - |
+| Hairdresser, electrician, yoga studio | Yes, in the three variety rounds |
+| Beautician, nail studio, masseur, photographer, wedding services, interior designer | Yes, eleven sites (`scripts/variety-test/briefs-library-1.mjs`) |
+| Air-conditioning installer, tiler, accountant, cleaning company, landscaper, HR consultant, financial adviser, language teacher | Yes, eight sites (`scripts/variety-test/briefs-library-2.mjs`) |
+| Physiotherapist, psychologist, personal trainer, café, bistro, pastry shop | Yes, six sites (`scripts/variety-test/briefs-library-3.mjs`) |
+
+After generating sample sites for a new type, `node scripts/variety-test/summary.mjs <run>` prints each site's pages, the pieces it used and its main button, which is the quickest way to see whether it followed its recipe.
+
+`node scripts/variety-test/phone.mjs <run>` photographs a run at phone width, one picture per section, and flags anything that runs off the side of the screen or has its text cut off. `python3 scripts/variety-test/phone-sheets.py <run>` tiles the result, several phones wide. The last check covered 704 sections on 45 sites plus every hero style, arrangement and new block; it found one real fault (a price written as a phrase pushed its row out of the card) and two cosmetic ones, all fixed.
+
+Two blocks exist for businesses whose finished work is what they sell: **before and after** (two pictures of the same thing side by side) and **project** (one piece of work with its own pictures, a title and a line of text). With generated pictures the two halves of a before-and-after never show the same subject, and a portfolio shows only that the layout works; both need the owner's own photos.
+
+A recipe says what a site should hold, not the order. What Home leads with is drawn per site and can be moved afterwards.
 
 ## Hero styles
 
@@ -120,10 +139,69 @@ The first screen can be composed five ways. Every style arranges the same things
 
 If a style's needs are not met, the planner draws the nearest one that works and the inspector says why (a wordmark with a long heading is drawn as overlap). Select a hero and use "Hero style" in the Sections tab to try them.
 
+## What the code decides for a new site
+
+Left to itself the AI converges. In a test of twenty sites it used two of the five hero styles, one order of sections and less than one divider per site, because each choice looked reasonable taken alone. So these choices are drawn by code from the brief and handed to the AI as decisions (`src/site/direction.ts`):
+
+| Choice | Options |
+| - | - |
+| First screen | Three of eight compositions are offered and the AI picks one: picture to the right or left edge, giant heading over a picture, the name as a giant word, a full photo with a moving line, a full photo with centred text, a shaped picture beside the copy, centred text over a wide picture |
+| What Home leads with | The offer, the people, proof, or how it works |
+| How Home ends | A call-to-action band, a contact section, or a call to action beside a picture |
+| Where dividers go | Nowhere, around dark and accent sections, or at every change of colour |
+| Arrangements | One each for calls to action, page titles, rows of cards and reviews (see below), the same across the whole site |
+
+The draw depends only on the brief, so the same brief always gets the same shape. The AI still writes everything and still chooses the look. After it finishes, the first screen, the divider rule and the arrangements are checked and corrected in code, the same way location pages are. In the tests the AI had already followed them on nearly every site.
+
+Dividers are no longer asked for section by section. A section's "edge below" is Automatic by default and follows "Divider placement" in the Theme tab; setting it by hand makes that one boundary an exception.
+
+## Arrangements
+
+Four kinds of section looked the same on every site however the rest was steered, so each has four arrangements. Like a hero style, an arrangement only rearranges what the section already holds, and one that lacks what it needs (a picture, a review score) is drawn as the plain one. Each such section has an "Arrangement" control in the Sections tab.
+
+| Section | Arrangements |
+| - | - |
+| Call to action | Centred band · with phone and opening hours beside it · large statement with the buttons beside it · beside a picture |
+| Title of an inner page | Title and one sentence · on a picture · with key facts beside it · with links to the sections below |
+| Row of cards | Row of cards · numbered list with rules · picture and text rows · one large card with the rest beside it |
+| Reviews | Row of review cards · one large review · the score beside the reviews · staggered wall |
+
+## The variety test
+
+`scripts/variety-test` generates twenty sites from twenty briefs (five hairdressers, five electricians, five yoga studios, five interior designers), photographs every page and measures how alike the sites are. Run it again after any change that is meant to make sites differ. With the app running:
+
+```bash
+node --import ./scripts/variety-test/hooks.mjs scripts/variety-test/generate.mjs round-4   # about 3 minutes, about $1
+node scripts/variety-test/shots.mjs round-4                                                # generates the pictures, about $5
+node --import ./scripts/variety-test/hooks.mjs scripts/variety-test/analyze.mjs round-4
+node scripts/variety-test/compare.mjs variety-3 round-4
+python3 scripts/variety-test/sheets.py round-4                                             # contact sheets, needs Pillow
+```
+
+Results land in `.prototype-cache/runs/<name>` and any site can be opened by itself at `/preview/<name>/<site>`. Restart the dev server after changing the AI's instructions; it can keep serving the old ones.
+
+| Measure | Round one | Round two (choices drawn by code) | Round three (arrangements) |
+| - | - | - | - |
+| First-screen compositions in use | 2 | 8 | 6 |
+| Sites with text on the left and a picture on the right | 20 of 20 | 10 of 20 | 15 of 20 |
+| Calls to action drawn as the plain centred band | 69 of 69 | 66 of 66 | 25 of 76 |
+| Inner-page titles drawn as a plain title | 58 of 58 | 57 of 57 | 9 of 57 |
+| Card sections drawn as a plain row of cards | 20 of 20 | 18 of 18 | 5 of 20 |
+| Review sections drawn as a plain row of cards | 18 of 18 | 16 of 16 | 5 of 20 |
+| Inner pages with no picture | 45 of 60 | 46 of 60 | 24 of 59 |
+| Dividers drawn across all pages | 15 | 120 | 41 |
+| Section order shared by two sites of the same type | 71% | 56% | 70% |
+| Operations rejected | 0 of 475 | 0 of 470 | 0 of 465 |
+
+Round two changed no components: the code started drawing the first screen, the order and ending of Home and the divider rule. Round three added the arrangements.
+
+Two things in round three need reading with care. Offering three first screens and letting the AI pick brought its favourites back: it never chose the full photo in twelve offers. And the draw was fixed in that round so that a site's choices no longer arrive as a package, which reshuffled every brief's draws: twelve of the twenty briefs happened to draw "no dividers" and none drew the contact ending, so dividers and shared order moved for reasons of luck. Over 10,000 draws each option comes up as often as it should.
+
 ## Things to try
 
 - **Theme tab**: click the four presets, then Shuffle. The same document becomes a different site.
 - Click a section, then change its layout, tone and "edge below" in the **Sections** tab.
+- **Theme tab**, "Divider placement": dividers nowhere, around dark and accent sections, or wherever the colour changes.
 - Click any text on the page and type. Mark words with `*asterisks*` in a heading to emphasise them.
 - **State** (top bar): the live document, a log of every operation with applied or rejected, and a Load tab. Paste malformed JSON into Load to see what the validator does with it.
 - The device buttons lay the page out at a true desktop, tablet or phone width.
@@ -168,5 +246,6 @@ That is one run per path, so treat the timings as a first data point. The run al
 - **Forms are not connected.** Submitting shows a note and sends nothing.
 - **Pictures are all generated.** For a real business that is wrong for anything that claims to show the actual premises, people or work; uploading real photos is the missing piece.
 - **Legal pages are placeholders.** The privacy notice and company details are template text filled in from the business facts, and need a lawyer's version.
-- **Kinds of business without a tested recipe.** The page rule covers eight kinds, but only hairdresser, electrician and yoga studio have been generated and checked.
+- **Kinds of business without a tested recipe.** Twenty-three types have a recipe and at least one sample site (see above), most of them exactly one. A recipe's before-and-after pairs are followed about two times in three. Accommodation is deliberately not covered.
+- **The draw ignores the mood of the business.** A quiet neighbourhood salon can draw the loudest first screen. Weighting the draw by kind or mood is the obvious next step.
 - Custom code blocks (the plan is a `custom` block rendered in a sandboxed frame that receives the theme tokens), saving, publishing, drag and drop.

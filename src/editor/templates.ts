@@ -23,6 +23,8 @@ export const BLOCK_TEMPLATES: Record<BlockKind, object> = {
   form: { kind: 'form', fields: ['name', 'email', 'phone', 'message'] },
   rating: { kind: 'rating' },
   check: { kind: 'check', label: 'Something customers can count on' },
+  beforeafter: { kind: 'beforeafter', before: img('The room before the work, plain and dated', 'portrait'), after: img('The same room after the work, finished', 'portrait'), caption: 'What changed, in one line' },
+  project: { kind: 'project', title: 'Name of the job', tag: 'Kind of work', body: 'One or two sentences about what was done and for whom.', images: [img('The finished work, seen whole'), img('A detail of the finished work', 'square'), img('A second detail', 'square')] },
 };
 
 const copies = (b: object, n: number) => Array.from({ length: n }, () => ({ ...b }));
@@ -116,6 +118,10 @@ export const SECTION_TEMPLATES: Record<SectionType, { label: string; section: ob
   team: {
     label: 'Team',
     section: { type: 'team', layout: { kind: 'grid', columns: 3 }, intro: { eyebrow: 'Team', heading: 'Who you will meet', align: 'start' }, blocks: copies(BLOCK_TEMPLATES.person, 3) },
+  },
+  title: {
+    label: 'Page title',
+    section: { type: 'title', layout: { kind: 'stack' }, intro: { heading: 'Page title', body: 'One sentence about what this page holds.', align: 'start' } },
   },
   contact: {
     label: 'Contact',

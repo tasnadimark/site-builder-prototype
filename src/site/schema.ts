@@ -125,6 +125,8 @@ export const BlockSchema = z.discriminatedUnion('kind', [
   // The business's overall review score, also read from the business facts.
   z.object({ kind: z.literal('rating'), size }),
   z.object({ kind: z.literal('check'), size, label: req(80), detail: opt(140) }),
+  z.object({ kind: z.literal('beforeafter'), size, before: ImageSchema, after: ImageSchema, caption: opt(120) }),
+  z.object({ kind: z.literal('project'), size, title: req(90), tag: opt(28), body: opt(340), images: listOf(ImageSchema, 5) }),
 ]);
 
 // ---------------------------------------------------------------- section
@@ -173,11 +175,13 @@ const SectionObject = z
     id: text(48).catch(''),
     type: pick(V.SECTION_TYPES, 'features'),
     tone: pick(V.TONES, 'base'),
-    edge: pick(V.EDGES, 'none'),
+    edge: pick(V.EDGES, 'auto'),
     backdrop: pick(V.BACKDROPS, 'none'),
     pad: pick(V.PADS, 'md'),
     /** Only used when the section is a hero. */
     hero: pick(V.HERO_STYLES, 'standard'),
+    /** The arrangement, for the kinds of section that have several (see VARIANTS). */
+    variant: opt(16),
     layout: LayoutSchema,
     intro: IntroSchema,
     media: optImage,
@@ -209,6 +213,7 @@ export const ThemeSchema = z.preprocess(
         motif: optPick(V.MOTIFS),
         image: optPick(V.IMAGE_SHAPES),
         eyebrow: optPick(V.EYEBROWS),
+        edges: optPick(V.EDGE_RHYTHMS),
         caps: z.boolean().optional().catch(undefined),
       }),
     ),

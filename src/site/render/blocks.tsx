@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus } from 'lucide-react';
+import { Plus, UserRound } from 'lucide-react';
 import { useState, type CSSProperties } from 'react';
 import { itemKind, layoutItems, packBento, type Effective, type Item } from '../plan';
 import type { Block, Section } from '../schema';
@@ -276,6 +276,41 @@ export function BlockView({ s, b, i, boxed, asList, stepNo, style }: BlockProps)
         </figure>
       );
 
+    case 'beforeafter':
+      return (
+        <figure className="blk ba" {...common}>
+          <div className="ba-pair">
+            <div className="ba-side">
+              <Pic image={b.before} />
+              <span className="ba-label">{t.before}</span>
+            </div>
+            <div className="ba-side">
+              <Pic image={b.after} />
+              <span className="ba-label ba-after">{t.after}</span>
+            </div>
+          </div>
+          {b.caption && <Txt as="figcaption" className="ba-caption" value={b.caption} path={[...base, 'caption']} />}
+        </figure>
+      );
+
+    case 'project':
+      return (
+        <article className="blk project" data-pics={Math.min(b.images.length, 4)} {...common}>
+          {b.images.length > 0 && (
+            <div className="project-pics">
+              {b.images.slice(0, 4).map((image, k) => (
+                <Pic key={k} image={image} />
+              ))}
+            </div>
+          )}
+          <div className="project-body">
+            {b.tag && <Txt className="tag" value={b.tag} path={[...base, 'tag']} />}
+            <Txt as="h3" className="h3" value={b.title} path={[...base, 'title']} />
+            {b.body && <Txt as="p" className="body" value={b.body} path={[...base, 'body']} />}
+          </div>
+        </article>
+      );
+
     case 'plan': {
       // A featured plan borrows a contrasting tone so it stands out on any section.
       const tone = s.tone === 'inverse' ? theme.tones.accent : theme.tones.inverse;
@@ -342,8 +377,8 @@ export function BlockView({ s, b, i, boxed, asList, stepNo, style }: BlockProps)
           {portrait ? (
             <Pic image={portrait} className="person-pic" />
           ) : (
-            <div className="person-pic person-initials" aria-hidden>
-              {initials(b.name)}
+            <div className="person-pic person-blank" aria-hidden>
+              <UserRound strokeWidth={1.2} />
             </div>
           )}
           <div className="person-body">
@@ -421,10 +456,14 @@ export function BlocksView({ s, e, layout, cols, overlap }: { s: Section; e: Eff
 
   let cells: { lg: CSSProperties[]; md: CSSProperties[] } | undefined;
   if (layout === 'bento') {
-    const sizes = items.map((it) => it.size);
+    // In a mosaic with pictures, the pictures take the large cells: a picture fills any
+    // shape, while two lines of text in a tall cell leave it half empty.
+    const pictured = items.map((it) => it.kind === 'block' && (it.block.kind === 'image' || it.block.kind === 'project' || it.block.kind === 'beforeafter' || (it.block.kind === 'card' && !!it.block.image)));
+    const mixed = pictured.some(Boolean);
+    const sizes = items.map((it, i) => (!mixed || pictured[i] ? it.size : it.size === 'tall' ? 'sm' : it.size === 'feature' ? 'wide' : it.size));
     const place = (c: { col: number; row: number; w: number; h: number }, p: string) =>
       ({ [`--${p}c`]: `${c.col + 1} / span ${c.w}`, [`--${p}r`]: `${c.row + 1} / span ${c.h}` }) as CSSProperties;
-    cells = { lg: packBento(sizes, cols).map((c) => place(c, 'l')), md: packBento(sizes, 2).map((c) => place(c, 'm')) };
+    cells = { lg: packBento(sizes, cols, pictured).map((c) => place(c, 'l')), md: packBento(sizes, 2, pictured).map((c) => place(c, 'm')) };
   }
 
   return (

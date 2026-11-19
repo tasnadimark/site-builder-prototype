@@ -220,6 +220,9 @@ function ThemeTab({ doc, theme, run, runBurst }: InspectorProps) {
         <Field label="Dividers">
           <Pick value={theme.traits.divider} options={V.DIVIDERS} onChange={(v) => set({ traits: { divider: v } })} />
         </Field>
+        <Field label="Divider placement">
+          <Pick value={theme.traits.edges} options={V.EDGE_RHYTHMS} onChange={(v) => set({ traits: { edges: v } })} label={(v) => RHYTHM_LABEL[v]} />
+        </Field>
         <Field label="Pattern">
           <Pick value={theme.traits.motif} options={V.MOTIFS} onChange={(v) => set({ traits: { motif: v } })} />
         </Field>
@@ -252,6 +255,39 @@ function ThemeTab({ doc, theme, run, runBurst }: InspectorProps) {
 
 const strip = (s?: string) => (s ?? '').replace(/\*/g, '');
 
+const VARIANT_LABEL: Record<string, string> = {
+  'cta/band': 'Centred band',
+  'cta/facts': 'With phone and opening hours',
+  'cta/statement': 'Large statement, buttons beside it',
+  'cta/picture': 'Beside a picture',
+  'title/plain': 'Title and one sentence',
+  'title/picture': 'On a picture',
+  'title/facts': 'With key facts beside it',
+  'title/links': 'With links to the sections below',
+  'features/cards': 'Row of cards',
+  'features/list': 'Numbered list with rules',
+  'features/rows': 'Picture and text rows',
+  'features/lead': 'One large card, the rest beside it',
+  'testimonials/cards': 'Row of review cards',
+  'testimonials/single': 'One large review',
+  'testimonials/score': 'The score beside the reviews',
+  'testimonials/wall': 'Staggered wall',
+};
+
+const RHYTHM_LABEL: Record<(typeof V.EDGE_RHYTHMS)[number], string> = {
+  cut: 'Nowhere (clean cuts)',
+  strong: 'Around dark and accent sections',
+  every: 'Wherever the colour changes',
+};
+
+const EDGE_LABEL: Record<(typeof V.EDGES)[number], string> = {
+  auto: 'Automatic (follows the theme)',
+  none: 'Clean cut',
+  divider: 'Divider',
+  overlap: 'Overlap',
+  fade: 'Fade',
+};
+
 const HERO_LABEL: Record<(typeof V.HERO_STYLES)[number], string> = {
   standard: 'Standard (follows the layout below)',
   overlap: 'Giant heading over the picture',
@@ -276,6 +312,8 @@ function blockLabel(b: Block): string {
     case 'form': return (b.fields.length ? b.fields : ['name', 'email', 'message']).join(', ');
     case 'rating': return 'from the business facts';
     case 'check': return b.label;
+    case 'beforeafter': return b.caption || 'before and after';
+    case 'project': return b.title;
   }
 }
 
@@ -363,6 +401,22 @@ function BlockDetail({ s, b, i, run, doc }: { s: Section; b: Block; i: number; r
           <p className="hint">Not connected yet: submitting shows a note and sends nothing.</p>
         </>
       )}
+      {b.kind === 'beforeafter' && (
+        <>
+          <Field label="Before">
+            <Commit value={b.before.prompt} onCommit={(v) => v && patch({ before: { ...b.before, prompt: v } })} />
+          </Field>
+          <Field label="After">
+            <Commit value={b.after.prompt} onCommit={(v) => v && patch({ after: { ...b.after, prompt: v } })} />
+          </Field>
+        </>
+      )}
+      {b.kind === 'project' &&
+        b.images.map((im, k) => (
+          <Field key={k} label={`Picture ${k + 1}`}>
+            <Commit value={im.prompt} onCommit={(v) => v && patch({ images: b.images.map((x, j) => (j === k ? { ...x, prompt: v } : x)) })} />
+          </Field>
+        ))}
       {image && (
         <Field label="Picture">
           <Commit value={image.prompt} onCommit={(v) => v && patch({ image: { ...image, prompt: v } })} />
@@ -472,6 +526,13 @@ function SectionTab({ doc, page, goTo, theme, plan, selection, select, run }: In
             </Group>
           )}
 
+          {e?.family && (
+            <Group title="Arrangement">
+              <Pick value={s.variant && (V.VARIANTS[e.family] as readonly string[]).includes(s.variant) ? s.variant : V.VARIANTS[e.family][0]} options={V.VARIANTS[e.family] as readonly string[]} onChange={(v) => up({ variant: v })} label={(v) => VARIANT_LABEL[`${e.family}/${v}`] ?? v} />
+              <p className="hint">Another way to draw the same content. Nothing is lost by switching.</p>
+            </Group>
+          )}
+
           <Group title="Layout">
             <Seg
               value={s.layout.kind}
@@ -530,7 +591,7 @@ function SectionTab({ doc, page, goTo, theme, plan, selection, select, run }: In
               </div>
             </Field>
             <Field label="Edge below">
-              <Seg value={s.edge} options={V.EDGES} onChange={(v) => up({ edge: v })} />
+              <Pick value={s.edge} options={V.EDGES} onChange={(v) => up({ edge: v })} label={(v) => EDGE_LABEL[v]} />
             </Field>
             <Field label="Backdrop">
               <Seg value={s.backdrop} options={V.BACKDROPS} onChange={(v) => up({ backdrop: v })} render={(v) => (v === 'media' ? 'photo' : v)} />

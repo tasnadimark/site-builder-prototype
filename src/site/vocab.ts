@@ -5,7 +5,8 @@
 export const PRESETS = ['editorial', 'soft', 'technical', 'bold'] as const;
 
 export const TONES = ['base', 'muted', 'inverse', 'accent'] as const;
-export const EDGES = ['none', 'divider', 'overlap', 'fade'] as const;
+/** How a section hands over to the next. "auto" follows the theme's divider placement (EDGE_RHYTHMS). */
+export const EDGES = ['auto', 'none', 'divider', 'overlap', 'fade'] as const;
 export const BACKDROPS = ['none', 'motif', 'glow', 'media'] as const;
 export const PADS = ['sm', 'md', 'lg'] as const;
 
@@ -37,13 +38,31 @@ export const SECTION_TYPES = [
   'timetable',
   'team',
   'contact',
+  'title',
 ] as const;
+
+/**
+ * Arrangements of the sections that would otherwise look the same on every site: the
+ * closing call to action, the title of an inner page, a row of cards and the reviews.
+ * The first of each list is the plain one. Like a hero style, an arrangement only
+ * rearranges what the section already holds.
+ */
+export const VARIANTS = {
+  cta: ['band', 'facts', 'statement', 'picture'],
+  title: ['plain', 'picture', 'facts', 'links'],
+  features: ['cards', 'list', 'rows', 'lead'],
+  testimonials: ['cards', 'single', 'score', 'wall'],
+} as const;
+export type VariantFamily = keyof typeof VARIANTS;
 
 export const BLOCK_KINDS = [
   'card', 'stat', 'quote', 'image', 'plan', 'qa', 'step', 'logo',
   // Added for local service businesses. Each is general on purpose: a "row" is a price,
   // a menu line, a class in a timetable or a line of opening hours.
   'row', 'person', 'contact', 'form', 'rating', 'check',
+  // For businesses whose finished work is what they sell: the same thing before and after,
+  // and one piece of work shown with its own pictures.
+  'beforeafter', 'project',
 ] as const;
 
 /**
@@ -65,6 +84,8 @@ export const DIVIDERS = ['wave', 'curve', 'slant', 'zigzag', 'scallop', 'line'] 
 export const MOTIFS = ['none', 'grid', 'dots', 'lines', 'rings', 'blobs', 'grain'] as const;
 export const IMAGE_SHAPES = ['plain', 'rounded', 'arch', 'blob', 'tilt', 'frame'] as const;
 export const EYEBROWS = ['caps', 'pill', 'mono', 'rule', 'number'] as const;
+/** Where the theme draws its divider: nowhere, around inverse and accent sections, or at every change of colour. */
+export const EDGE_RHYTHMS = ['cut', 'strong', 'every'] as const;
 
 export const RADII = ['none', 'sm', 'md', 'lg', 'xl'] as const;
 export const DENSITIES = ['tight', 'regular', 'airy'] as const;
@@ -89,6 +110,7 @@ export const FONT_IDS = [
 export type Preset = (typeof PRESETS)[number];
 export type Tone = (typeof TONES)[number];
 export type Edge = (typeof EDGES)[number];
+export type EdgeRhythm = (typeof EDGE_RHYTHMS)[number];
 export type Backdrop = (typeof BACKDROPS)[number];
 export type LayoutKind = (typeof LAYOUTS)[number];
 export type Size = (typeof SIZES)[number];

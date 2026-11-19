@@ -126,6 +126,10 @@
   padding: 0 0.16em;
   border-radius: calc(var(--r) * 0.3);
 }
+/* punctuation after a highlighted word stays on its line */
+.site .em-nb {
+  white-space: nowrap;
+}
 /* bridge the space to the next word of the same phrase */
 .site[data-emphasis='highlight'] .em:has(+ .em-c) {
   box-shadow: 0.3em 0 0 var(--sacc);
@@ -616,9 +620,22 @@
   min-height: 150px;
   aspect-ratio: auto;
 }
+/* A text tile is as tall as the pictures beside it. Its icon sits at the top, its words
+   at the bottom and a size up, so the tile reads as composed rather than half empty. */
 .site .blocks[data-layout='bento'] .card:not(:has(.card-pic)) .card-body {
   flex: 1;
-  align-content: end;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.site .blocks[data-layout='bento'] .card:not(:has(.card-pic)) .icon-chip {
+  margin-bottom: auto;
+}
+.site .blocks[data-layout='bento'] .card:not(:has(.card-pic)) .h3 {
+  font-size: calc(var(--fs-h3) * 1.22);
+}
+.site .blocks[data-layout='bento'] .stat-value {
+  font-size: clamp(2.6rem, 6.2cqi, 4.8rem);
 }
 .site .blk[data-size='feature'] .h3 {
   font-size: calc(var(--fs-h3) * 1.32);
@@ -1571,11 +1588,16 @@
   border-bottom: 1px dotted var(--sline2);
   translate: 0 -0.3em;
 }
+/* A price stays on one line. A value written as a phrase ("ask by phone") is longer than
+   half the row, so it wraps there instead of pushing the row out of its card. */
 .site .row-value {
-  flex: none;
+  flex: 0 1 auto;
+  max-width: 50%;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  text-align: right;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
   color: var(--sacc-text);
 }
 .site .blocks[data-kinds='rows'] {
@@ -1599,15 +1621,17 @@
 .site[data-image='blob'] .person-pic {
   border-radius: 58% 42% 52% 48% / 46% 54% 46% 54%;
 }
-.site .person-initials {
+/* no portrait yet: a quiet silhouette in the same frame as the others */
+.site .person-blank {
   display: grid;
   place-items: center;
   border-radius: var(--r);
   background: var(--ssurf);
-  color: var(--ssoft);
-  font-family: var(--font-display);
-  font-size: 2.6rem;
-  font-weight: var(--hw);
+  color: var(--sline2);
+}
+.site .person-blank svg {
+  width: 38%;
+  height: auto;
 }
 .site .person-body {
   display: grid;
@@ -1949,7 +1973,8 @@
   display: grid;
   justify-items: center;
   gap: clamp(18px, 3cqi, 40px);
-  margin-top: calc(var(--giant, 5rem) * -0.36);
+  /* The picture tucks under the word. Any deeper and it hides letters of the name. */
+  margin-top: calc(var(--giant, 5rem) * -0.17);
 }
 .site .hero-wordmark-media {
   order: -1;
@@ -2117,5 +2142,472 @@
   }
   .site .hero-edge-media {
     min-height: 0;
+  }
+}
+
+/* ================================================================ arrangements
+   Other ways to draw the sections that would otherwise look the same on every site: the
+   closing call to action, the title of an inner page, a row of cards and the reviews.
+   Like the hero styles, each only rearranges what the section already holds. */
+
+/* ---- call to action: statement. One large line on the left, the buttons on the right. */
+.site .sec[data-family='cta'][data-variant='statement'] .intro {
+  max-width: none;
+  margin-inline: 0;
+  text-align: left;
+  align-items: end;
+}
+.site .sec[data-family='cta'][data-variant='statement'] .intro-main,
+.site .sec[data-family='cta'][data-variant='statement'] .intro-side {
+  justify-items: start;
+}
+.site .sec[data-family='cta'][data-variant='statement'] .actions {
+  justify-content: flex-start;
+}
+.site .sec[data-family='cta'][data-variant='statement'] .h2 {
+  font-size: calc(var(--fs-h2) * 1.55);
+  max-width: 17ch;
+}
+@container site (min-width: 860px) {
+  .site .sec[data-family='cta'][data-variant='statement'] .intro {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 21rem);
+    column-gap: clamp(32px, 6cqi, 96px);
+  }
+}
+
+/* ---- call to action: facts. The words on the left, how to reach the business on the right. */
+.site .cta-facts {
+  display: grid;
+  gap: clamp(28px, 5cqi, 80px);
+  align-items: center;
+}
+.site .cta-facts .intro {
+  margin: 0;
+  max-width: none;
+  text-align: left;
+}
+.site .sec .cta-facts .intro .intro-main,
+.site .sec .cta-facts .intro .intro-side {
+  justify-items: start;
+}
+.site .sec .cta-facts .intro .actions {
+  justify-content: flex-start;
+}
+@container site (min-width: 860px) {
+  .site .cta-facts {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  }
+}
+.site .facts {
+  margin: 0;
+  display: grid;
+  border-top: 1px solid var(--sline2);
+}
+/* on a phone the label sits above its value; a long label would break mid-word beside it */
+.site .facts > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.3rem 1rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid var(--sline2);
+}
+@container site (min-width: 560px) {
+  .site .facts > div {
+    grid-template-columns: minmax(8rem, 0.36fr) minmax(0, 1fr);
+  }
+}
+.site .facts dt {
+  padding-top: 0.25em;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ssoft);
+}
+.site .facts dd {
+  margin: 0;
+  display: grid;
+  gap: 0.25rem;
+  font-size: 1.04rem;
+  line-height: 1.4;
+}
+.site .facts dd span {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.site .facts dd b {
+  font-weight: 500;
+}
+.site .facts-phone {
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  font-size: clamp(1.4rem, 2.6cqi, 1.9rem);
+  line-height: 1.1;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---- page title: on a picture. The cover treatment supplies the photo; this gives it height. */
+.site .sec[data-family='title'][data-variant='picture'] {
+  padding-top: calc(var(--padv) * 0.6 + 96px + clamp(70px, 13cqi, 200px));
+}
+
+/* ---- page title: with links to the sections of the page */
+.site .sec[data-family='title'][data-variant='links'] .intro {
+  margin-bottom: clamp(20px, 2.8cqi, 32px);
+}
+.site .title-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+.site .title-links a {
+  padding: 0.5em 0.95em;
+  border: 1px solid var(--sline2);
+  border-radius: max(var(--r), 2px);
+  font-size: 0.92rem;
+  line-height: 1.2;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.site .title-links a:hover {
+  background: var(--sink);
+  border-color: var(--sink);
+  color: var(--sbg);
+}
+
+/* ---- cards: a numbered list. No boxes: a rule between items, the title large, the text beside it. */
+.site .sec[data-family='features'][data-variant='list'] .blocks {
+  gap: 0;
+  counter-reset: item;
+  border-top: 1px solid var(--sline2);
+}
+.site .sec[data-family='features'][data-variant='list'] .card.boxed {
+  counter-increment: item;
+  overflow: visible;
+  border: 0;
+  border-bottom: 1px solid var(--sline2);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.site .sec[data-family='features'][data-variant='list'] .card-pic,
+.site .sec[data-family='features'][data-variant='list'] .icon-chip {
+  display: none;
+}
+.site .sec[data-family='features'][data-variant='list'] .card-body {
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 0.45rem 0;
+  padding: clamp(18px, 2.4cqi, 30px) 0;
+}
+.site .sec[data-family='features'][data-variant='list'] .card-body::before {
+  content: counter(item, decimal-leading-zero);
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--sacc-text);
+}
+.site .sec[data-family='features'][data-variant='list'] .card-body > :not(.h3) {
+  grid-column: 2;
+}
+/* the larger title is for wide screens; on a phone it would split long words */
+.site .sec[data-family='features'][data-variant='list'] .h3 {
+  font-size: calc(var(--fs-h3) * 1.08);
+}
+@container site (min-width: 760px) {
+  .site .sec[data-family='features'][data-variant='list'] .h3 {
+    font-size: calc(var(--fs-h3) * 1.35);
+  }
+  .site .sec[data-family='features'][data-variant='list'] .card-body {
+    grid-template-columns: 3.6rem minmax(0, 0.85fr) minmax(0, 1.15fr);
+    column-gap: 0;
+  }
+  .site .sec[data-family='features'][data-variant='list'] .card-body > :not(.h3) {
+    grid-column: 3;
+  }
+  .site .sec[data-family='features'][data-variant='list'] .h3 {
+    padding-right: 2rem;
+  }
+}
+
+/* ---- cards: picture rows. Each card is a row, the picture and the words changing sides. */
+.site .sec[data-family='features'][data-variant='rows'] .blocks {
+  gap: clamp(32px, 5.5cqi, 80px);
+}
+.site .sec[data-family='features'][data-variant='rows'] .card.boxed {
+  display: grid;
+  align-items: center;
+  gap: clamp(18px, 4.5cqi, 64px);
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.site .sec[data-family='features'][data-variant='rows'] .card-pic {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-lg);
+}
+.site .sec[data-family='features'][data-variant='rows'] .card-body {
+  padding: 0;
+}
+.site .sec[data-family='features'][data-variant='rows'] .h3 {
+  font-size: calc(var(--fs-h3) * 1.15);
+}
+.site .sec[data-family='features'][data-variant='rows'] .card .body {
+  max-width: 46ch;
+  font-size: var(--fs-lead);
+}
+@container site (min-width: 760px) {
+  .site .sec[data-family='features'][data-variant='rows'] .h3 {
+    font-size: calc(var(--fs-h3) * 1.5);
+  }
+  .site .sec[data-family='features'][data-variant='rows'] .card:has(.card-pic) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .site .sec[data-family='features'][data-variant='rows'] .card:nth-child(even) .card-pic {
+    order: 2;
+  }
+}
+
+/* ---- cards: one large card with the rest beside it */
+.site .sec[data-family='features'][data-variant='lead'] .blocks > .card:first-child .h3 {
+  font-size: calc(var(--fs-h3) * 1.5);
+}
+.site .sec[data-family='features'][data-variant='lead'] .blocks > .card:not(:first-child) .card-pic {
+  display: none;
+}
+@container site (min-width: 760px) {
+  .site .sec[data-family='features'][data-variant='lead'] .blocks {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  }
+  .site .sec[data-family='features'][data-variant='lead'] .blocks > .card:first-child {
+    grid-row: 1 / span 2;
+  }
+  .site .sec[data-family='features'][data-variant='lead'] .blocks[data-count='4'] > .card:first-child {
+    grid-row: 1 / span 3;
+  }
+  .site .sec[data-family='features'][data-variant='lead'] .blocks[data-count='5'] > .card:first-child {
+    grid-row: 1 / span 4;
+  }
+  .site .sec[data-family='features'][data-variant='lead'] .blocks[data-count='6'] > .card:first-child {
+    grid-row: 1 / span 5;
+  }
+  .site .sec[data-family='features'][data-variant='lead'] .blocks > .card:first-child .card-pic {
+    flex: 1 1 0;
+    min-height: 200px;
+    aspect-ratio: auto;
+  }
+  .site .sec[data-family='features'][data-variant='lead'] .blocks > .card:first-child:not(:has(.card-pic)) .card-body {
+    flex: 1;
+    align-content: end;
+  }
+}
+
+/* ---- reviews: one large review, the others small beneath it */
+.site .sec[data-family='testimonials'][data-variant='single'] .blocks {
+  max-width: 1000px;
+  margin-inline: auto;
+}
+.site .sec[data-family='testimonials'][data-variant='single'] .blocks > .quote:first-of-type {
+  grid-column: 1 / -1;
+  align-items: center;
+  padding: 0 0 clamp(14px, 2.4cqi, 30px);
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  text-align: center;
+}
+.site .sec[data-family='testimonials'][data-variant='single'] .blocks > .quote:first-of-type .quote-text {
+  font-size: clamp(1.55rem, 3.5cqi, 2.6rem);
+  line-height: 1.22;
+}
+.site .sec[data-family='testimonials'][data-variant='single'] .blocks > .quote:first-of-type .stars {
+  margin-inline: auto;
+}
+/* with only one other review, it sits centred under the large one */
+.site .sec[data-family='testimonials'][data-variant='single'] .blocks[data-count='2'] > .quote:last-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+  max-width: 34rem;
+}
+.site .sec[data-family='testimonials'][data-variant='single'] .blocks > .rating {
+  grid-column: 1 / -1;
+  justify-content: center;
+}
+
+/* ---- reviews: the score, large, beside the reviews */
+.site .score {
+  display: grid;
+  gap: clamp(24px, 5cqi, 80px);
+  align-items: start;
+}
+.site .score-big {
+  display: grid;
+  justify-items: start;
+  gap: 0.7rem;
+}
+.site .score-big b {
+  font-family: var(--font-display);
+  font-weight: var(--hw);
+  font-size: clamp(4.6rem, 13cqi, 9.5rem);
+  line-height: 1;
+  letter-spacing: var(--htrack);
+  color: var(--sacc-text);
+}
+.site .score-big span {
+  font-size: 0.98rem;
+  color: var(--ssoft);
+}
+.site .sec[data-family='testimonials'][data-variant='score'] .blocks > .rating {
+  display: none;
+}
+@container site (min-width: 860px) {
+  .site .score {
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.4fr);
+  }
+  .site .score-big {
+    position: sticky;
+    top: 110px;
+  }
+}
+
+/* ---- reviews: a staggered wall. Columns of unequal cards, every third one set larger. */
+.site .sec[data-family='testimonials'][data-variant='wall'] .blocks {
+  display: block;
+  columns: 1;
+  column-gap: var(--gap);
+}
+.site .sec[data-family='testimonials'][data-variant='wall'] .blocks > .blk {
+  break-inside: avoid;
+  margin-bottom: var(--gap);
+}
+.site .sec[data-family='testimonials'][data-variant='wall'] .blocks > .quote:nth-child(3n + 1) .quote-text {
+  font-size: clamp(1.3rem, 2.4cqi, 1.75rem);
+}
+@container site (min-width: 640px) {
+  .site .sec[data-family='testimonials'][data-variant='wall'] .blocks {
+    columns: 2;
+  }
+}
+@container site (min-width: 1000px) {
+  .site .sec[data-family='testimonials'][data-variant='wall'] .blocks[data-cols='3'] {
+    columns: 3;
+  }
+}
+
+/* ================================================================ finished work
+   Two blocks for businesses whose work is what they sell. */
+
+/* ---- before and after: the same thing twice, side by side */
+.site .ba {
+  gap: 0.8rem;
+}
+.site .ba-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  overflow: hidden;
+  border-radius: var(--r);
+}
+.site .ba-side {
+  position: relative;
+}
+.site .ba-side .pic {
+  height: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 0;
+}
+.site .ba-label {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 2;
+  padding: 0.32em 0.8em;
+  border-radius: 999px;
+  background: var(--sbg);
+  color: var(--sink);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+.site .ba-label.ba-after {
+  background: var(--sacc);
+  color: var(--sacc-ink);
+}
+.site .ba-caption {
+  font-size: 0.94rem;
+  line-height: 1.4;
+  color: var(--ssoft);
+}
+
+/* ---- project: one job, its pictures and a few words */
+.site .project {
+  gap: 1.1rem;
+}
+.site .project-pics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.site .project-pics .pic {
+  height: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--r);
+}
+.site .project[data-pics='1'] .project-pics {
+  grid-template-columns: minmax(0, 1fr);
+}
+.site .project[data-pics='1'] .project-pics .pic {
+  aspect-ratio: 3 / 2;
+}
+.site .project[data-pics='2'] .project-pics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.site .project[data-pics='2'] .project-pics .pic {
+  aspect-ratio: 4 / 5;
+}
+/* three or four: the main view large, the details in a column beside it */
+.site .project[data-pics='3'] .project-pics .pic:first-child,
+.site .project[data-pics='4'] .project-pics .pic:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+  aspect-ratio: auto;
+}
+.site .project[data-pics='4'] .project-pics .pic:first-child {
+  grid-row: span 3;
+}
+.site .project-body {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+}
+.site .project .h3 {
+  font-size: calc(var(--fs-h3) * 1.2);
+}
+/* one project per row: pictures on one side, words on the other, changing sides */
+.site .blocks[data-cols='1']:not([data-layout='bento']):has(> .project) {
+  max-width: none;
+  gap: clamp(36px, 6cqi, 88px);
+}
+@container site (min-width: 860px) {
+  .site .blocks[data-cols='1']:not([data-layout='bento']) > .project {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(24px, 4.5cqi, 72px);
+  }
+  .site .blocks[data-cols='1']:not([data-layout='bento']) > .project .h3 {
+    font-size: calc(var(--fs-h3) * 1.5);
+  }
+  .site .blocks[data-cols='1']:not([data-layout='bento']) > .project .body {
+    font-size: var(--fs-lead);
+  }
+  .site .blocks[data-cols='1']:not([data-layout='bento']) > .project:nth-child(even) .project-pics {
+    order: 2;
   }
 }

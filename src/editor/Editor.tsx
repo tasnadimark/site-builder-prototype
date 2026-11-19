@@ -18,6 +18,7 @@ import type { EditApi, Selection } from '@/site/render/context';
 import { Site } from '@/site/render/Site';
 import { LEGAL_PAGES, parseDoc, type Section, type SiteDoc } from '@/site/schema';
 import { STRINGS } from '@/site/strings';
+import { directionFor, directionOps } from '@/site/direction';
 import { createObjectStream } from '@/site/stream';
 import { resolveTheme } from '@/site/theme';
 import { Chat, type Msg } from './Chat';
@@ -62,6 +63,8 @@ export default function Editor() {
   const [messages, setMessages] = useState<Msg[]>([WELCOME]);
   const [busy, setBusy] = useState<null | 'generate' | 'edit'>(null);
   const [status, setStatus] = useState<Status | null>(null);
+  const hasKey = useRef(false);
+  hasKey.current = !!status?.hasKey;
   const [model, setModel] = useState('auto');
   const [showState, setShowState] = useState(false);
   const [showNew, setShowNew] = useState(false);
@@ -257,6 +260,12 @@ export default function Editor() {
           applied++;
           patch((m) => ({ ...m, notes: [...m.notes, { ok: true, text: r.note }] }));
         }
+        // The direction in code: the first screen and the divider placement drawn for this brief.
+        // Without a key the reply is the built-in demo site, which no brief shaped.
+        const brief = (body as { brief?: string }).brief;
+        if (brief && hasKey.current) {
+          for (const op of directionOps(docRef.current, directionFor(brief))) run(op, { source: 'ai', record: false, quiet: true });
+        }
       }
 
       const secs = (ms: number) => `${(ms / 1000).toFixed(1)}s`;
@@ -301,7 +310,15 @@ export default function Editor() {
       setPageId(page.id);
     }
   }, [page]);
-  const plan = useMemo(() => planSections(page?.sections ?? [], theme, doc.footer.tone), [page, theme, doc.footer.tone]);
+  const plan = useMemo(
+    () =>
+      planSections(page?.sections ?? [], theme, doc.footer.tone, {
+        rating: !!doc.business.rating,
+        contact: !!doc.business.phone || doc.business.locations.some((l) => l.hours.length > 0),
+        inner: !!page && page !== doc.pages[0],
+      }),
+    [page, theme, doc.footer.tone, doc.business, doc.pages],
+  );
 
   const addPage = (role: keyof typeof PAGE_TEMPLATES) => {
     const before = new Set(doc.pages.map((p) => p.id));

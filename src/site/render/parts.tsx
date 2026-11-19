@@ -21,25 +21,31 @@ const escapeHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
  * With `perWord`, each word gets its own element so a marker-style highlight can wrap
  * across lines word by word.
  */
+// A highlighted word is drawn as a box, and a line may break after a box. The comma or
+// full stop that follows it is therefore tied to the word, or it could start the next line.
 const richToHtml = (s: string, perWord: boolean) =>
-  escapeHtml(s).replace(/\*([^*]+)\*/g, (_m, phrase: string) =>
-    perWord
-      ? phrase
-          .trim()
-          .split(/\s+/)
-          .map((w, i) => `<em class="em${i ? ' em-c' : ''}">${w}</em>`)
-          .join(' ')
-      : `<em class="em">${phrase}</em>`,
-  );
+  escapeHtml(s).replace(/\*([^*]+)\*([,.;:!?…)]*)/g, (_m, phrase: string, tail: string) => {
+    if (!perWord) return `<em class="em">${phrase}</em>${tail}`;
+    const words = phrase
+      .trim()
+      .split(/\s+/)
+      .map((w, i) => `<em class="em${i ? ' em-c' : ''}">${w}</em>`);
+    if (tail) words[words.length - 1] = `<span class="em-nb">${words[words.length - 1]}${tail}</span>`;
+    return words.join(' ');
+  });
 
 function serializeRich(el: HTMLElement): string {
   let out = '';
-  el.childNodes.forEach((n) => {
-    const t = n.textContent ?? '';
-    if (n.nodeType === 1 && (n as HTMLElement).tagName === 'EM' && t.trim()) {
-      out += (/^\s/.test(t) ? ' ' : '') + `*${t.trim()}*` + (/\s$/.test(t) ? ' ' : '');
-    } else out += t;
-  });
+  const walk = (parent: Node) =>
+    parent.childNodes.forEach((n) => {
+      const t = n.textContent ?? '';
+      const tag = n.nodeType === 1 ? (n as HTMLElement).tagName : '';
+      if (tag === 'EM' && t.trim()) out += (/^\s/.test(t) ? ' ' : '') + `*${t.trim()}*` + (/\s$/.test(t) ? ' ' : '');
+      // The wrapper that ties punctuation to a highlighted word.
+      else if (tag === 'SPAN') walk(n);
+      else out += t;
+    });
+  walk(el);
   // Neighbouring emphasised words are one phrase.
   return out.replace(/\s+/g, ' ').replace(/\* \*/g, ' ').trim();
 }
