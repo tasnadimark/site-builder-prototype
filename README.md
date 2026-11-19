@@ -98,7 +98,7 @@ Every site is built from the same page roles: home, offer, approach, proof, peop
 | Creative and events | Portfolio, Packages, About, Contact | Reviews |
 | Local business services | Services, About, Contact and quote | References |
 
-Adjustments the model is told to make: fold a page with too little to say back into Home; give a long price list or a team of three or more its own page; add an "Our work" page where finished work is the product (home design, landscaping, tiling, photography); keep the menu to five entries.
+Every business gets all the pages of its kind, however short its brief: the owner is not a web expert, so the site is given complete and corrected afterwards. Adjustments the model is told to make: give a long price list or a team of three or more its own page; add an "Our work" page where finished work is the product (home design, landscaping, tiling, photography); keep the menu to five entries.
 
 One part of the rule is enforced in code, not left to the model: a business with two or more locations always gets a page per location, grouped under one dropdown (`ensureLocations` in `src/site/ops.ts`). In both test runs the model left those pages out and the rule added them.
 

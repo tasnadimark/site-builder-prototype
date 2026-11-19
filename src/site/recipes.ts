@@ -184,12 +184,12 @@ const pageLine = (k: BusinessKind) =>
 export const pageRuleText = () =>
   `
 # Pages
-A site has a Home page and usually a few more. Which ones depends on the kind of business. Pick the kind that fits the brief and use its pages, with the page titles in the site's language (English / Hungarian titles are given).
+A site has a Home page and the pages of its kind of business, never fewer. Pick the kind that fits the brief and use its pages, with the page titles in the site's language (English / Hungarian titles are given).
 
 ${BUSINESS_KINDS.map(pageLine).join('\n')}
 
 Adjust for the business in front of you:
-- Too little to say: if a page would hold fewer than two real sections, leave it out and put its content on Home. A one-person business with a handful of services can be a single page.
+- Every business gets all the pages of its kind, however small it is and however short the brief. The owner is not a web expert and is not expected to know what a site needs: give them the complete site and let them correct it. Where the brief says little, write each page from what such a business usually offers.
 - A lot to say: more than about 12 price rows, or 3 or more people, earns its own page even where the list above keeps it on Home.
 - Finished work is the product (interior or home design, landscaping, tiling and renovation, photography): add a page with role "proof" titled "Our work" / "Munkáink". Everyone else keeps references on Home. A business of kind "creative" always has this page, however short the brief: its finished work is why people come.
 - Two or more locations: give each its own page with role "location" and the same "group" (for example "Locations" / "Helyszínek"), holding a contact block for that location and anything that differs there, such as its timetable. Pages that share a group become one dropdown in the menu. With one location there are no location pages.
