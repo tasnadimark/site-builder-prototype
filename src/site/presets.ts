@@ -53,6 +53,8 @@ export type Traits = {
   motif: 'none' | 'grid' | 'dots' | 'lines' | 'rings' | 'blobs' | 'grain';
   image: 'plain' | 'rounded' | 'arch' | 'blob' | 'tilt' | 'frame';
   eyebrow: 'caps' | 'pill' | 'mono' | 'rule' | 'number';
+  /** Where dividers are drawn between sections. */
+  edges: 'cut' | 'strong' | 'every';
   caps: boolean;
 };
 
@@ -77,7 +79,7 @@ export const PRESET_DEFS: Record<Preset, PresetDef> = {
     radius: 'none',
     density: 'airy',
     scale: 'dramatic',
-    traits: { card: 'plain', button: 'solid', emphasis: 'italic', divider: 'line', motif: 'grain', image: 'plain', eyebrow: 'number', caps: false },
+    traits: { card: 'plain', button: 'solid', emphasis: 'italic', divider: 'line', motif: 'grain', image: 'plain', eyebrow: 'number', edges: 'cut', caps: false },
     imageStyle: 'Editorial film photography, soft natural window light, shallow depth of field, muted earthy colours, calm and unstaged',
   },
   soft: {
@@ -88,7 +90,7 @@ export const PRESET_DEFS: Record<Preset, PresetDef> = {
     radius: 'xl',
     density: 'regular',
     scale: 'regular',
-    traits: { card: 'tinted', button: 'pill', emphasis: 'highlight', divider: 'wave', motif: 'blobs', image: 'rounded', eyebrow: 'pill', caps: false },
+    traits: { card: 'tinted', button: 'pill', emphasis: 'highlight', divider: 'wave', motif: 'blobs', image: 'rounded', eyebrow: 'pill', edges: 'every', caps: false },
     imageStyle: 'Bright, friendly lifestyle photography, soft daylight, pastel backdrop, gentle shadows, candid and warm',
   },
   technical: {
@@ -99,7 +101,7 @@ export const PRESET_DEFS: Record<Preset, PresetDef> = {
     radius: 'sm',
     density: 'regular',
     scale: 'regular',
-    traits: { card: 'outline', button: 'solid', emphasis: 'gradient', divider: 'line', motif: 'grid', image: 'frame', eyebrow: 'mono', caps: false },
+    traits: { card: 'outline', button: 'solid', emphasis: 'gradient', divider: 'line', motif: 'grid', image: 'frame', eyebrow: 'mono', edges: 'cut', caps: false },
     imageStyle: 'Clean dark-mode product visualisation, abstract 3D render, soft rim lighting, deep charcoal background with one glowing accent colour',
   },
   bold: {
@@ -110,7 +112,7 @@ export const PRESET_DEFS: Record<Preset, PresetDef> = {
     radius: 'sm',
     density: 'tight',
     scale: 'dramatic',
-    traits: { card: 'hard', button: 'hard', emphasis: 'highlight', divider: 'zigzag', motif: 'dots', image: 'tilt', eyebrow: 'caps', caps: true },
+    traits: { card: 'hard', button: 'hard', emphasis: 'highlight', divider: 'zigzag', motif: 'dots', image: 'tilt', eyebrow: 'caps', edges: 'strong', caps: true },
     imageStyle: 'Punchy studio photography with hard flash, saturated solid colour backdrop, high contrast, playful props',
   },
 };

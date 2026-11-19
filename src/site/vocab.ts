@@ -5,7 +5,8 @@
 export const PRESETS = ['editorial', 'soft', 'technical', 'bold'] as const;
 
 export const TONES = ['base', 'muted', 'inverse', 'accent'] as const;
-export const EDGES = ['none', 'divider', 'overlap', 'fade'] as const;
+/** How a section hands over to the next. "auto" follows the theme's divider placement (EDGE_RHYTHMS). */
+export const EDGES = ['auto', 'none', 'divider', 'overlap', 'fade'] as const;
 export const BACKDROPS = ['none', 'motif', 'glow', 'media'] as const;
 export const PADS = ['sm', 'md', 'lg'] as const;
 
@@ -65,6 +66,8 @@ export const DIVIDERS = ['wave', 'curve', 'slant', 'zigzag', 'scallop', 'line'] 
 export const MOTIFS = ['none', 'grid', 'dots', 'lines', 'rings', 'blobs', 'grain'] as const;
 export const IMAGE_SHAPES = ['plain', 'rounded', 'arch', 'blob', 'tilt', 'frame'] as const;
 export const EYEBROWS = ['caps', 'pill', 'mono', 'rule', 'number'] as const;
+/** Where the theme draws its divider: nowhere, around inverse and accent sections, or at every change of colour. */
+export const EDGE_RHYTHMS = ['cut', 'strong', 'every'] as const;
 
 export const RADII = ['none', 'sm', 'md', 'lg', 'xl'] as const;
 export const DENSITIES = ['tight', 'regular', 'airy'] as const;
@@ -89,6 +92,7 @@ export const FONT_IDS = [
 export type Preset = (typeof PRESETS)[number];
 export type Tone = (typeof TONES)[number];
 export type Edge = (typeof EDGES)[number];
+export type EdgeRhythm = (typeof EDGE_RHYTHMS)[number];
 export type Backdrop = (typeof BACKDROPS)[number];
 export type LayoutKind = (typeof LAYOUTS)[number];
 export type Size = (typeof SIZES)[number];

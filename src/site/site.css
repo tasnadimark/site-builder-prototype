@@ -126,6 +126,10 @@
   padding: 0 0.16em;
   border-radius: calc(var(--r) * 0.3);
 }
+/* punctuation after a highlighted word stays on its line */
+.site .em-nb {
+  white-space: nowrap;
+}
 /* bridge the space to the next word of the same phrase */
 .site[data-emphasis='highlight'] .em:has(+ .em-c) {
   box-shadow: 0.3em 0 0 var(--sacc);
@@ -616,9 +620,22 @@
   min-height: 150px;
   aspect-ratio: auto;
 }
+/* A text tile is as tall as the pictures beside it. Its icon sits at the top, its words
+   at the bottom and a size up, so the tile reads as composed rather than half empty. */
 .site .blocks[data-layout='bento'] .card:not(:has(.card-pic)) .card-body {
   flex: 1;
-  align-content: end;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.site .blocks[data-layout='bento'] .card:not(:has(.card-pic)) .icon-chip {
+  margin-bottom: auto;
+}
+.site .blocks[data-layout='bento'] .card:not(:has(.card-pic)) .h3 {
+  font-size: calc(var(--fs-h3) * 1.22);
+}
+.site .blocks[data-layout='bento'] .stat-value {
+  font-size: clamp(2.6rem, 6.2cqi, 4.8rem);
 }
 .site .blk[data-size='feature'] .h3 {
   font-size: calc(var(--fs-h3) * 1.32);
@@ -1599,15 +1616,17 @@
 .site[data-image='blob'] .person-pic {
   border-radius: 58% 42% 52% 48% / 46% 54% 46% 54%;
 }
-.site .person-initials {
+/* no portrait yet: a quiet silhouette in the same frame as the others */
+.site .person-blank {
   display: grid;
   place-items: center;
   border-radius: var(--r);
   background: var(--ssurf);
-  color: var(--ssoft);
-  font-family: var(--font-display);
-  font-size: 2.6rem;
-  font-weight: var(--hw);
+  color: var(--sline2);
+}
+.site .person-blank svg {
+  width: 38%;
+  height: auto;
 }
 .site .person-body {
   display: grid;
@@ -1949,7 +1968,8 @@
   display: grid;
   justify-items: center;
   gap: clamp(18px, 3cqi, 40px);
-  margin-top: calc(var(--giant, 5rem) * -0.36);
+  /* The picture tucks under the word. Any deeper and it hides letters of the name. */
+  margin-top: calc(var(--giant, 5rem) * -0.17);
 }
 .site .hero-wordmark-media {
   order: -1;

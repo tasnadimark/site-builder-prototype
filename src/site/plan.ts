@@ -124,13 +124,19 @@ export function planSections(sections: Section[], theme: Resolved, footerTone: T
       cols = 1;
     }
 
-    let edge: EffectiveEdge = s.edge;
+    // Left on "auto", a section takes its edge from the theme: a divider nowhere, around
+    // the strong sections, or wherever the colour changes. Set by hand, it is an exception.
+    const auto = s.edge === 'auto';
+    const strong = (t: Tone) => t === 'inverse' || t === 'accent';
+    const rhythm = theme.traits.edges;
+    const wanted = rhythm === 'every' || (rhythm === 'strong' && (strong(s.tone) || strong(sections[i + 1]?.tone ?? footerTone)));
+    let edge: EffectiveEdge = s.edge === 'auto' ? (wanted && bg !== nextBg ? 'divider' : 'none') : s.edge;
     let overlapTarget: Effective['overlapTarget'] = null;
     // These styles already end in something that runs edge to edge (a link bar, a moving line, a picture).
     if (hero === 'wordmark' || hero === 'ticker' || hero === 'edge') edge = 'none';
     if (edge !== 'none' && nextCover) {
       edge = 'none';
-      notes.push('Edges are skipped before a photo-backed section.');
+      if (!auto) notes.push('Edges are skipped before a photo-backed section.');
     }
     if (edge === 'overlap') {
       if (!cover && (layout === 'grid' || layout === 'bento') && n > 0) overlapTarget = 'blocks';
@@ -176,15 +182,16 @@ const SPAN: Record<Size, [number, number]> = { sm: [1, 1], wide: [2, 1], tall: [
  * Place blocks on a grid from their size hints, then close any gaps by stretching a
  * neighbour. If an unusual mix of sizes still leaves a gap, the tall sizes are flattened
  * and the blocks are packed again, which always tiles. The result is a full rectangle
- * whatever sizes were asked for.
+ * whatever sizes were asked for. "stretchy" marks the blocks that look right at any
+ * shape (pictures); where there is a choice, they are the ones stretched.
  */
-export function packBento(sizes: Size[], cols: number): Cell[] {
-  const first = pack(sizes.map((s) => SPAN[s]), cols);
+export function packBento(sizes: Size[], cols: number, stretchy: boolean[] = []): Cell[] {
+  const first = pack(sizes.map((s) => SPAN[s]), cols, stretchy);
   if (!first.gaps) return first.cells;
-  return pack(sizes.map((s) => [SPAN[s][0], 1] as [number, number]), cols).cells;
+  return pack(sizes.map((s) => [SPAN[s][0], 1] as [number, number]), cols, stretchy).cells;
 }
 
-function pack(spans: [number, number][], cols: number): { cells: Cell[]; gaps: number } {
+function pack(spans: [number, number][], cols: number, stretchy: boolean[]): { cells: Cell[]; gaps: number } {
   const grid: number[][] = [];
   const at = (r: number, c: number) => grid[r]?.[c] ?? -1;
   const mark = (cell: Cell, i: number) => {
@@ -246,12 +253,14 @@ function pack(spans: [number, number][], cols: number): { cells: Cell[]; gaps: n
           cells[up].h += 1;
           mark(cells[up], up);
         };
-        if (canLeft && !bar(left)) growLeft();
-        else if (canRight && !bar(right)) growRight();
-        else if (canUp) growUp();
-        else if (canLeft) growLeft();
-        else if (canRight) growRight();
-        else continue;
+        const options: { i: number; grow: () => void; bar: boolean }[] = [];
+        if (canLeft) options.push({ i: left, grow: growLeft, bar: bar(left) });
+        if (canRight) options.push({ i: right, grow: growRight, bar: bar(right) });
+        if (canUp) options.push({ i: up, grow: growUp, bar: false });
+        if (!options.length) continue;
+        // Never a bar if anything else works; among the rest, a picture before a text tile.
+        const cost = (o: (typeof options)[number]) => (o.bar ? 2 : 0) + (stretchy[o.i] ? 0 : 1);
+        options.reduce((best, o) => (cost(o) < cost(best) ? o : best)).grow();
         changed = true;
       }
     }

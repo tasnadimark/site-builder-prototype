@@ -173,7 +173,7 @@ const SectionObject = z
     id: text(48).catch(''),
     type: pick(V.SECTION_TYPES, 'features'),
     tone: pick(V.TONES, 'base'),
-    edge: pick(V.EDGES, 'none'),
+    edge: pick(V.EDGES, 'auto'),
     backdrop: pick(V.BACKDROPS, 'none'),
     pad: pick(V.PADS, 'md'),
     /** Only used when the section is a hero. */
@@ -209,6 +209,7 @@ export const ThemeSchema = z.preprocess(
         motif: optPick(V.MOTIFS),
         image: optPick(V.IMAGE_SHAPES),
         eyebrow: optPick(V.EYEBROWS),
+        edges: optPick(V.EDGE_RHYTHMS),
         caps: z.boolean().optional().catch(undefined),
       }),
     ),

@@ -220,6 +220,9 @@ function ThemeTab({ doc, theme, run, runBurst }: InspectorProps) {
         <Field label="Dividers">
           <Pick value={theme.traits.divider} options={V.DIVIDERS} onChange={(v) => set({ traits: { divider: v } })} />
         </Field>
+        <Field label="Divider placement">
+          <Pick value={theme.traits.edges} options={V.EDGE_RHYTHMS} onChange={(v) => set({ traits: { edges: v } })} label={(v) => RHYTHM_LABEL[v]} />
+        </Field>
         <Field label="Pattern">
           <Pick value={theme.traits.motif} options={V.MOTIFS} onChange={(v) => set({ traits: { motif: v } })} />
         </Field>
@@ -251,6 +254,20 @@ function ThemeTab({ doc, theme, run, runBurst }: InspectorProps) {
 // ---------------------------------------------------------------- section tab
 
 const strip = (s?: string) => (s ?? '').replace(/\*/g, '');
+
+const RHYTHM_LABEL: Record<(typeof V.EDGE_RHYTHMS)[number], string> = {
+  cut: 'Nowhere (clean cuts)',
+  strong: 'Around dark and accent sections',
+  every: 'Wherever the colour changes',
+};
+
+const EDGE_LABEL: Record<(typeof V.EDGES)[number], string> = {
+  auto: 'Automatic (follows the theme)',
+  none: 'Clean cut',
+  divider: 'Divider',
+  overlap: 'Overlap',
+  fade: 'Fade',
+};
 
 const HERO_LABEL: Record<(typeof V.HERO_STYLES)[number], string> = {
   standard: 'Standard (follows the layout below)',
@@ -530,7 +547,7 @@ function SectionTab({ doc, page, goTo, theme, plan, selection, select, run }: In
               </div>
             </Field>
             <Field label="Edge below">
-              <Seg value={s.edge} options={V.EDGES} onChange={(v) => up({ edge: v })} />
+              <Pick value={s.edge} options={V.EDGES} onChange={(v) => up({ edge: v })} label={(v) => EDGE_LABEL[v]} />
             </Field>
             <Field label="Backdrop">
               <Seg value={s.backdrop} options={V.BACKDROPS} onChange={(v) => up({ backdrop: v })} render={(v) => (v === 'media' ? 'photo' : v)} />

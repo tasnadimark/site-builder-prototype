@@ -120,10 +120,52 @@ The first screen can be composed five ways. Every style arranges the same things
 
 If a style's needs are not met, the planner draws the nearest one that works and the inspector says why (a wordmark with a long heading is drawn as overlap). Select a hero and use "Hero style" in the Sections tab to try them.
 
+## What the code decides for a new site
+
+Left to itself the AI converges. In a test of twenty sites it used two of the five hero styles, one order of sections and less than one divider per site, because each choice looked reasonable taken alone. So four choices are drawn by code from the brief and handed to the AI as decisions (`src/site/direction.ts`):
+
+| Choice | Options |
+| - | - |
+| First screen | Eight compositions: picture to the right or left edge, giant heading over a picture, the name as a giant word, a full photo with a moving line, a full photo with centred text, a shaped picture beside the copy, centred text over a wide picture |
+| What Home leads with | The offer, the people, proof, or how it works |
+| How Home ends | A call-to-action band, a contact section, or a call to action beside a picture |
+| Where dividers go | Nowhere, around dark and accent sections, or at every change of colour |
+
+The draw depends only on the brief, so the same brief always gets the same shape. The AI still writes everything and still chooses the look. After it finishes, the first screen and the divider rule are checked and corrected in code, the same way location pages are. In the test the AI had already followed them on 18 and 20 of 20 sites.
+
+Dividers are no longer asked for section by section. A section's "edge below" is Automatic by default and follows "Divider placement" in the Theme tab; setting it by hand makes that one boundary an exception.
+
+## The variety test
+
+`scripts/variety-test` generates twenty sites from twenty briefs (five hairdressers, five electricians, five yoga studios, five interior designers), photographs every page and measures how alike the sites are. Run it again after any change that is meant to make sites differ. With the app running:
+
+```bash
+node --import ./scripts/variety-test/hooks.mjs scripts/variety-test/generate.mjs round-3   # about 3 minutes, about $1
+node scripts/variety-test/shots.mjs round-3                                                # generates the pictures, about $3
+node --import ./scripts/variety-test/hooks.mjs scripts/variety-test/analyze.mjs round-3
+node scripts/variety-test/compare.mjs variety-2 round-3
+python3 scripts/variety-test/sheets.py round-3                                             # contact sheets, needs Pillow
+```
+
+Results land in `.prototype-cache/runs/<name>` and any site can be opened by itself at `/preview/<name>/<site>`. Restart the dev server after changing the AI's instructions; it can keep serving the old ones.
+
+| Measure | Round one | Round two (choices drawn by code) |
+| - | - | - |
+| First-screen compositions in use | 2 | 8 |
+| Sites with text on the left and a picture on the right | 20 of 20 | 10 of 20 |
+| Home ends with the call-to-action band | 17 | 9 |
+| Dividers drawn across all pages | 15 | 120 |
+| Section order shared by two sites of the same type | 71% | 56% |
+| Inner pages that end with the same band | 52 of 60 | 54 of 60 |
+| Operations rejected | 0 of 475 | 0 of 470 |
+
+Round two changed no components. What it did not move is what needs new variants: inner pages are still one template, and the card row, the review row, the closing band and the numbered steps are each drawn one way.
+
 ## Things to try
 
 - **Theme tab**: click the four presets, then Shuffle. The same document becomes a different site.
 - Click a section, then change its layout, tone and "edge below" in the **Sections** tab.
+- **Theme tab**, "Divider placement": dividers nowhere, around dark and accent sections, or wherever the colour changes.
 - Click any text on the page and type. Mark words with `*asterisks*` in a heading to emphasise them.
 - **State** (top bar): the live document, a log of every operation with applied or rejected, and a Load tab. Paste malformed JSON into Load to see what the validator does with it.
 - The device buttons lay the page out at a true desktop, tablet or phone width.
@@ -168,5 +210,6 @@ That is one run per path, so treat the timings as a first data point. The run al
 - **Forms are not connected.** Submitting shows a note and sends nothing.
 - **Pictures are all generated.** For a real business that is wrong for anything that claims to show the actual premises, people or work; uploading real photos is the missing piece.
 - **Legal pages are placeholders.** The privacy notice and company details are template text filled in from the business facts, and need a lawyer's version.
-- **Kinds of business without a tested recipe.** The page rule covers eight kinds, but only hairdresser, electrician and yoga studio have been generated and checked.
+- **Kinds of business without a tested recipe.** The page rule covers eight kinds, but only hairdresser, electrician, yoga studio and interior designer have been generated and checked.
+- **The draw ignores the mood of the business.** A quiet neighbourhood salon can draw the loudest first screen. Weighting the draw by kind or mood is the obvious next step.
 - Custom code blocks (the plan is a `custom` block rendered in a sandboxed frame that receives the theme tokens), saving, publishing, drag and drop.

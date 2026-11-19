@@ -2,6 +2,7 @@
 // rule from recipes.ts, so the prompt can never drift from what the schema accepts.
 
 import * as V from '@/site/vocab';
+import { directionFor, directionText } from '@/site/direction';
 import { PRESET_DEFS } from '@/site/presets';
 import { BUSINESS_KINDS, pageRuleText } from '@/site/recipes';
 import type { SiteDoc } from '@/site/schema';
@@ -51,7 +52,8 @@ Theme = {
     card: ${any(V.CARD_STYLES)},
     button: ${any(V.BUTTON_STYLES)},
     emphasis: ${any(V.EMPHASIS)},            how *starred* words in headings are drawn
-    divider: ${any(V.DIVIDERS)},             the shape used wherever a section has edge "divider"
+    divider: ${any(V.DIVIDERS)},             the shape of the dividers between sections
+    edges: ${any(V.EDGE_RHYTHMS)},           where dividers are drawn: "cut" nowhere, "strong" around inverse and accent sections, "every" wherever the tone changes
     motif: ${any(V.MOTIFS)},                 the pattern used wherever a section has backdrop "motif"
     image: ${any(V.IMAGE_SHAPES)},           the shape of each section's main picture and of portraits
     eyebrow: ${any(V.EYEBROWS)},
@@ -70,7 +72,7 @@ Section = {
   id: string,                 short, lowercase ASCII, unique in the site. Used as the anchor
   type: ${any(V.SECTION_TYPES)},
   tone: Tone,
-  edge: ${any(V.EDGES)},      how this section hands over to the next one
+  edge?: ${any(V.EDGES.filter((e) => e !== 'auto'))},      an exception for this one boundary. Leave it out: dividers are placed by theme.traits.edges
   backdrop: ${any(V.BACKDROPS)},
   pad: ${any(V.PADS)},
   hero?: ${any(V.HERO_STYLES)},       only on a section of type "hero"; see hero styles below
@@ -119,10 +121,10 @@ Hero styles compose the first screen. They all use the same heading, body, actio
 - "wordmark": the heading becomes one giant word filling the width, with the picture in the middle of it, the eyebrow and body as small notes left and right, and the actions as a bar of links along the bottom. Needs media and a heading of one or two words, usually the brand name. Keep eyebrow and body under ten words each.
 - "ticker": a full photo, the body as a short statement, and the heading as one giant line drifting along the bottom. Loud; for bold brands only.
 - "edge": copy on one side, a picture that runs to the edge of the screen on the other. Calm and spacious.
-Choose the hero style for the brand. Do not default to "standard": a business with a short, strong name suits "wordmark", a confident modern one "overlap", a calm service business "edge".
+For a new site the hero style is given to you under "Direction for this site". When editing, change it only if the user asks.
 
 Tones: "base" is the page colour, "muted" a quiet panel, "inverse" swaps ink and background, "accent" floods the section with the brand colour.
-Edges: "divider" draws the theme's divider shape into the next section, "overlap" lets a grid or bento straddle the boundary, "fade" blends the two colours, "none" is a clean cut. Edges only show between two different tones.
+Edges: dividers are drawn for you between sections of different tones, as theme.traits.edges says. A section's own "edge" overrides that for one boundary: "overlap" lets a grid or bento straddle it, "fade" blends the two colours, "divider" forces the divider shape, "none" keeps it a clean cut.
 Backdrops: "motif" draws the theme pattern, "glow" a soft accent light, "media" uses the section image as a full-bleed photo behind white text (dramatic; use at most once per site).
 
 ${pageRuleText()}
@@ -130,13 +132,13 @@ ${pageRuleText()}
 # Design rules
 1. Cohesion comes from the theme. Choose it first and let it carry the look on every page.
 2. Rhythm. Never give two neighbouring sections the same layout kind: before writing each section, check the kind you used for the one before it. Most sections are "base" or "muted"; use "inverse" once or twice and "accent" at most once per page. Vary "pad".
-3. Use two to four edges on Home and at most one on other pages, where the tone changes.
+3. Leave "edge" out of sections. Use "overlap" or "fade" at most once per site, and only where it clearly helps.
 4. Mark one to three words in the hero heading with *asterisks*, and in at most two other headings per page.
 5. Language. Write every word of copy in the language of the brief and set meta.language to match ("hu" for Hungarian, otherwise "en"). Ids and image prompts stay in English.
 6. Copy is specific to this business: its real services, prices, people and places. No lorem ipsum, no filler such as "we are passionate about". Headings under nine words. Never invent real company names for logos or testimonials; plausible fictional people are fine for reviews.
 7. Facts. Take phone, email, address, opening hours and review score from the brief and put them in "business". If the brief does not give one, leave that field out. Never make up contact details.
-8. People: give each person a portrait image where they are introduced in full (the people page, or Home if there is no such page). Wherever else that person appears, leave the image out; their portrait is reused automatically.
-9. Images: at most 10 in the whole site, about four on Home and one or two on each other page. Each prompt describes the subject and composition only. No style words (those live in theme.imageStyle) and never text or logos in an image.
+8. People: give each person a portrait image where they are introduced in full (the people page, or Home if there is no such page). That includes people the brief counts but does not name: every person block there has an image. Wherever else that person appears, leave the image out; their portrait is reused automatically.
+9. Images: at most 10 in the whole site, about four on Home and one or two on each other page. In a gallery every tile is a picture: an image block with a caption, or a card with an image. Do not mix text-only tiles into a gallery. Each prompt describes the subject and composition only. No style words (those live in theme.imageStyle) and never text or logos in an image.
 10. The first section of every page other than Home is its title: a section with a heading and one sentence, no "hero" type.`;
 
 const kindHint = (kind?: string) => {
@@ -153,7 +155,9 @@ Emit, in this order:
 1. "meta" (with language and the kind of business), "business", "theme", "nav".
 2. Home: 6 to 8 "add" operations from the top of the page down, starting with a "hero" section. Home must be complete before anything else, because it is what the user sees first.
 3. Each other page, in menu order: one "page" operation, then 2 to 4 "add" operations for it. If "business" lists two or more locations, this includes one page per location (role "location", all sharing one "group"), each with a contact block for that location.
-4. "footer", then "say".`,
+4. "footer", then "say".
+
+${directionText(directionFor(brief))}`,
     user: `Business brief:\n${brief.trim()}${kindHint(kind)}`,
   };
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus } from 'lucide-react';
+import { Plus, UserRound } from 'lucide-react';
 import { useState, type CSSProperties } from 'react';
 import { itemKind, layoutItems, packBento, type Effective, type Item } from '../plan';
 import type { Block, Section } from '../schema';
@@ -342,8 +342,8 @@ export function BlockView({ s, b, i, boxed, asList, stepNo, style }: BlockProps)
           {portrait ? (
             <Pic image={portrait} className="person-pic" />
           ) : (
-            <div className="person-pic person-initials" aria-hidden>
-              {initials(b.name)}
+            <div className="person-pic person-blank" aria-hidden>
+              <UserRound strokeWidth={1.2} />
             </div>
           )}
           <div className="person-body">
@@ -421,10 +421,14 @@ export function BlocksView({ s, e, layout, cols, overlap }: { s: Section; e: Eff
 
   let cells: { lg: CSSProperties[]; md: CSSProperties[] } | undefined;
   if (layout === 'bento') {
-    const sizes = items.map((it) => it.size);
+    // In a mosaic with pictures, the pictures take the large cells: a picture fills any
+    // shape, while two lines of text in a tall cell leave it half empty.
+    const pictured = items.map((it) => it.kind === 'block' && (it.block.kind === 'image' || (it.block.kind === 'card' && !!it.block.image)));
+    const mixed = pictured.some(Boolean);
+    const sizes = items.map((it, i) => (!mixed || pictured[i] ? it.size : it.size === 'tall' ? 'sm' : it.size === 'feature' ? 'wide' : it.size));
     const place = (c: { col: number; row: number; w: number; h: number }, p: string) =>
       ({ [`--${p}c`]: `${c.col + 1} / span ${c.w}`, [`--${p}r`]: `${c.row + 1} / span ${c.h}` }) as CSSProperties;
-    cells = { lg: packBento(sizes, cols).map((c) => place(c, 'l')), md: packBento(sizes, 2).map((c) => place(c, 'm')) };
+    cells = { lg: packBento(sizes, cols, pictured).map((c) => place(c, 'l')), md: packBento(sizes, 2, pictured).map((c) => place(c, 'm')) };
   }
 
   return (
