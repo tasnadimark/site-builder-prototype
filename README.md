@@ -106,6 +106,20 @@ The new blocks are general on purpose. A **row** is a name, a detail and a value
 
 **Language.** A site is written in the language of its brief. The few words the renderer writes itself (form labels, "Opening hours", the legal pages) exist in English and Hungarian (`src/site/strings.ts`). All 21 fonts cover ő and ű. Headings shrink until their longest word fits, because a Hungarian headline often has one very long word.
 
+## Recipes for business types
+
+The page rule works at the level of eight kinds of business. A recipe (`src/site/recipes.ts`) goes one level finer: half a page of plain guidance for one type of business, saying what its visitors come for, what Home holds and what its pictures should show. Supporting another type means writing a recipe, and building a new piece only when at least two types need it.
+
+| Has a recipe | Sample sites generated |
+| - | - |
+| Hairdresser, electrician, yoga studio | Yes, in the three variety rounds |
+| Beautician, nail studio, masseur, photographer, wedding services, interior designer | Yes, eleven sites (`scripts/variety-test/briefs-library-1.mjs`) |
+| Health, consultants and teachers, hospitality, local B2B, other trades | Page rule only, never generated |
+
+Two blocks exist for businesses whose finished work is what they sell: **before and after** (two pictures of the same thing side by side) and **project** (one piece of work with its own pictures, a title and a line of text). With generated pictures the two halves of a before-and-after never show the same subject, and a portfolio shows only that the layout works; both need the owner's own photos.
+
+A recipe says what a site should hold, not the order. What Home leads with is drawn per site and can be moved afterwards.
+
 ## Hero styles
 
 The first screen can be composed five ways. Every style arranges the same things a hero already has (heading, eyebrow, body, buttons, picture, blocks), so switching never loses content and needs no new content.
@@ -227,6 +241,6 @@ That is one run per path, so treat the timings as a first data point. The run al
 - **Forms are not connected.** Submitting shows a note and sends nothing.
 - **Pictures are all generated.** For a real business that is wrong for anything that claims to show the actual premises, people or work; uploading real photos is the missing piece.
 - **Legal pages are placeholders.** The privacy notice and company details are template text filled in from the business facts, and need a lawyer's version.
-- **Kinds of business without a tested recipe.** The page rule covers eight kinds, but only hairdresser, electrician, yoga studio and interior designer have been generated and checked.
+- **Kinds of business without a tested recipe.** Nine types have a recipe and sample sites (see above). Health, consultants and teachers, hospitality, local B2B and trades other than electricians have only the page rule.
 - **The draw ignores the mood of the business.** A quiet neighbourhood salon can draw the loudest first screen. Weighting the draw by kind or mood is the obvious next step.
 - Custom code blocks (the plan is a `custom` block rendered in a sandboxed frame that receives the theme tokens), saving, publishing, drag and drop.

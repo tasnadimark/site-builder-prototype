@@ -6,6 +6,8 @@ import type { FormField, Language } from './vocab';
 
 export type Strings = {
   mostPopular: string;
+  before: string;
+  after: string;
   home: string;
   locations: string;
   address: string;
@@ -30,6 +32,8 @@ export type Strings = {
 export const STRINGS: Record<Language, Strings> = {
   en: {
     mostPopular: 'Most popular',
+    before: 'Before',
+    after: 'After',
     home: 'Home',
     locations: 'Locations',
     address: 'Address',
@@ -52,6 +56,8 @@ export const STRINGS: Record<Language, Strings> = {
   },
   hu: {
     mostPopular: 'Legnépszerűbb',
+    before: 'Előtte',
+    after: 'Utána',
     home: 'Főoldal',
     locations: 'Helyszínek',
     address: 'Cím',

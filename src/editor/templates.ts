@@ -23,6 +23,8 @@ export const BLOCK_TEMPLATES: Record<BlockKind, object> = {
   form: { kind: 'form', fields: ['name', 'email', 'phone', 'message'] },
   rating: { kind: 'rating' },
   check: { kind: 'check', label: 'Something customers can count on' },
+  beforeafter: { kind: 'beforeafter', before: img('The room before the work, plain and dated', 'portrait'), after: img('The same room after the work, finished', 'portrait'), caption: 'What changed, in one line' },
+  project: { kind: 'project', title: 'Name of the job', tag: 'Kind of work', body: 'One or two sentences about what was done and for whom.', images: [img('The finished work, seen whole'), img('A detail of the finished work', 'square'), img('A second detail', 'square')] },
 };
 
 const copies = (b: object, n: number) => Array.from({ length: n }, () => ({ ...b }));

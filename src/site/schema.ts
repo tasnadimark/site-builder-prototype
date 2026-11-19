@@ -125,6 +125,8 @@ export const BlockSchema = z.discriminatedUnion('kind', [
   // The business's overall review score, also read from the business facts.
   z.object({ kind: z.literal('rating'), size }),
   z.object({ kind: z.literal('check'), size, label: req(80), detail: opt(140) }),
+  z.object({ kind: z.literal('beforeafter'), size, before: ImageSchema, after: ImageSchema, caption: opt(120) }),
+  z.object({ kind: z.literal('project'), size, title: req(90), tag: opt(28), body: opt(340), images: listOf(ImageSchema, 5) }),
 ]);
 
 // ---------------------------------------------------------------- section

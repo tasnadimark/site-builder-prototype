@@ -102,6 +102,8 @@ Block (every block may carry size: ${any(V.SIZES)}, which only matters in a bent
   | { kind: "form", title?, fields: (${any(V.FORM_FIELDS)})[], submit?, note? }   an enquiry form
   | { kind: "rating" }                                   the overall review score, from the business facts
   | { kind: "check", label, detail? }                    one item of a tick list: a guarantee, an area served, something included
+  | { kind: "beforeafter", before: Image, after: Image, caption? }   the same subject before and after the work, side by side. Describe both pictures from the same viewpoint
+  | { kind: "project", title, tag?, body?, images: Image[] }   one finished piece of work shown by itself: a wedding, a flat, a shoot. Two to four images of that one job, the first the main view; tag is the kind of work
 Icon = ${any(V.ICONS)}
 
 # What the options do
@@ -146,7 +148,7 @@ ${pageRuleText()}
 6. Copy is specific to this business: its real services, prices, people and places. No lorem ipsum, no filler such as "we are passionate about". Headings under nine words. Never invent real company names for logos or testimonials; plausible fictional people are fine for reviews.
 7. Facts. Take phone, email, address, opening hours and review score from the brief and put them in "business". If the brief does not give one, leave that field out. Never make up contact details.
 8. People: give each person a portrait image where they are introduced in full (the people page, or Home if there is no such page). That includes people the brief counts but does not name: every person block there has an image. Wherever else that person appears, leave the image out; their portrait is reused automatically.
-9. Images: at most 12 in the whole site, about four on Home and one or two on each other page. In a gallery every tile is a picture: an image block with a caption, or a card with an image. Do not mix text-only tiles into a gallery. Each prompt describes the subject and composition only. No style words (those live in theme.imageStyle) and never text or logos in an image.
+9. Images: at most 12 in the whole site, about four on Home and one or two on each other page. A business that sells its finished work (photographer, interior designer, wedding services, nail studio) may use up to 16. A "beforeafter" block counts as one image, and when a recipe asks for before-and-after results they are not optional: without them the page has no proof. In a gallery every tile is a picture: an image block with a caption, or a card with an image. Do not mix text-only tiles into a gallery. Each prompt describes the subject and composition only. No style words (those live in theme.imageStyle) and never text or logos in an image.
 10. The first section of every page other than Home is its title: a section of type "title" with a heading and one sentence. Never a "hero".`;
 
 const kindHint = (kind?: string) => {

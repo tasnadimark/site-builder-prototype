@@ -35,6 +35,12 @@ const RUN = path.join(root, '.prototype-cache', 'runs', batch);
 const OUT = path.join(RUN, 'shots');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// Without the app there is nothing to photograph, and every page would wait out its full timeout.
+if (!(await fetch(`${APP}/api/status`, { signal: AbortSignal.timeout(8000) }).then((r) => r.ok).catch(() => false))) {
+  console.error(`The app is not answering at ${APP}. Start it (npm run dev) and run this again.`);
+  process.exit(1);
+}
+
 // ---------------------------------------------------------------- Chrome, over its debugging protocol
 
 const profile = path.join(os.tmpdir(), `variety-test-chrome-${process.pid}`);
@@ -129,6 +135,9 @@ async function settle(tab, url) {
     await sleep(2500);
   }
   // A timer, not an animation frame: a tab that is not in front never gets a frame.
+  // Pictures fade in when they arrive. A screenshot taken mid-fade shows an empty frame, so
+  // the fade is switched off and every picture is drawn in its final state.
+  await evaluate(tab, `(() => { const s = document.createElement('style'); s.textContent = '.site .pic img { animation: none !important; }'; document.head.append(s); })()`);
   await evaluate(tab, 'document.fonts.ready.then(() => new Promise((r) => setTimeout(r, 600)))');
   return state;
 }

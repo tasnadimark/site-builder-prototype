@@ -10,7 +10,8 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { BRIEFS, TYPES } from './briefs.mjs';
+// BRIEFS=./briefs-library-1.mjs runs another set of briefs with the same tools.
+const { BRIEFS, TYPES } = await import(process.env.BRIEFS || './briefs.mjs');
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const { createOpStream } = await import('@/site/ops');

@@ -276,6 +276,41 @@ export function BlockView({ s, b, i, boxed, asList, stepNo, style }: BlockProps)
         </figure>
       );
 
+    case 'beforeafter':
+      return (
+        <figure className="blk ba" {...common}>
+          <div className="ba-pair">
+            <div className="ba-side">
+              <Pic image={b.before} />
+              <span className="ba-label">{t.before}</span>
+            </div>
+            <div className="ba-side">
+              <Pic image={b.after} />
+              <span className="ba-label ba-after">{t.after}</span>
+            </div>
+          </div>
+          {b.caption && <Txt as="figcaption" className="ba-caption" value={b.caption} path={[...base, 'caption']} />}
+        </figure>
+      );
+
+    case 'project':
+      return (
+        <article className="blk project" data-pics={Math.min(b.images.length, 4)} {...common}>
+          {b.images.length > 0 && (
+            <div className="project-pics">
+              {b.images.slice(0, 4).map((image, k) => (
+                <Pic key={k} image={image} />
+              ))}
+            </div>
+          )}
+          <div className="project-body">
+            {b.tag && <Txt className="tag" value={b.tag} path={[...base, 'tag']} />}
+            <Txt as="h3" className="h3" value={b.title} path={[...base, 'title']} />
+            {b.body && <Txt as="p" className="body" value={b.body} path={[...base, 'body']} />}
+          </div>
+        </article>
+      );
+
     case 'plan': {
       // A featured plan borrows a contrasting tone so it stands out on any section.
       const tone = s.tone === 'inverse' ? theme.tones.accent : theme.tones.inverse;
@@ -423,7 +458,7 @@ export function BlocksView({ s, e, layout, cols, overlap }: { s: Section; e: Eff
   if (layout === 'bento') {
     // In a mosaic with pictures, the pictures take the large cells: a picture fills any
     // shape, while two lines of text in a tall cell leave it half empty.
-    const pictured = items.map((it) => it.kind === 'block' && (it.block.kind === 'image' || (it.block.kind === 'card' && !!it.block.image)));
+    const pictured = items.map((it) => it.kind === 'block' && (it.block.kind === 'image' || it.block.kind === 'project' || it.block.kind === 'beforeafter' || (it.block.kind === 'card' && !!it.block.image)));
     const mixed = pictured.some(Boolean);
     const sizes = items.map((it, i) => (!mixed || pictured[i] ? it.size : it.size === 'tall' ? 'sm' : it.size === 'feature' ? 'wide' : it.size));
     const place = (c: { col: number; row: number; w: number; h: number }, p: string) =>

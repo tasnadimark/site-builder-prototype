@@ -312,6 +312,8 @@ function blockLabel(b: Block): string {
     case 'form': return (b.fields.length ? b.fields : ['name', 'email', 'message']).join(', ');
     case 'rating': return 'from the business facts';
     case 'check': return b.label;
+    case 'beforeafter': return b.caption || 'before and after';
+    case 'project': return b.title;
   }
 }
 
@@ -399,6 +401,22 @@ function BlockDetail({ s, b, i, run, doc }: { s: Section; b: Block; i: number; r
           <p className="hint">Not connected yet: submitting shows a note and sends nothing.</p>
         </>
       )}
+      {b.kind === 'beforeafter' && (
+        <>
+          <Field label="Before">
+            <Commit value={b.before.prompt} onCommit={(v) => v && patch({ before: { ...b.before, prompt: v } })} />
+          </Field>
+          <Field label="After">
+            <Commit value={b.after.prompt} onCommit={(v) => v && patch({ after: { ...b.after, prompt: v } })} />
+          </Field>
+        </>
+      )}
+      {b.kind === 'project' &&
+        b.images.map((im, k) => (
+          <Field key={k} label={`Picture ${k + 1}`}>
+            <Commit value={im.prompt} onCommit={(v) => v && patch({ images: b.images.map((x, j) => (j === k ? { ...x, prompt: v } : x)) })} />
+          </Field>
+        ))}
       {image && (
         <Field label="Picture">
           <Commit value={image.prompt} onCommit={(v) => v && patch({ image: { ...image, prompt: v } })} />

@@ -60,6 +60,9 @@ export const BLOCK_KINDS = [
   // Added for local service businesses. Each is general on purpose: a "row" is a price,
   // a menu line, a class in a timetable or a line of opening hours.
   'row', 'person', 'contact', 'form', 'rating', 'check',
+  // For businesses whose finished work is what they sell: the same thing before and after,
+  // and one piece of work shown with its own pictures.
+  'beforeafter', 'project',
 ] as const;
 
 /**
