@@ -1588,11 +1588,16 @@
   border-bottom: 1px dotted var(--sline2);
   translate: 0 -0.3em;
 }
+/* A price stays on one line. A value written as a phrase ("ask by phone") is longer than
+   half the row, so it wraps there instead of pushing the row out of its card. */
 .site .row-value {
-  flex: none;
+  flex: 0 1 auto;
+  max-width: 50%;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  text-align: right;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
   color: var(--sacc-text);
 }
 .site .blocks[data-kinds='rows'] {
@@ -2198,12 +2203,18 @@
   display: grid;
   border-top: 1px solid var(--sline2);
 }
+/* on a phone the label sits above its value; a long label would break mid-word beside it */
 .site .facts > div {
   display: grid;
-  grid-template-columns: minmax(5.5rem, 0.36fr) minmax(0, 1fr);
-  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.3rem 1rem;
   padding: 0.95rem 0;
   border-bottom: 1px solid var(--sline2);
+}
+@container site (min-width: 560px) {
+  .site .facts > div {
+    grid-template-columns: minmax(8rem, 0.36fr) minmax(0, 1fr);
+  }
 }
 .site .facts dt {
   padding-top: 0.25em;
@@ -2300,10 +2311,14 @@
 .site .sec[data-family='features'][data-variant='list'] .card-body > :not(.h3) {
   grid-column: 2;
 }
+/* the larger title is for wide screens; on a phone it would split long words */
 .site .sec[data-family='features'][data-variant='list'] .h3 {
-  font-size: calc(var(--fs-h3) * 1.35);
+  font-size: calc(var(--fs-h3) * 1.08);
 }
 @container site (min-width: 760px) {
+  .site .sec[data-family='features'][data-variant='list'] .h3 {
+    font-size: calc(var(--fs-h3) * 1.35);
+  }
   .site .sec[data-family='features'][data-variant='list'] .card-body {
     grid-template-columns: 3.6rem minmax(0, 0.85fr) minmax(0, 1.15fr);
     column-gap: 0;
@@ -2338,13 +2353,16 @@
   padding: 0;
 }
 .site .sec[data-family='features'][data-variant='rows'] .h3 {
-  font-size: calc(var(--fs-h3) * 1.5);
+  font-size: calc(var(--fs-h3) * 1.15);
 }
 .site .sec[data-family='features'][data-variant='rows'] .card .body {
   max-width: 46ch;
   font-size: var(--fs-lead);
 }
 @container site (min-width: 760px) {
+  .site .sec[data-family='features'][data-variant='rows'] .h3 {
+    font-size: calc(var(--fs-h3) * 1.5);
+  }
   .site .sec[data-family='features'][data-variant='rows'] .card:has(.card-pic) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

@@ -119,6 +119,8 @@ The page rule works at the level of eight kinds of business. A recipe (`src/site
 
 After generating sample sites for a new type, `node scripts/variety-test/summary.mjs <run>` prints each site's pages, the pieces it used and its main button, which is the quickest way to see whether it followed its recipe.
 
+`node scripts/variety-test/phone.mjs <run>` photographs a run at phone width, one picture per section, and flags anything that runs off the side of the screen or has its text cut off. `python3 scripts/variety-test/phone-sheets.py <run>` tiles the result, several phones wide. The last check covered 704 sections on 45 sites plus every hero style, arrangement and new block; it found one real fault (a price written as a phrase pushed its row out of the card) and two cosmetic ones, all fixed.
+
 Two blocks exist for businesses whose finished work is what they sell: **before and after** (two pictures of the same thing side by side) and **project** (one piece of work with its own pictures, a title and a line of text). With generated pictures the two halves of a before-and-after never show the same subject, and a portfolio shows only that the layout works; both need the owner's own photos.
 
 A recipe says what a site should hold, not the order. What Home leads with is drawn per site and can be moved afterwards.
